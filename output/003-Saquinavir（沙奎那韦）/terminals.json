@@ -1,0 +1,44 @@
+[
+  {
+    "smiles": "O=C1NC(=O)c2ccccc21",
+    "node_id": "mol_12",
+    "cs_score": 2.8876,
+    "classification": "moderate"
+  },
+  {
+    "smiles": "O=CC(=O)O",
+    "node_id": "mol_15",
+    "cs_score": 1.905,
+    "classification": "trivial"
+  },
+  {
+    "smiles": "OC[C@@H]1CCCC[C@@H]1CO",
+    "node_id": "mol_17",
+    "cs_score": 2.54,
+    "classification": "moderate"
+  },
+  {
+    "smiles": "NC(=O)C[C@H](N)C(=O)O",
+    "node_id": "mol_5",
+    "cs_score": 2.6052,
+    "classification": "moderate"
+  },
+  {
+    "smiles": "O=C(O)c1ccc2ccccc2n1",
+    "node_id": "mol_6",
+    "cs_score": 2.9231,
+    "classification": "moderate"
+  },
+  {
+    "smiles": "C=C[C@@H](N)Cc1ccccc1",
+    "node_id": "mol_7",
+    "cs_score": 2.2396,
+    "classification": "trivial"
+  },
+  {
+    "smiles": "CC(C)(C)N",
+    "node_id": "mol_8",
+    "cs_score": 1.1,
+    "classification": "trivial"
+  }
+]

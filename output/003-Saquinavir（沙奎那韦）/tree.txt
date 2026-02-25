@@ -1,0 +1,29 @@
+└── 🎯 CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H] CS=6.7 [mol_0]
+      ↓ amide coupling (EDC/HATU)
+    ├── ○ CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H] CS=5.1 [mol_1]
+    │     ↓ Epoxide Opening Amine
+    │   ├── ○ N[C@@H](Cc1ccccc1)[C@H]1CO1 CS=3.2 [mol_3]
+    │   │     ↓ fgi
+    │   │   └── ✓ C=C[C@@H](N)Cc1ccccc1 CS=2.2 [mol_7]
+    │   └── ○ CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1 CS=3.9 [mol_4]
+    │         ↓ amide coupling (EDC/HATU)
+    │       ├── ✓ CC(C)(C)N CS=1.1 [mol_8]
+    │       └── ○ O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1 CS=3.8 [mol_9]
+    │             ↓ intramolecular reductive amination (NaBH3CN, AcOH)
+    │           └── ○ N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O CS=3.4 [mol_10]
+    │                 ↓ fgi
+    │               └── ○ N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O CS=3.3 [mol_11]
+    │                     ↓ Gabriel
+    │                   ├── ✓ O=C1NC(=O)c2ccccc21 CS=2.9 [mol_12]
+    │                   └── ○ O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO CS=3.3 [mol_13]
+    │                         ↓ fgi
+    │                       └── ○ O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO CS=3.2 [mol_14]
+    │                             ↓ aldol reaction (LDA, -78°C)
+    │                           ├── ✓ O=CC(=O)O CS=1.9 [mol_15]
+    │                           └── ○ O=C[C@H]1CCCC[C@H]1CO CS=2.7 [mol_16]
+    │                                 ↓ selective oxidation (Swern, 1 equiv DMSO/oxalyl chloride)
+    │                               └── ✓ OC[C@@H]1CCCC[C@@H]1CO CS=2.5 [mol_17]
+    └── ○ NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O CS=4.1 [mol_2]
+          ↓ amide coupling (EDC/HATU)
+        ├── ✓ NC(=O)C[C@H](N)C(=O)O CS=2.6 [mol_5]
+        └── ✓ O=C(O)c1ccc2ccccc2n1 CS=2.9 [mol_6]

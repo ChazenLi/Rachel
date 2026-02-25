@@ -1,0 +1,392 @@
+{
+  "nodes": [
+    {
+      "id": "mol_0",
+      "type": "molecule",
+      "smiles": "CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(N)=O)NC(=O)c1ccc2ccccc2n1",
+      "role": "target",
+      "depth": 0,
+      "cs_score": 6.7083,
+      "classification": "complex"
+    },
+    {
+      "id": "mol_1",
+      "type": "molecule",
+      "smiles": "CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1",
+      "role": "intermediate",
+      "depth": 1,
+      "cs_score": 5.0932,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_2",
+      "type": "molecule",
+      "smiles": "NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O",
+      "role": "intermediate",
+      "depth": 1,
+      "cs_score": 4.1429,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_3",
+      "type": "molecule",
+      "smiles": "N[C@@H](Cc1ccccc1)[C@H]1CO1",
+      "role": "intermediate",
+      "depth": 2,
+      "cs_score": 3.1545,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_4",
+      "type": "molecule",
+      "smiles": "CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1",
+      "role": "intermediate",
+      "depth": 2,
+      "cs_score": 3.9423,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_5",
+      "type": "molecule",
+      "smiles": "NC(=O)C[C@H](N)C(=O)O",
+      "role": "terminal",
+      "depth": 2,
+      "cs_score": 2.6052,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_6",
+      "type": "molecule",
+      "smiles": "O=C(O)c1ccc2ccccc2n1",
+      "role": "terminal",
+      "depth": 2,
+      "cs_score": 2.9231,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_7",
+      "type": "molecule",
+      "smiles": "C=C[C@@H](N)Cc1ccccc1",
+      "role": "terminal",
+      "depth": 3,
+      "cs_score": 2.2396,
+      "classification": "trivial"
+    },
+    {
+      "id": "mol_8",
+      "type": "molecule",
+      "smiles": "CC(C)(C)N",
+      "role": "terminal",
+      "depth": 3,
+      "cs_score": 1.1,
+      "classification": "trivial"
+    },
+    {
+      "id": "mol_9",
+      "type": "molecule",
+      "smiles": "O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1",
+      "role": "intermediate",
+      "depth": 3,
+      "cs_score": 3.8138,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_10",
+      "type": "molecule",
+      "smiles": "N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O",
+      "role": "intermediate",
+      "depth": 4,
+      "cs_score": 3.3775,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_11",
+      "type": "molecule",
+      "smiles": "N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O",
+      "role": "intermediate",
+      "depth": 5,
+      "cs_score": 3.255,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_12",
+      "type": "molecule",
+      "smiles": "O=C1NC(=O)c2ccccc21",
+      "role": "terminal",
+      "depth": 6,
+      "cs_score": 2.8876,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_13",
+      "type": "molecule",
+      "smiles": "O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO",
+      "role": "intermediate",
+      "depth": 6,
+      "cs_score": 3.255,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_14",
+      "type": "molecule",
+      "smiles": "O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO",
+      "role": "intermediate",
+      "depth": 7,
+      "cs_score": 3.195,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_15",
+      "type": "molecule",
+      "smiles": "O=CC(=O)O",
+      "role": "terminal",
+      "depth": 8,
+      "cs_score": 1.905,
+      "classification": "trivial"
+    },
+    {
+      "id": "mol_16",
+      "type": "molecule",
+      "smiles": "O=C[C@H]1CCCC[C@H]1CO",
+      "role": "intermediate",
+      "depth": 8,
+      "cs_score": 2.6625,
+      "classification": "moderate"
+    },
+    {
+      "id": "mol_17",
+      "type": "molecule",
+      "smiles": "OC[C@@H]1CCCC[C@@H]1CO",
+      "role": "terminal",
+      "depth": 9,
+      "cs_score": 2.54,
+      "classification": "moderate"
+    },
+    {
+      "id": "rxn_1",
+      "type": "reaction",
+      "label": "amide coupling (EDC/HATU)",
+      "depth": 0,
+      "reaction_smiles": "CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1.NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(N)=O)NC(=O)c1ccc2ccccc2n1"
+    },
+    {
+      "id": "rxn_2",
+      "type": "reaction",
+      "label": "Epoxide Opening Amine (Retro, ring reaction)",
+      "depth": 1,
+      "reaction_smiles": "N[C@@H](Cc1ccccc1)[C@H]1CO1.CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1"
+    },
+    {
+      "id": "rxn_3",
+      "type": "reaction",
+      "label": "amide coupling (EDC/HATU)",
+      "depth": 1,
+      "reaction_smiles": "NC(=O)C[C@H](N)C(=O)O.O=C(O)c1ccc2ccccc2n1>>NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O"
+    },
+    {
+      "id": "rxn_4",
+      "type": "reaction",
+      "label": "Peracid Epoxidation (Retro, oxidation reduction)",
+      "depth": 2,
+      "reaction_smiles": "C=C[C@@H](N)Cc1ccccc1>>N[C@@H](Cc1ccccc1)[C@H]1CO1"
+    },
+    {
+      "id": "rxn_5",
+      "type": "reaction",
+      "label": "amide coupling (EDC/HATU)",
+      "depth": 2,
+      "reaction_smiles": "CC(C)(C)N.O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1"
+    },
+    {
+      "id": "rxn_6",
+      "type": "reaction",
+      "label": "intramolecular reductive amination (NaBH3CN, AcOH)",
+      "depth": 3,
+      "reaction_smiles": "N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O>>O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1"
+    },
+    {
+      "id": "rxn_7",
+      "type": "reaction",
+      "label": "Pri Alcohol To Aldehyde (Retro, oxidation reduction)",
+      "depth": 4,
+      "reaction_smiles": "N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O>>N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O"
+    },
+    {
+      "id": "rxn_8",
+      "type": "reaction",
+      "label": "Gabriel (Retro, nitrogen)",
+      "depth": 5,
+      "reaction_smiles": "O=C1NC(=O)c2ccccc21.O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO>>N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O"
+    },
+    {
+      "id": "rxn_9",
+      "type": "reaction",
+      "label": "Appel (Retro, special)",
+      "depth": 6,
+      "reaction_smiles": "O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO>>O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO"
+    },
+    {
+      "id": "rxn_10",
+      "type": "reaction",
+      "label": "aldol reaction (LDA, -78°C)",
+      "depth": 7,
+      "reaction_smiles": "O=CC(=O)O.O=C[C@H]1CCCC[C@H]1CO>>O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO"
+    },
+    {
+      "id": "rxn_11",
+      "type": "reaction",
+      "label": "selective oxidation (Swern, 1 equiv DMSO/oxalyl chloride)",
+      "depth": 8,
+      "reaction_smiles": "OC[C@@H]1CCCC[C@@H]1CO>>O=C[C@H]1CCCC[C@H]1CO"
+    }
+  ],
+  "edges": [
+    {
+      "source": "mol_0",
+      "target": "rxn_1",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_1",
+      "target": "mol_1",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_1",
+      "target": "mol_2",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_1",
+      "target": "rxn_2",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_2",
+      "target": "mol_3",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_2",
+      "target": "mol_4",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_2",
+      "target": "rxn_3",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_3",
+      "target": "mol_5",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_3",
+      "target": "mol_6",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_3",
+      "target": "rxn_4",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_4",
+      "target": "mol_7",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_4",
+      "target": "rxn_5",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_5",
+      "target": "mol_8",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_5",
+      "target": "mol_9",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_9",
+      "target": "rxn_6",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_6",
+      "target": "mol_10",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_10",
+      "target": "rxn_7",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_7",
+      "target": "mol_11",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_11",
+      "target": "rxn_8",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_8",
+      "target": "mol_12",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_8",
+      "target": "mol_13",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_13",
+      "target": "rxn_9",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_9",
+      "target": "mol_14",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_14",
+      "target": "rxn_10",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_10",
+      "target": "mol_15",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "rxn_10",
+      "target": "mol_16",
+      "type": "retro_reactant"
+    },
+    {
+      "source": "mol_16",
+      "target": "rxn_11",
+      "type": "retro_product"
+    },
+    {
+      "source": "rxn_11",
+      "target": "mol_17",
+      "type": "retro_reactant"
+    }
+  ],
+  "meta": {
+    "target": "CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(N)=O)NC(=O)c1ccc2ccccc2n1",
+    "target_name": "target_molecule",
+    "status": "complete",
+    "total_steps": 11,
+    "total_molecules": 18
+  }
+}

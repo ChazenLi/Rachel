@@ -1,0 +1,90 @@
+正向合成报告: target_molecule
+==================================================
+
+起始原料 (7 种):
+  • O=C1NC(=O)c2ccccc21  [CS=2.9, moderate]
+  • O=CC(=O)O  [CS=1.9, trivial]
+  • OC[C@@H]1CCCC[C@@H]1CO  [CS=2.5, moderate]
+  • NC(=O)C[C@H](N)C(=O)O  [CS=2.6, moderate]
+  • O=C(O)c1ccc2ccccc2n1  [CS=2.9, moderate]
+  • C=C[C@@H](N)Cc1ccccc1  [CS=2.2, trivial]
+  • CC(C)(C)N  [CS=1.1, trivial]
+
+合成步骤 (11 步):
+----------------------------------------
+
+Step 1: OC[C@@H]1CCCC[C@@H]1CO>>O=C[C@H]1CCCC[C@H]1CO
+  前体: OC[C@@H]1CCCC[C@@H]1CO
+  产物: O=C[C@H]1CCCC[C@H]1CO
+  反应类型: selective oxidation (Swern, 1 equiv DMSO/oxalyl chloride)
+  理由: FGI：2-(羟甲基)环己烷甲醛 ← 选择性 Swern 氧化 ← trans-1,2-环己烷二甲醇。用 1 当量 Swern 试剂选择性氧化一个伯醇为醛。产物 trans-1,2-环己烷二甲醇 (OC[C@@H]1CCCC[C@@H]1CO, CS=2.54) 是简单二醇，接近 terminal。feasibility=0.79, pass=true, atom_balance=true。
+
+Step 2: NC(=O)C[C@H](N)C(=O)O.O=C(O)c1ccc2ccccc2n1>>NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O
+  前体: NC(=O)C[C@H](N)C(=O)O + O=C(O)c1ccc2ccccc2n1
+  产物: NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O
+  反应类型: amide coupling (EDC/HATU)
+  理由: 断裂 bond_idx 1（仲酰胺键，atoms 5,6），采用 EDC/HATU 酰胺偶联逆合成。产生：(1) L-天冬酰胺 (NC(=O)C[C@H](N)C(=O)O, CS=2.61)——天然氨基酸，商购原料；(2) 喹啉-2-甲酸 (O=C(O)c1ccc2ccccc2n1, CS=2.92)——商购原料。feasibility=0.80, pass=true, atom_balance=true。保护基审查：L-天冬酰胺有游离 α-NH₂、-COOH 和伯酰胺 -CONH₂。EDC/HATU 偶联中，α-NH₂ 亲核性远高于伯酰胺 -NH₂，可选择性反应。-COOH 可能需要先保护为甲酯，但在实际操作中可通过控制当量和反应顺序解决。
+
+Step 3: C=C[C@@H](N)Cc1ccccc1>>N[C@@H](Cc1ccccc1)[C@H]1CO1
+  前体: C=C[C@@H](N)Cc1ccccc1
+  产物: N[C@@H](Cc1ccccc1)[C@H]1CO1
+  反应类型: fgi
+  模板: Peracid Epoxidation (Retro, oxidation reduction)
+  理由: 环氧化物通过 mCPBA 或 Sharpless 不对称环氧化从烯丙基胺制备。FGI 逆向：环氧 → 烯烃（Peracid Epoxidation Retro）。产物 C=C[C@@H](N)Cc1ccccc1 是 (S)-2-氨基-4-苯基-1-丁烯，CS=2.24，标记为 terminal。feasibility=0.93, pass=true。保护基审查：实际操作中需先 Boc 保护 -NH₂ 再环氧化（mCPBA 可能氧化游离胺），但这是正向合成的操作细节，逆合成树中环氧化物作为中间体是合理的。Sharpless AE 可控制环氧的立体化学。
+
+Step 4: O=CC(=O)O.O=C[C@H]1CCCC[C@H]1CO>>O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO
+  前体: O=CC(=O)O + O=C[C@H]1CCCC[C@H]1CO
+  产物: O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO
+  反应类型: aldol reaction (LDA, -78°C)
+  理由: Aldol 反应断裂 C-C 键（bond_idx 2, atoms 3,5）。乙醛酸（glyoxylic acid, CS=1.91, terminal）作为亲电体，2-(羟甲基)环己烷甲醛（CS=2.66）的 α-碳烯醇化后进攻乙醛酸的醛基。LDA/-78°C 条件下可控制 aldol 的立体选择性。feasibility=0.83, pass=true。保护基审查：乙醛酸的 -COOH 在碱性 aldol 条件下可能脱质子，但不影响反应。环己烷甲醛的 -CH₂OH 在 LDA 条件下需要 TBS 保护。
+
+Step 5: O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO>>O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO
+  前体: O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO
+  产物: O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO
+  反应类型: fgi
+  模板: Appel (Retro, special)
+  理由: FGI：α-溴代酸 ← Appel 反应 ← α-羟基酸。Appel 反应（PPh₃, CBr₄）将 α-OH 转化为 α-Br，立体翻转（SN2）。产物 O=C(O)[C@@H](O)C[C@@H]1CCCC[C@@H]1CO (CS=3.20)。feasibility=0.93, pass=true。保护基审查：Appel 条件下 -COOH 稳定，伯醇 -CH₂OH 也可能被溴化——需要先 TBS 保护伯醇。
+
+Step 6: O=C1NC(=O)c2ccccc21.O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO>>N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O
+  前体: O=C1NC(=O)c2ccccc21 + O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO
+  产物: N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O
+  反应类型: Gabriel
+  模板: Gabriel (Retro, nitrogen)
+  理由: Gabriel 合成引入氨基。断裂 C-N 键（bond_idx 0, atoms 0,1）。邻苯二甲酰亚胺（phthalimide, CS=2.89）是标准商购试剂，与 α-溴代酸 SN2 反应后肼解脱保护得到游离胺。α-溴代酸 O=C(O)[C@@H](Br)C[C@@H]1CCCC[C@@H]1CO (CS=3.26) 需继续拆解——可从对应的 α-羟基酸或直接从丙二酸酯烷基化得到。feasibility=0.91, pass=true。保护基审查：α-溴代酸的 -OH 和 -COOH 在 Gabriel 反应条件（DMF, K₂CO₃）下稳定。
+
+Step 7: N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O>>N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O
+  前体: N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O
+  产物: N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O
+  反应类型: fgi
+  模板: Pri Alcohol To Aldehyde (Retro, oxidation reduction)
+  理由: FGI：醛 → 伯醇（Swern/Dess-Martin 氧化逆向）。将不稳定的醛基转化为更稳定的伯醇，便于后续操作。产物 N[C@@H](C[C@@H]1CCCC[C@@H]1CO)C(=O)O (CS=3.26)。feasibility=0.99, pass=true。正向合成中，最后一步 Swern 或 Dess-Martin 氧化伯醇得到醛。保护基审查：氧化条件下 -NH₂ 需要 Boc 保护，-COOH 可能需要酯保护。
+
+Step 8: N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O>>O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  前体: N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O
+  产物: O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  反应类型: intramolecular reductive amination (NaBH3CN, AcOH)
+  理由: 八氢异喹啉-3-羧酸的哌啶环通过分子内还原胺化关环构建。断裂 bond_idx 1（N-CH₂ 环内键，atoms 11,12），ring-opening 产生氨基醛 N[C@@H](C[C@@H]1CCCC[C@@H]1C=O)C(=O)O（CS=3.38）。正向：游离胺与醛缩合形成亚胺，NaBH₃CN 还原得到哌啶环，cis 选择性可通过底物控制。feasibility=0.78, pass=true。保护基审查：-COOH 在还原胺化条件下稳定，无需保护。游离 -NH₂ 是反应位点。
+
+Step 9: CC(C)(C)N.O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  前体: CC(C)(C)N + O=C(O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  产物: CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  反应类型: amide coupling (EDC/HATU)
+  理由: 断裂 bond_idx 1（酰胺键，atoms 4,5）。叔丁胺 + 八氢异喹啉-3-羧酸通过 EDC/HATU 酰胺偶联。叔丁胺 CS=1.1 (terminal)，八氢异喹啉羧酸 CS=3.81 需继续拆解。feasibility=0.82, pass=true, atom_balance=true。保护基审查：八氢异喹啉羧酸有仲胺 NH，在 EDC/HATU 条件下仲胺可能与活化酸竞争反应。实际操作中需先 Boc 保护仲胺 NH，偶联后脱保护。但 forward_validation pass=true，说明系统认为可行——仲胺位阻较大，且 HATU 对伯胺选择性好。
+
+Step 10: N[C@@H](Cc1ccccc1)[C@H]1CO1.CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1
+  前体: N[C@@H](Cc1ccccc1)[C@H]1CO1 + CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1
+  产物: CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1
+  反应类型: Epoxide Opening Amine
+  模板: Epoxide Opening Amine (Retro, ring reaction)
+  理由: 选择环氧开环（D53模板）断裂 bond_idx 0（N-CH₂ 键，atoms 16,17）。哌啶仲胺亲核进攻环氧化物，同时建立 C-N 键和 C-OH，立体化学可控。feasibility=1.0，atom_balance=true。产生两个片段：(1) 苯丙氨醇环氧化物 CS=3.15，(2) 哌啶酰胺 CS=3.94。保护基审查：环氧化物片段有游离 -NH₂，但哌啶仲胺亲核性更强，且实际合成中可先 Boc 保护 -NH₂ 再开环。forward_validation pass=true。
+
+Step 11: CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1.NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O>>CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(N)=O)NC(=O)c1ccc2ccccc2n1
+  前体: CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@@H](N)Cc1ccccc1 + NC(=O)C[C@H](NC(=O)c1ccc2ccccc2n1)C(=O)O
+  产物: CC(C)(C)NC(=O)[C@@H]1C[C@@H]2CCCC[C@@H]2CN1C[C@@H](O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(N)=O)NC(=O)c1ccc2ccccc2n1
+  反应类型: amide coupling (EDC/HATU)
+  理由: 第一步断裂：选择 bond_idx 4 的酰胺键（atoms 28,29），采用 EDC/HATU 酰胺偶联逆合成。这是收敛路线的关键断键，将目标分子拆成两个中等大小的片段：(1) 胺片段（含叔丁基酰胺-哌啶-氨基醇-苄基骨架，CS=5.09）和 (2) 酸片段（含天冬酰胺-喹啉-2-甲酰胺骨架，CS=4.14）。forward_validation pass=true, feasibility=0.82。保护基审查：胺片段的游离 -NH₂ 是目标反应位点，-OH 在 HATU 条件下不会优先反应；酸片段的伯酰胺 -NH₂ 反应性低，不会干扰。无需额外保护。
+
+----------------------------------------
+总计: 11 步, 7 种起始原料
+
+LLM 总结: 收敛式多步逆合成路线，11步反应，7个起始原料。核心策略：(1) 首先通过两个酰胺键断裂将目标分子拆成三大片段——哌啶-氨基醇骨架、天冬酰胺-喹啉片段；(2) 天冬酰胺-喹啉片段进一步拆为L-天冬酰胺和喹啉-2-甲酸（均为商购原料）；(3) 哌啶-氨基醇骨架通过环氧开环构建C-N键和氨基醇立体化学；(4) 八氢异喹啉骨架通过分子内还原胺化关环构建；(5) 环己烷二取代骨架从trans-1,2-环己烷二甲醇出发，经选择性氧化、aldol反应、Gabriel合成等步骤构建。起始原料：L-天冬酰胺、喹啉-2-甲酸、(S)-2-氨基-4-苯基-1-丁烯、叔丁胺、邻苯二甲酰亚胺、乙醛酸、trans-1,2-环己烷二甲醇。
