@@ -1,0 +1,58 @@
+{
+  "__comment": "危险官能团组合检测: [smarts_A, smarts_B, alert_message]",
+  "nitro_amine_explosive": [
+    "[NX3+](=[OX1])[OX1-]",
+    "[NX3;H2,H1;!$(NC=O)]",
+    "硝基+胺组合 — 潜在爆炸风险，需严格控制反应条件"
+  ],
+  "azide_carbonyl_curtius": [
+    "[#7]~[#7]~[#7]",
+    "[CX3](=[OX1])[#6]",
+    "叠氮+羰基组合 — Curtius重排风险，注意安全"
+  ],
+  "epoxide_amine_opening": [
+    "[OX2r3]",
+    "[NX3;H2,H1;!$(NC=O)]",
+    "环氧+胺共存 — 不可控开环风险"
+  ],
+  "epoxide_thiol_opening": [
+    "[OX2r3]",
+    "[SX2H]",
+    "环氧+硫醇共存 — 快速开环风险"
+  ],
+  "acyl_halide_moisture": [
+    "[CX3](=[OX1])[F,Cl,Br,I]",
+    "[OX2H]",
+    "酰卤+羟基共存 — 高反应活性，可能非预期酰化"
+  ],
+  "anhydride_nucleophile": [
+    "[CX3](=[OX1])[OX2][CX3](=[OX1])",
+    "[NX3;H2,H1;!$(NC=O)]",
+    "酸酐+胺共存 — 竞争酰化风险"
+  ],
+  "diazo_heat_sensitive": [
+    "[#6]=[N+]=[N-]",
+    "[NX3+](=[OX1])[OX1-]",
+    "重氮+硝基组合 — 极度不稳定，潜在爆炸风险"
+  ],
+  "peroxide_reducing_agent": [
+    "[OX2][OX2]",
+    "[SX2H]",
+    "过氧化物+硫醇 — 剧烈氧化还原反应风险"
+  ],
+  "organolithium_protic": [
+    "[#6][Li]",
+    "[OX2H]",
+    "有机锂试剂+质子源共存 — 剧烈放热淬灭风险，需严格无水条件"
+  ],
+  "diazo_strong_acid": [
+    "[#6]=[NX2+]=[NX1-]",
+    "[NX3+](=[OX1])[OX1-]",
+    "重氮化合物+强酸/硝基共存 — 热不稳定，潜在爆炸风险（Barton/Shapiro中间体）"
+  ],
+  "tempo_strong_reductant": [
+    "[NX3]([CX4])([CX4])[OX2]",
+    "[#6][Li]",
+    "TEMPO/氮氧自由基+强还原剂（有机锂）共存 — 自由基淬灭，反应失效"
+  ]
+}

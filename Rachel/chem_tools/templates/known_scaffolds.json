@@ -1,0 +1,512 @@
+[
+  {
+    "id": "KS001",
+    "name": "benzene",
+    "class": "aryl",
+    "smarts": "c1ccccc1",
+    "murcko_smiles": "c1ccccc1",
+    "priority": 3,
+    "reference_route_tags": ["aryl_core"],
+    "notes": "最基础芳环母核，广泛存在于药物与天然产物"
+  },
+  {
+    "id": "KS002",
+    "name": "naphthalene",
+    "class": "polyaromatic",
+    "smarts": "c1cccc2ccccc12",
+    "murcko_smiles": "c1cccc2ccccc12",
+    "priority": 4,
+    "reference_route_tags": ["fused_aryl"],
+    "notes": "双环稠合芳烃，萘类天然产物核心"
+  },
+  {
+    "id": "KS003",
+    "name": "indole",
+    "class": "heteroaromatic",
+    "smarts": "c1ccc2[nH]ccc2c1",
+    "murcko_smiles": "c1ccc2[nH]ccc2c1",
+    "priority": 5,
+    "reference_route_tags": ["indole_alkaloid"],
+    "notes": "吲哚生物碱核心骨架，色氨酸衍生物"
+  },
+  {
+    "id": "KS004",
+    "name": "quinoline",
+    "class": "heteroaromatic",
+    "smarts": "c1ccc2ncccc2c1",
+    "murcko_smiles": "c1ccc2ncccc2c1",
+    "priority": 4,
+    "reference_route_tags": ["aza_aryl"],
+    "notes": "喹啉，抗疟药物常见骨架"
+  },
+  {
+    "id": "KS005",
+    "name": "isoquinoline",
+    "class": "heteroaromatic",
+    "smarts": "c1ccc2ccncc2c1",
+    "murcko_smiles": "c1ccc2ccncc2c1",
+    "priority": 4,
+    "reference_route_tags": ["aza_aryl"],
+    "notes": "异喹啉，罂粟碱/小檗碱类生物碱核心"
+  },
+  {
+    "id": "KS006",
+    "name": "benzofuran",
+    "class": "heteroaromatic",
+    "smarts": "c1ccc2occc2c1",
+    "murcko_smiles": "c1ccc2occc2c1",
+    "priority": 4,
+    "reference_route_tags": ["oxygen_heterocycle"],
+    "notes": "苯并呋喃，天然产物中常见含氧杂环"
+  },
+  {
+    "id": "KS007",
+    "name": "benzothiophene",
+    "class": "heteroaromatic",
+    "smarts": "c1ccc2sccc2c1",
+    "murcko_smiles": "c1ccc2sccc2c1",
+    "priority": 4,
+    "reference_route_tags": ["sulfur_heterocycle"],
+    "notes": "苯并噻吩，含硫杂环药物骨架"
+  },
+  {
+    "id": "KS008",
+    "name": "chromane",
+    "class": "benzopyran",
+    "smarts": "c1ccc2CCOc2c1",
+    "murcko_smiles": "c1ccc2CCOc2c1",
+    "priority": 4,
+    "reference_route_tags": ["benzopyran"],
+    "notes": "色满，黄酮类天然产物前体骨架"
+  },
+  {
+    "id": "KS009",
+    "name": "coumarin",
+    "class": "benzopyrone",
+    "smarts": "O=c1oc2ccccc2cc1",
+    "murcko_smiles": "O=c1oc2ccccc2cc1",
+    "priority": 4,
+    "reference_route_tags": ["benzopyrone"],
+    "notes": "香豆素，广泛存在于植物次生代谢产物"
+  },
+  {
+    "id": "KS010",
+    "name": "xanthene",
+    "class": "tricyclic_oxygen",
+    "smarts": "c1ccc2c(c1)Oc1ccccc1C2",
+    "murcko_smiles": "c1ccc2c(c1)Oc1ccccc1C2",
+    "priority": 3,
+    "reference_route_tags": ["tricyclic_oxygen"],
+    "notes": "氧杂蒽，荧光染料与天然产物骨架"
+  },
+  {
+    "id": "KS011",
+    "name": "tetrahydroisoquinoline",
+    "class": "alkaloid_like",
+    "smarts": "c1ccc2CCNCC2c1",
+    "murcko_smiles": "C1CNc2ccccc2C1",
+    "priority": 5,
+    "reference_route_tags": ["alkaloid_core"],
+    "notes": "四氢异喹啉，Pictet-Spengler 反应产物，生物碱核心"
+  },
+  {
+    "id": "KS012",
+    "name": "piperidine",
+    "class": "saturated_heterocycle",
+    "smarts": "C1CCNCC1",
+    "murcko_smiles": "C1CCNCC1",
+    "priority": 2,
+    "reference_route_tags": ["amine_ring"],
+    "notes": "哌啶，最常见的饱和含氮六元环"
+  },
+  {
+    "id": "KS013",
+    "name": "morpholine",
+    "class": "saturated_heterocycle",
+    "smarts": "C1COCCN1",
+    "murcko_smiles": "C1COCCN1",
+    "priority": 2,
+    "reference_route_tags": ["amine_ring"],
+    "notes": "吗啉，药物化学中常用的溶解性改善基团"
+  },
+  {
+    "id": "KS014",
+    "name": "pyrrolidine",
+    "class": "saturated_heterocycle",
+    "smarts": "C1CCNC1",
+    "murcko_smiles": "C1CCNC1",
+    "priority": 2,
+    "reference_route_tags": ["amine_ring"],
+    "notes": "吡咯烷，脯氨酸核心骨架"
+  },
+  {
+    "id": "KS015",
+    "name": "decalin",
+    "class": "fused_carbocycle",
+    "smarts": "C1CCC2CCCCC2C1",
+    "murcko_smiles": "C1CCC2CCCCC2C1",
+    "priority": 4,
+    "reference_route_tags": ["terpene_like"],
+    "notes": "十氢萘，萜类天然产物核心骨架"
+  },
+  {
+    "id": "KS016",
+    "name": "norbornane",
+    "class": "bridged_carbocycle",
+    "smarts": "C1CC2CCC1C2",
+    "murcko_smiles": "C1CC2CCC1C2",
+    "priority": 3,
+    "reference_route_tags": ["bridged_core"],
+    "notes": "降冰片烷，Diels-Alder 反应经典产物"
+  },
+  {
+    "id": "KS017",
+    "name": "tropane",
+    "class": "bridged_aza_bicycle",
+    "smarts": "C1CN2CCC1CC2",
+    "murcko_smiles": "C1CN2CCC1CC2",
+    "priority": 5,
+    "reference_route_tags": ["alkaloid_core"],
+    "notes": "托烷，可卡因/阿托品类生物碱核心"
+  },
+  {
+    "id": "KS018",
+    "name": "purine",
+    "class": "aza_fused_bicycle",
+    "smarts": "n1cnc2[nH]cnc12",
+    "murcko_smiles": "c1ncc2[nH]cnc2c1",
+    "priority": 3,
+    "reference_route_tags": ["nucleobase_like"],
+    "notes": "嘌呤，核酸碱基骨架"
+  },
+  {
+    "id": "KS019",
+    "name": "pyrimidine",
+    "class": "aza_aromatic",
+    "smarts": "c1ncncc1",
+    "murcko_smiles": "c1ncncc1",
+    "priority": 3,
+    "reference_route_tags": ["nucleobase_like"],
+    "notes": "嘧啶，胞嘧啶/胸腺嘧啶/尿嘧啶核心"
+  },
+  {
+    "id": "KS020",
+    "name": "imidazole",
+    "class": "aza_aromatic",
+    "smarts": "c1cn[nH]c1",
+    "murcko_smiles": "c1cn[nH]c1",
+    "priority": 3,
+    "reference_route_tags": ["azole"],
+    "notes": "咪唑，组氨酸侧链与抗真菌药物核心"
+  },
+  {
+    "id": "KS021",
+    "name": "benzimidazole",
+    "class": "fused_aza_aromatic",
+    "smarts": "c1ccc2[nH]cnc2c1",
+    "murcko_smiles": "c1ccc2[nH]cnc2c1",
+    "priority": 4,
+    "reference_route_tags": ["azole", "fused_aryl"],
+    "notes": "苯并咪唑，质子泵抑制剂核心骨架"
+  },
+  {
+    "id": "KS022",
+    "name": "pyridine",
+    "class": "aza_aromatic",
+    "smarts": "c1ccncc1",
+    "murcko_smiles": "c1ccncc1",
+    "priority": 3,
+    "reference_route_tags": ["aza_aryl"],
+    "notes": "吡啶，最常见含氮芳环"
+  },
+  {
+    "id": "KS023",
+    "name": "thiophene",
+    "class": "heteroaromatic",
+    "smarts": "c1ccsc1",
+    "murcko_smiles": "c1ccsc1",
+    "priority": 2,
+    "reference_route_tags": ["sulfur_heterocycle"],
+    "notes": "噻吩，含硫五元芳环"
+  },
+  {
+    "id": "KS024",
+    "name": "furan",
+    "class": "heteroaromatic",
+    "smarts": "c1ccoc1",
+    "murcko_smiles": "c1ccoc1",
+    "priority": 2,
+    "reference_route_tags": ["oxygen_heterocycle"],
+    "notes": "呋喃，含氧五元芳环"
+  },
+  {
+    "id": "KS025",
+    "name": "pyrrole",
+    "class": "heteroaromatic",
+    "smarts": "c1cc[nH]c1",
+    "murcko_smiles": "c1cc[nH]c1",
+    "priority": 2,
+    "reference_route_tags": ["nitrogen_heterocycle"],
+    "notes": "吡咯，卟啉子单元"
+  },
+  {
+    "id": "KS026",
+    "name": "carbazole",
+    "class": "tricyclic_nitrogen",
+    "smarts": "c1ccc2c(c1)[nH]c1ccccc12",
+    "murcko_smiles": "c1ccc2c(c1)[nH]c1ccccc12",
+    "priority": 5,
+    "reference_route_tags": ["indole_alkaloid", "tricyclic"],
+    "notes": "咔唑，天然产物与OLED材料核心骨架"
+  },
+  {
+    "id": "KS027",
+    "name": "acridine",
+    "class": "tricyclic_nitrogen",
+    "smarts": "c1ccc2nc3ccccc3cc2c1",
+    "murcko_smiles": "c1ccc2nc3ccccc3cc2c1",
+    "priority": 4,
+    "reference_route_tags": ["tricyclic", "aza_aryl"],
+    "notes": "吖啶，DNA嵌入剂骨架"
+  },
+  {
+    "id": "KS028",
+    "name": "phenanthrene",
+    "class": "polyaromatic",
+    "smarts": "c1ccc2c(c1)ccc1ccccc12",
+    "murcko_smiles": "c1ccc2c(c1)ccc1ccccc12",
+    "priority": 4,
+    "reference_route_tags": ["fused_aryl", "terpene_like"],
+    "notes": "菲，甾体骨架的芳香化前体"
+  },
+  {
+    "id": "KS029",
+    "name": "steroid_ABCD",
+    "class": "tetracyclic_terpene",
+    "smarts": "[#6]~1~[#6]~[#6]~[#6]~2~[#6]~[#6]~[#6]~[#6]~3~[#6]~[#6]~[#6]~[#6]~4~[#6]~[#6]~[#6]~[#6]~[#6]~4~[#6]~3~[#6]~2~1",
+    "murcko_smiles": "C1CCC2C(C1)CCC1C2CCC2CCCCC21",
+    "priority": 5,
+    "reference_route_tags": ["terpene_like", "steroid"],
+    "notes": "甾体ABCD环系统，胆固醇/皮质醇/性激素核心"
+  },
+  {
+    "id": "KS030",
+    "name": "flavone",
+    "class": "benzopyrone",
+    "smarts": "O=c1cc(-c2ccccc2)oc2ccccc12",
+    "murcko_smiles": "O=c1cc(-c2ccccc2)oc2ccccc12",
+    "priority": 5,
+    "reference_route_tags": ["benzopyrone", "flavonoid"],
+    "notes": "黄酮，植物多酚类天然产物核心"
+  },
+  {
+    "id": "KS031",
+    "name": "chromone",
+    "class": "benzopyrone",
+    "smarts": "O=c1ccoc2ccccc12",
+    "murcko_smiles": "O=c1ccoc2ccccc12",
+    "priority": 4,
+    "reference_route_tags": ["benzopyrone"],
+    "notes": "色酮，黄酮类的去苯基母核"
+  },
+  {
+    "id": "KS032",
+    "name": "oxindole",
+    "class": "heteroaromatic",
+    "smarts": "O=C1Nc2ccccc2C1",
+    "murcko_smiles": "O=C1Nc2ccccc2C1",
+    "priority": 5,
+    "reference_route_tags": ["indole_alkaloid"],
+    "notes": "氧化吲哚，多种生物碱与药物核心"
+  },
+  {
+    "id": "KS033",
+    "name": "beta_lactam",
+    "class": "strained_heterocycle",
+    "smarts": "O=C1CCN1",
+    "murcko_smiles": "O=C1CCN1",
+    "priority": 5,
+    "reference_route_tags": ["beta_lactam_antibiotic"],
+    "notes": "β-内酰胺，青霉素/头孢菌素核心四元环"
+  },
+  {
+    "id": "KS034",
+    "name": "dihydropyridine",
+    "class": "partially_saturated",
+    "smarts": "C1=CN=CC=C1",
+    "murcko_smiles": "C1=CNC=CC1",
+    "priority": 3,
+    "reference_route_tags": ["hantzsch"],
+    "notes": "二氢吡啶，钙通道阻滞剂核心（硝苯地平类）"
+  },
+  {
+    "id": "KS035",
+    "name": "piperazine",
+    "class": "saturated_heterocycle",
+    "smarts": "C1CNCCN1",
+    "murcko_smiles": "C1CNCCN1",
+    "priority": 3,
+    "reference_route_tags": ["amine_ring"],
+    "notes": "哌嗪，药物化学中最常用的二胺环"
+  },
+  {
+    "id": "KS036",
+    "name": "thiazole",
+    "class": "aza_aromatic",
+    "smarts": "c1ncsc1",
+    "murcko_smiles": "c1ncsc1",
+    "priority": 3,
+    "reference_route_tags": ["azole", "sulfur_heterocycle"],
+    "notes": "噻唑，维生素B1与抗菌药物核心"
+  },
+  {
+    "id": "KS037",
+    "name": "oxazole",
+    "class": "aza_aromatic",
+    "smarts": "c1ncoc1",
+    "murcko_smiles": "c1ncoc1",
+    "priority": 3,
+    "reference_route_tags": ["azole", "oxygen_heterocycle"],
+    "notes": "噁唑，天然产物与药物中的含氧含氮五元环"
+  },
+  {
+    "id": "KS038",
+    "name": "triazole_1_2_3",
+    "class": "aza_aromatic",
+    "smarts": "c1nn[nH]c1",
+    "murcko_smiles": "c1nn[nH]c1",
+    "priority": 3,
+    "reference_route_tags": ["azole", "click_chemistry"],
+    "notes": "1,2,3-三唑，Click化学（CuAAC）产物"
+  },
+  {
+    "id": "KS039",
+    "name": "triazole_1_2_4",
+    "class": "aza_aromatic",
+    "smarts": "c1nc[nH]n1",
+    "murcko_smiles": "c1nc[nH]n1",
+    "priority": 3,
+    "reference_route_tags": ["azole"],
+    "notes": "1,2,4-三唑，抗真菌药物（氟康唑等）核心"
+  },
+  {
+    "id": "KS040",
+    "name": "tetrazole",
+    "class": "aza_aromatic",
+    "smarts": "c1nn[nH]n1",
+    "murcko_smiles": "c1nn[nH]n1",
+    "priority": 3,
+    "reference_route_tags": ["azole"],
+    "notes": "四唑，羧酸生物电子等排体"
+  },
+  {
+    "id": "KS041",
+    "name": "anthracene",
+    "class": "polyaromatic",
+    "smarts": "c1ccc2cc3ccccc3cc2c1",
+    "murcko_smiles": "c1ccc2cc3ccccc3cc2c1",
+    "priority": 3,
+    "reference_route_tags": ["fused_aryl"],
+    "notes": "蒽，三环线性稠合芳烃"
+  },
+  {
+    "id": "KS042",
+    "name": "fluorene",
+    "class": "polyaromatic",
+    "smarts": "c1ccc2c(c1)Cc1ccccc12",
+    "murcko_smiles": "c1ccc2c(c1)Cc1ccccc12",
+    "priority": 3,
+    "reference_route_tags": ["fused_aryl"],
+    "notes": "芴，OLED材料与保护基（Fmoc）核心"
+  },
+  {
+    "id": "KS043",
+    "name": "dibenzofuran",
+    "class": "tricyclic_oxygen",
+    "smarts": "c1ccc2c(c1)oc1ccccc12",
+    "murcko_smiles": "c1ccc2c(c1)oc1ccccc12",
+    "priority": 3,
+    "reference_route_tags": ["tricyclic_oxygen"],
+    "notes": "二苯并呋喃，天然产物与材料化学骨架"
+  },
+  {
+    "id": "KS044",
+    "name": "phenothiazine",
+    "class": "tricyclic_sulfur_nitrogen",
+    "smarts": "c1ccc2c(c1)Sc1ccccc1N2",
+    "murcko_smiles": "c1ccc2c(c1)Sc1ccccc1N2",
+    "priority": 4,
+    "reference_route_tags": ["tricyclic", "phenothiazine"],
+    "notes": "吩噻嗪，氯丙嗪类抗精神病药物核心"
+  },
+  {
+    "id": "KS045",
+    "name": "benzodiazepine",
+    "class": "fused_seven_membered",
+    "smarts": "O=C1CN=C(c2ccccc2)c2ccccc2N1",
+    "murcko_smiles": "O=C1CN=C(c2ccccc2)c2ccccc2N1",
+    "priority": 5,
+    "reference_route_tags": ["benzodiazepine"],
+    "notes": "苯二氮卓，地西泮类镇静药物核心"
+  },
+  {
+    "id": "KS046",
+    "name": "adamantane",
+    "class": "cage_carbocycle",
+    "smarts": "C1C2CC3CC1CC(C2)C3",
+    "murcko_smiles": "C1C2CC3CC1CC(C2)C3",
+    "priority": 4,
+    "reference_route_tags": ["cage_compound"],
+    "notes": "金刚烷，金刚烷胺/美金刚核心笼状骨架"
+  },
+  {
+    "id": "KS047",
+    "name": "lactone_six",
+    "class": "cyclic_ester",
+    "smarts": "O=C1CCCCO1",
+    "murcko_smiles": "O=C1CCCCO1",
+    "priority": 3,
+    "reference_route_tags": ["macrolide_like"],
+    "notes": "六元内酯（δ-内酯），聚酮类天然产物子结构"
+  },
+  {
+    "id": "KS048",
+    "name": "lactam_six",
+    "class": "cyclic_amide",
+    "smarts": "O=C1CCCCN1",
+    "murcko_smiles": "O=C1CCCCN1",
+    "priority": 3,
+    "reference_route_tags": ["lactam"],
+    "notes": "六元内酰胺（δ-内酰胺），己内酰胺/尼龙前体"
+  },
+  {
+    "id": "KS049",
+    "name": "epoxide",
+    "class": "strained_heterocycle",
+    "smarts": "C1OC1",
+    "murcko_smiles": "C1OC1",
+    "priority": 3,
+    "reference_route_tags": ["epoxide_opening"],
+    "notes": "环氧，高反应活性三元环，亲核开环关键中间体"
+  },
+  {
+    "id": "KS050",
+    "name": "aziridine",
+    "class": "strained_heterocycle",
+    "smarts": "C1NC1",
+    "murcko_smiles": "C1NC1",
+    "priority": 3,
+    "reference_route_tags": ["aziridine_opening"],
+    "notes": "氮丙啶，张力环含氮三元环"
+  },
+  {
+    "id": "KS051",
+    "name": "dihydropyrimidinone",
+    "class": "partially_saturated",
+    "smarts": "O=C1NC(=O)CC(N1)",
+    "murcko_smiles": "O=C1NC(=O)CC(N1)",
+    "priority": 4,
+    "reference_route_tags": ["biginelli", "multicomponent"],
+    "notes": "二氢嘧啶酮，Biginelli反应（P09）产物，钙通道阻滞剂/抗病毒药物核心骨架"
+  }
+]

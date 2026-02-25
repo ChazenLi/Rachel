@@ -1,0 +1,174 @@
+{
+  "__comment": "选择性分析用官能团类别定义。fg_keys 映射到 functional_groups.json 的键名，reactivity 为反应活性评分(1-10)，protection_options 对齐 protecting_groups.json 的 PG 名称。",
+
+  "primary_alcohol": {
+    "fg_keys": ["primary_alcohol"],
+    "reactivity": {"nucleophilicity": 7, "acidity": 4, "oxidation": 9, "acylation": 7},
+    "protection_options": ["TBS", "TIPS", "Bn_O", "Acetyl_O", "MOM"]
+  },
+  "secondary_alcohol": {
+    "fg_keys": ["secondary_alcohol"],
+    "reactivity": {"nucleophilicity": 6, "acidity": 4, "oxidation": 8, "acylation": 6},
+    "protection_options": ["TBS", "TIPS", "Bn_O", "Acetyl_O"]
+  },
+  "tertiary_alcohol": {
+    "fg_keys": ["tertiary_alcohol"],
+    "reactivity": {"nucleophilicity": 4, "acidity": 3, "oxidation": 2, "acylation": 4},
+    "protection_options": ["TBS", "MOM"]
+  },
+  "benzylic_alcohol": {
+    "fg_keys": ["benzylic_alcohol"],
+    "reactivity": {"nucleophilicity": 7, "acidity": 4, "oxidation": 9, "acylation": 7},
+    "protection_options": ["TBS", "TIPS", "Acetyl_O"]
+  },
+  "allylic_alcohol": {
+    "fg_keys": ["allylic_alcohol"],
+    "reactivity": {"nucleophilicity": 7, "acidity": 4, "oxidation": 9, "acylation": 7},
+    "protection_options": ["TBS", "TIPS", "MOM"]
+  },
+  "phenol": {
+    "fg_keys": ["phenol"],
+    "reactivity": {"nucleophilicity": 6, "acidity": 8, "oxidation": 5, "acylation": 6},
+    "protection_options": ["Bn_O", "MOM", "Acetyl_O"]
+  },
+  "enol": {
+    "fg_keys": ["enol"],
+    "reactivity": {"nucleophilicity": 7, "acidity": 6, "oxidation": 6},
+    "protection_options": []
+  },
+  "1_2_diol": {
+    "fg_keys": ["1_2_diol"],
+    "reactivity": {"nucleophilicity": 7, "acidity": 4, "oxidation": 9, "glycol_cleavage": 9},
+    "protection_options": ["Acetonide", "Benzylidene"]
+  },
+  "primary_amine": {
+    "fg_keys": ["primary_amine", "aromatic_amine"],
+    "reactivity": {"nucleophilicity": 9, "acidity": 1, "acylation": 9, "reductive_amination": 8},
+    "protection_options": ["Boc", "Fmoc", "Cbz", "Acetyl_N"]
+  },
+  "secondary_amine": {
+    "fg_keys": ["secondary_amine", "secondary_aromatic_amine"],
+    "reactivity": {"nucleophilicity": 8, "acidity": 1, "acylation": 8},
+    "protection_options": ["Boc", "Cbz"]
+  },
+  "aldehyde": {
+    "fg_keys": ["aldehyde"],
+    "reactivity": {"electrophilicity": 9, "reduction": 9, "aldol": 9, "wittig": 9},
+    "protection_options": ["Acetal", "Dioxolane"]
+  },
+  "ketone": {
+    "fg_keys": ["ketone", "cyclic_ketone"],
+    "reactivity": {"electrophilicity": 7, "reduction": 7, "aldol": 7},
+    "protection_options": ["Ketal", "Dioxolane"]
+  },
+  "carboxylic_acid": {
+    "fg_keys": ["carboxylic_acid"],
+    "reactivity": {"acidity": 10, "acylation": 7, "reduction": 5},
+    "protection_options": ["tBuEster", "BnEster", "MethylEster"]
+  },
+  "ester": {
+    "fg_keys": ["ester_generic", "lactone"],
+    "reactivity": {"hydrolysis": 6, "reduction": 6, "transesterification": 5},
+    "protection_options": []
+  },
+  "amide": {
+    "fg_keys": ["amide_generic", "primary_amide", "secondary_amide", "tertiary_amide", "lactam"],
+    "reactivity": {"hydrolysis": 4, "reduction": 5},
+    "protection_options": []
+  },
+  "nitrile": {
+    "fg_keys": ["nitrile"],
+    "reactivity": {"hydrolysis": 4, "reduction": 6},
+    "protection_options": []
+  },
+  "alkene": {
+    "fg_keys": ["alkene", "terminal_alkene"],
+    "reactivity": {"electrophilic_addition": 7, "hydrogenation": 8, "oxidation": 7, "metathesis": 8},
+    "protection_options": []
+  },
+  "conjugated_diene": {
+    "fg_keys": ["conjugated_diene"],
+    "reactivity": {"diels_alder": 9, "electrophilic_addition": 8, "hydrogenation": 8},
+    "protection_options": []
+  },
+  "michael_acceptor": {
+    "fg_keys": ["michael_acceptor", "alpha_beta_unsat_carbonyl", "alpha_beta_unsat_ester", "alpha_beta_unsat_nitrile"],
+    "reactivity": {"conjugate_addition": 9, "reduction": 7, "hydrogenation": 7},
+    "protection_options": []
+  },
+  "alkyne": {
+    "fg_keys": ["alkyne", "terminal_alkyne", "internal_alkyne"],
+    "reactivity": {"electrophilic_addition": 6, "hydrogenation": 9, "click": 9, "sonogashira": 8},
+    "protection_options": []
+  },
+  "halide_aryl": {
+    "fg_keys": ["aryl_halide", "aryl_bromide", "aryl_iodide", "aryl_chloride"],
+    "reactivity": {"cross_coupling": 9, "nucleophilic_aromatic_substitution": 3},
+    "protection_options": []
+  },
+  "halide_alkyl": {
+    "fg_keys": ["alkyl_halide", "alkyl_bromide", "alkyl_iodide", "alkyl_chloride"],
+    "reactivity": {"nucleophilic_substitution": 8, "elimination": 6},
+    "protection_options": []
+  },
+  "acyl_halide": {
+    "fg_keys": ["acyl_halide", "acyl_chloride"],
+    "reactivity": {"acylation": 10, "hydrolysis": 9},
+    "protection_options": []
+  },
+  "epoxide": {
+    "fg_keys": ["epoxide"],
+    "reactivity": {"ring_opening": 9, "nucleophilic_addition": 8},
+    "protection_options": []
+  },
+  "thiol": {
+    "fg_keys": ["thiol"],
+    "reactivity": {"nucleophilicity": 9, "oxidation": 8, "thiol_ene": 7},
+    "protection_options": ["Trityl_S", "Acm_S", "StBu_S"]
+  },
+  "boronic_acid": {
+    "fg_keys": ["boronic_acid", "boronic_acid_aryl", "boronic_acid_vinyl", "boronic_acid_alkyl"],
+    "reactivity": {"suzuki_coupling": 9, "protodeboronation": 4, "oxidation": 5},
+    "protection_options": []
+  },
+  "nitro": {
+    "fg_keys": ["nitro"],
+    "reactivity": {"reduction": 8, "electron_withdrawal": 9},
+    "protection_options": []
+  },
+  "azide": {
+    "fg_keys": ["organic_azide"],
+    "reactivity": {"click": 9, "reduction": 8, "staudinger": 8},
+    "protection_options": []
+  },
+  "sulfonate_ester": {
+    "fg_keys": ["mesylate", "tosylate", "triflate", "nosylate"],
+    "reactivity": {"nucleophilic_substitution": 9, "elimination": 7},
+    "protection_options": []
+  },
+  "acetal": {
+    "fg_keys": ["acetal", "ketal"],
+    "reactivity": {"acid_hydrolysis": 7},
+    "protection_options": []
+  },
+  "disulfide": {
+    "fg_keys": ["disulfide"],
+    "reactivity": {"reduction": 8, "thiol_exchange": 7},
+    "protection_options": []
+  },
+  "organolithium": {
+    "fg_keys": ["organolithium"],
+    "reactivity": {"nucleophilic_addition": 10, "deprotonation": 10, "halogen_metal_exchange": 9},
+    "protection_options": []
+  },
+  "cuprate": {
+    "fg_keys": ["organocopper"],
+    "reactivity": {"conjugate_addition": 9, "sn2_alkylation": 7, "allylation": 8},
+    "protection_options": []
+  },
+  "organozinc": {
+    "fg_keys": ["organozinc", "organozinc_halide"],
+    "reactivity": {"negishi_coupling": 9, "reformatsky": 8, "nucleophilic_addition": 6},
+    "protection_options": []
+  }
+}

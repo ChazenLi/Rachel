@@ -1,0 +1,85 @@
+{
+  "__comment": "官能团冲突对定义: [category1, category2, reaction_type, severity, resolution]。category 对应 selectivity_reactivity.json 的键名。",
+
+  "pairs": [
+    ["aldehyde", "primary_amine", "imine_formation", "high",
+     "醛与伯胺自发缩合形成亚胺(Schiff碱)，需保护其一或严格控制pH/温度"],
+    ["aldehyde", "secondary_amine", "enamine_formation", "medium",
+     "醛与仲胺可形成烯胺，需控制条件或保护醛基"],
+    ["aldehyde", "thiol", "hemithioacetal_formation", "high",
+     "醛与硫醇快速形成半硫缩醛，热力学有利，需保护其一"],
+    ["aldehyde", "ketone", "electrophilicity_competition", "medium",
+     "醛的亲电性远强于酮(~100x)，Grignard/还原/Wittig中需区分选择性"],
+
+    ["epoxide", "primary_amine", "ring_opening", "high",
+     "环氧与胺发生不可控开环(SN2)，需保护其一"],
+    ["epoxide", "secondary_amine", "ring_opening", "high",
+     "环氧与仲胺发生开环(SN2)，需保护其一"],
+    ["epoxide", "thiol", "ring_opening", "high",
+     "环氧与硫醇快速开环(硫醇亲核性极强)，需保护其一"],
+    ["epoxide", "secondary_alcohol", "ring_opening", "medium",
+     "环氧在酸/碱条件下可被醇开环，需注意反应条件"],
+    ["epoxide", "carboxylic_acid", "ring_opening", "medium",
+     "羧酸可催化环氧开环生成羟基酯，需控制条件"],
+
+    ["acyl_halide", "primary_amine", "acylation_competition", "high",
+     "酰卤与胺反应极快且不可逆，若非目标反应需保护胺"],
+    ["acyl_halide", "primary_alcohol", "acylation_competition", "high",
+     "酰卤与醇快速酯化，若非目标反应需保护醇"],
+
+    ["carboxylic_acid", "primary_alcohol", "esterification", "medium",
+     "酸与醇在活化条件下可自酯化，需控制活化试剂"],
+    ["carboxylic_acid", "secondary_alcohol", "esterification", "medium",
+     "酸与仲醇在活化条件下可酯化，需控制活化条件"],
+    ["carboxylic_acid", "phenol", "esterification", "medium",
+     "酸与酚可酯化，需控制活化条件"],
+    ["carboxylic_acid", "primary_amine", "salt_or_amidation", "medium",
+     "羧酸与伯胺形成铵盐，活化条件下直接酰胺化，需控制活化试剂或保护其一"],
+
+    ["michael_acceptor", "primary_amine", "conjugate_addition", "high",
+     "Michael受体与胺发生1,4-共轭加成，需保护胺或控制化学计量"],
+    ["michael_acceptor", "thiol", "thiol_michael", "high",
+     "Michael受体与硫醇的巯基-Michael加成极快(k~10^3 M-1s-1)，需保护其一"],
+    ["michael_acceptor", "secondary_amine", "conjugate_addition", "medium",
+     "Michael受体与仲胺可发生共轭加成"],
+
+    ["alkene", "alkyne", "selectivity_competition", "medium",
+     "烯烃和炔烃共存时加氢/氧化选择性需控制(Lindlar催化剂可选择性还原炔)"],
+    ["alkene", "aldehyde", "conjugate_addition", "medium",
+     "共轭烯醛体系可能发生非预期的1,4-加成"],
+
+    ["halide_aryl", "primary_amine", "buchwald_side_reaction", "medium",
+     "Buchwald偶联条件下游离胺可能参与副反应，需保护胺"],
+    ["halide_aryl", "boronic_acid", "protodeboronation_risk", "low",
+     "芳基卤与硼酸共存时硼酸可能发生脱硼副反应，需控制反应顺序"],
+
+    ["primary_alcohol", "primary_amine", "nucleophile_competition", "low",
+     "醇和胺同为亲核试剂，酰化中胺通常更快(~10^3x)但需确认选择性"],
+    ["phenol", "primary_amine", "acylation_competition", "medium",
+     "酚和胺竞争酰化，胺动力学优先但酚的O-酰化热力学不可忽略"],
+    ["halide_alkyl", "primary_alcohol", "sn2_competition", "medium",
+     "卤代烷与醇的SN2反应可能与目标反应竞争"],
+
+    ["nitrile", "primary_amine", "amidine_formation", "low",
+     "腈与胺在强酸/Lewis酸条件下可能形成脒"],
+    ["alkyne", "primary_amine", "hydroamination", "low",
+     "炔烃与胺在过渡金属催化下可能发生氢胺化"],
+    ["ester", "primary_amine", "aminolysis", "medium",
+     "酯与胺可发生氨解生成酰胺，尤其在加热或碱性条件下"],
+
+    ["thiol", "disulfide", "thiol_disulfide_exchange", "medium",
+     "游离硫醇与二硫键发生交换反应，需保护硫醇或控制氧化还原环境"],
+    ["thiol", "halide_alkyl", "alkylation", "medium",
+     "硫醇亲核性极强，可与卤代烷发生非预期烷基化"],
+    ["thiol", "primary_alcohol", "nucleophile_competition", "low",
+     "硫醇亲核性远强于醇(~10^3x)，竞争亲核反应中硫醇优先"],
+
+    ["azide", "alkyne", "click_reaction", "medium",
+     "叠氮与炔烃在Cu(I)催化下发生Huisgen环加成，若非目标反应需注意"],
+
+    ["sulfonate_ester", "primary_amine", "nucleophilic_displacement", "high",
+     "磺酸酯是优良离去基，胺可直接亲核取代，需保护胺"],
+    ["sulfonate_ester", "thiol", "nucleophilic_displacement", "high",
+     "磺酸酯与硫醇快速发生亲核取代"]
+  ]
+}

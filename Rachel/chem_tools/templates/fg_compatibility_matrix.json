@@ -1,0 +1,258 @@
+{
+  "__comment_schema": "reaction_family (category or sub-family) -> functional_group_name -> ok|risky|forbidden. FG names must match keys in functional_groups.json. Only non-ok entries listed.",
+
+  "strong_oxidation": {
+    "__applies_to": "Jones, KMnO4, CrO3, mCPBA-like conditions",
+    "thioether": "risky",
+    "thiol": "forbidden",
+    "sulfoxide": "risky",
+    "alkene": "risky",
+    "terminal_alkene": "risky",
+    "allyl": "risky",
+    "allylic_alcohol": "risky",
+    "enol_ether": "risky",
+    "silyl_enol_ether": "risky",
+    "aldehyde": "risky",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "phosphine": "forbidden",
+    "organotin": "forbidden",
+    "dithiane": "forbidden",
+    "disulfide": "risky"
+  },
+
+  "mild_oxidation": {
+    "__applies_to": "Swern, DMP, Dess-Martin, TPAP, Ley, PDC",
+    "thiol": "risky",
+    "phosphine": "risky"
+  },
+
+  "strong_reduction": {
+    "__applies_to": "LiAlH4, DIBAL-H (excess)",
+    "ester_generic": "risky",
+    "lactone": "risky",
+    "amide_generic": "risky",
+    "lactam": "risky",
+    "epoxide": "risky",
+    "nitrile": "risky",
+    "nitro": "risky",
+    "alkyl_halide": "risky",
+    "acyl_chloride": "forbidden",
+    "anhydride": "forbidden",
+    "azide": "risky",
+    "disulfide": "risky",
+    "tosylate": "risky",
+    "mesylate": "risky",
+    "triflate": "risky"
+  },
+
+  "mild_reduction": {
+    "__applies_to": "NaBH4, NaBH3CN, Luche",
+    "acyl_chloride": "risky",
+    "anhydride": "risky",
+    "epoxide": "risky",
+    "alpha_halo_carbonyl": "risky"
+  },
+
+  "strong_base": {
+    "__applies_to": "LDA, NaH, n-BuLi, KHMDS, Grignard, organolithium",
+    "aldehyde": "risky",
+    "ketone": "risky",
+    "ester_generic": "risky",
+    "primary_alcohol": "risky",
+    "secondary_alcohol": "risky",
+    "tertiary_alcohol": "risky",
+    "phenol": "risky",
+    "carboxylic_acid": "forbidden",
+    "thiol": "forbidden",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "primary_amide": "risky",
+    "epoxide": "forbidden",
+    "acyl_chloride": "forbidden",
+    "anhydride": "forbidden",
+    "tosylate": "risky",
+    "mesylate": "risky",
+    "triflate": "risky",
+    "nitro": "risky",
+    "nitrile": "risky",
+    "sulfonyl_chloride": "forbidden"
+  },
+
+  "strong_acid": {
+    "__applies_to": "TFA, HCl, H2SO4, Lewis acids (BF3, AlCl3, TiCl4)",
+    "acetal": "risky",
+    "ketal": "risky",
+    "boc_group": "forbidden",
+    "silyl_ether_tbs": "risky",
+    "silyl_ether_tms": "forbidden",
+    "silyl_ether_tes": "risky",
+    "silyl_enol_ether": "forbidden",
+    "epoxide": "risky",
+    "enol_ether": "risky",
+    "thp_ether": "risky",
+    "mom_ether": "risky",
+    "acetonide_on_diol": "risky",
+    "vinyl_ether": "risky",
+    "aziridine": "risky",
+    "cyclic_carbonate": "risky"
+  },
+
+  "pd_catalysis": {
+    "__applies_to": "Suzuki, Heck, Sonogashira, Stille, Negishi, Buchwald-Hartwig, Tsuji-Trost",
+    "thiol": "forbidden",
+    "dithiane": "forbidden",
+    "disulfide": "forbidden",
+    "thioether": "risky",
+    "phosphine": "risky",
+    "primary_amine": "risky",
+    "azide": "risky",
+    "diazo": "forbidden",
+    "organolithium": "forbidden",
+    "grignard_reagent": "forbidden"
+  },
+
+  "radical": {
+    "__applies_to": "NBS allylic/benzylic, Barton, AIBN-initiated",
+    "thiol": "forbidden",
+    "phenol": "risky",
+    "hydroquinone": "forbidden",
+    "nitroso": "forbidden",
+    "disulfide": "risky",
+    "diazo": "forbidden"
+  },
+
+  "electrophilic_aromatic": {
+    "__applies_to": "Friedel-Crafts acylation/alkylation, nitration, halogenation, sulfonation",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "phenol": "risky",
+    "carboxylic_acid": "forbidden",
+    "primary_alcohol": "risky",
+    "secondary_alcohol": "risky",
+    "anhydride": "risky"
+  },
+
+  "lewis_acid": {
+    "__applies_to": "AlCl3, BF3·OEt2, TiCl4, SnCl4, ZnCl2 — Friedel-Crafts, Diels-Alder (catalyzed), etc.",
+    "phenol": "forbidden",
+    "carboxylic_acid": "forbidden",
+    "primary_alcohol": "risky",
+    "secondary_alcohol": "risky",
+    "tertiary_alcohol": "risky",
+    "primary_amine": "forbidden",
+    "secondary_amine": "risky",
+    "thiol": "forbidden",
+    "aldehyde": "risky",
+    "acetal": "risky",
+    "ketal": "risky",
+    "boc_group": "forbidden",
+    "silyl_ether_tms": "forbidden",
+    "silyl_ether_tes": "risky",
+    "silyl_enol_ether": "forbidden",
+    "epoxide": "forbidden",
+    "phosphine": "forbidden"
+  },
+
+  "nucleophilic_addition": {
+    "__applies_to": "Aldol, Mannich, Henry, Michael, Grignard addition",
+    "acyl_chloride": "forbidden",
+    "anhydride": "forbidden",
+    "epoxide": "risky",
+    "aldehyde": "risky",
+    "alpha_halo_carbonyl": "risky"
+  },
+
+  "olefination": {
+    "__applies_to": "Wittig, HWE, Julia, Peterson, Tebbe",
+    "aldehyde": "risky",
+    "epoxide": "risky",
+    "acyl_chloride": "forbidden",
+    "anhydride": "forbidden",
+    "primary_amine": "risky"
+  },
+
+  "metathesis": {
+    "__applies_to": "RCM, CM (Grubbs catalyst)",
+    "thiol": "forbidden",
+    "thioether": "risky",
+    "dithiane": "forbidden",
+    "phosphine": "risky",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "nitrile": "risky",
+    "aldehyde": "risky"
+  },
+
+  "diazotization": {
+    "__applies_to": "Sandmeyer, diazo coupling",
+    "phenol": "risky",
+    "primary_amine": "risky",
+    "secondary_amine": "risky"
+  },
+
+  "ir_catalysis": {
+    "__applies_to": "Ir-catalyzed C-H borylation (N02), [Ir(cod)OMe]₂/dtbpy conditions",
+    "thiol": "forbidden",
+    "dithiane": "forbidden",
+    "phosphine": "forbidden",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "organolithium": "forbidden",
+    "grignard_reagent": "forbidden",
+    "diazo": "forbidden"
+  },
+
+  "photoredox_radical": {
+    "__applies_to": "Barton decarboxylation (M01), HAT bromination (M05), photoredox radical (M02-M04), visible-light radical conditions",
+    "thiol": "forbidden",
+    "hydroquinone": "forbidden",
+    "nitroso": "forbidden",
+    "dithiane": "risky",
+    "disulfide": "risky",
+    "phenol": "risky",
+    "diazo": "forbidden"
+  },
+
+  "tempo_oxidation": {
+    "__applies_to": "TEMPO/BAIB selective oxidation (M06-M07), mild conditions",
+    "thiol": "risky",
+    "phosphine": "risky",
+    "aldehyde": "risky",
+    "primary_amine": "risky"
+  },
+
+  "organolithium_cuprate": {
+    "__applies_to": "Organolithium addition (K01-K02), cuprate conjugate addition (K03-K06), low-temperature conditions",
+    "primary_alcohol": "risky",
+    "secondary_alcohol": "risky",
+    "tertiary_alcohol": "risky",
+    "phenol": "forbidden",
+    "carboxylic_acid": "forbidden",
+    "thiol": "forbidden",
+    "primary_amine": "risky",
+    "secondary_amine": "risky",
+    "aldehyde": "forbidden",
+    "ketone": "risky",
+    "ester_generic": "risky",
+    "epoxide": "forbidden",
+    "acyl_chloride": "forbidden",
+    "anhydride": "forbidden",
+    "nitrile": "risky",
+    "nitro": "risky",
+    "tosylate": "risky",
+    "mesylate": "risky",
+    "triflate": "risky"
+  },
+
+  "fluoride_deprotection": {
+    "__applies_to": "TBAF/HF·py deprotection (Q01-Q04), fluoride-mediated silyl removal",
+    "silyl_ether_tms": "forbidden",
+    "silyl_ether_tes": "forbidden",
+    "silyl_ether_tbs": "risky",
+    "silyl_ether_tips": "risky",
+    "silyl_enol_ether": "forbidden",
+    "ester_generic": "risky",
+    "epoxide": "risky"
+  }
+}

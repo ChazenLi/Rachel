@@ -1,0 +1,425 @@
+{
+  "__comment": "反应类型 → 前体化学角色要求。key 引用 reactive_sites.json 中的条目名。match_names: 用于从 reaction_name 模糊匹配到此规则。required_nucleophile_keys / required_electrophile_keys: 前体中至少一个需匹配其中之一。roles_must_separate: true 表示亲核体和亲电体必须在不同前体上。broad_nucleophile_smarts / broad_electrophile_smarts: 宽泛兜底 SMARTS（当 reactive_sites 精确匹配失败时使用）。",
+
+  "robinson": {
+    "match_names": ["robinson"],
+    "description": "Robinson annulation = Michael addition + intramolecular aldol",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_enolate_ketone", "nucleophilic_C_enolate_ester",
+      "nucleophilic_C_enolate_amide", "nucleophilic_C_1_3_diketone",
+      "nucleophilic_C_beta_keto_ester", "nucleophilic_C_malonate",
+      "nucleophilic_C_cyanoacetate"
+    ],
+    "broad_nucleophile_smarts": ["[CH2][CX3]=[OX1]", "[CH3][CX3]=[OX1]", "[CH1]([CX3]=[OX1])"],
+    "required_electrophile_keys": [
+      "electrophilic_C_michael_enone", "electrophilic_C_michael_enoate",
+      "electrophilic_C_michael_vinyl_nitrile", "electrophilic_C_michael_vinyl_sulfone",
+      "electrophilic_C_michael_vinyl_amide"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[CX3][CX3]=[OX1]", "[CX3]=[CX3][CX2]#[NX1]"],
+    "nucleophile_label": "活泼亚甲基亲核体 (α-CH to C=O)",
+    "electrophile_label": "Michael 受体 (α,β-不饱和羰基)"
+  },
+
+  "aldol": {
+    "match_names": ["aldol", "mukaiyama_aldol", "asymmetric_aldol"],
+    "description": "Aldol reaction: enolizable carbonyl + aldehyde/ketone",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_enolate_ketone", "nucleophilic_C_enolate_ester",
+      "nucleophilic_C_enolate_amide", "nucleophilic_C_1_3_diketone",
+      "nucleophilic_C_beta_keto_ester", "nucleophilic_C_silyl_enol_ether",
+      "nucleophilic_C_enamine"
+    ],
+    "broad_nucleophile_smarts": ["[CH2][CX3]=[OX1]", "[CH3][CX3]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "可烯醇化羰基",
+    "electrophile_label": "醛或酮"
+  },
+
+  "aldol_condensation": {
+    "match_names": ["aldol_condensation", "claisen_condensation"],
+    "description": "Aldol condensation with dehydration",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_enolate_ketone", "nucleophilic_C_enolate_ester",
+      "nucleophilic_C_1_3_diketone", "nucleophilic_C_beta_keto_ester"
+    ],
+    "broad_nucleophile_smarts": ["[CH2][CX3]=[OX1]", "[CH3][CX3]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "可烯醇化羰基",
+    "electrophile_label": "醛或酮"
+  },
+
+  "michael": {
+    "match_names": ["michael", "conjugate_addition", "1_4_addition", "giese"],
+    "description": "Michael (1,4-conjugate) addition",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_enolate_ketone", "nucleophilic_C_enolate_ester",
+      "nucleophilic_C_enolate_amide", "nucleophilic_C_1_3_diketone",
+      "nucleophilic_C_beta_keto_ester", "nucleophilic_C_malonate",
+      "nucleophilic_C_cyanoacetate", "nucleophilic_C_nitroalkane_alpha",
+      "nucleophilic_C_sulfone_alpha"
+    ],
+    "broad_nucleophile_smarts": ["[CH2][CX3]=[OX1]", "[CH3][CX3]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_michael_enone", "electrophilic_C_michael_enoate",
+      "electrophilic_C_michael_vinyl_nitrile", "electrophilic_C_michael_vinyl_sulfone",
+      "electrophilic_C_michael_vinyl_amide"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[CX3][CX3]=[OX1]"],
+    "nucleophile_label": "碳亲核体 (烯醇/丙二酸酯等)",
+    "electrophile_label": "Michael 受体"
+  },
+
+  "mannich": {
+    "match_names": ["mannich", "asymmetric_mannich"],
+    "description": "Mannich reaction: enolizable + aldehyde + amine",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_enolate_ketone", "nucleophilic_C_enolate_ester",
+      "nucleophilic_C_1_3_diketone", "nucleophilic_C_beta_keto_ester",
+      "nucleophilic_C_enamine"
+    ],
+    "broad_nucleophile_smarts": ["[CH2][CX3]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_imine"
+    ],
+    "broad_electrophile_smarts": ["[CX3H1]=[OX1]", "[CX3]=[NX2]"],
+    "nucleophile_label": "可烯醇化羰基或烯胺",
+    "electrophile_label": "醛或亚胺"
+  },
+
+  "knoevenagel": {
+    "match_names": ["knoevenagel"],
+    "description": "Knoevenagel condensation: active methylene + aldehyde/ketone",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_1_3_diketone", "nucleophilic_C_beta_keto_ester",
+      "nucleophilic_C_malonate", "nucleophilic_C_cyanoacetate"
+    ],
+    "broad_nucleophile_smarts": ["[CH2]([CX3]=[OX1])[CX3]=[OX1]", "[CH2]([CX2]#[NX1])[CX3]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "活泼亚甲基 (1,3-二羰基/氰基乙酸酯)",
+    "electrophile_label": "醛或酮"
+  },
+
+  "wittig": {
+    "match_names": ["wittig", "horner_wadsworth_emmons", "hwe", "peterson_olefination", "julia_olefination"],
+    "description": "Wittig/HWE/Peterson/Julia olefination",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_ylide_phosphorus", "nucleophilic_C_phosphonate_alpha",
+      "nucleophilic_C_ylide_sulfur"
+    ],
+    "broad_nucleophile_smarts": ["[CX3]=[PX4]", "[CX4][PX4](=[OX1])([OX2])[OX2]", "[CX3]=[SX3]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "磷叶立德/膦酸酯/硫叶立德",
+    "electrophile_label": "醛或酮"
+  },
+
+  "grignard": {
+    "match_names": ["grignard", "organolithium", "organozinc", "reformatsky"],
+    "description": "Grignard/organometallic addition to carbonyl",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_C_alkyl_grignard", "nucleophilic_C_aryl_grignard",
+      "nucleophilic_C_organolithium", "nucleophilic_C_organozinc"
+    ],
+    "broad_nucleophile_smarts": ["[#6][Mg]", "[#6][Li]", "[#6][Zn]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone",
+      "electrophilic_C_ester", "electrophilic_C_epoxide"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "有机金属试剂 (RMgX/RLi/RZnX)",
+    "electrophile_label": "羰基亲电体 (醛/酮/酯/环氧)"
+  },
+
+  "suzuki": {
+    "match_names": ["suzuki"],
+    "description": "Suzuki coupling: aryl/vinyl halide + boronic acid",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[#6][B]([O])([O])", "[#6][B](O)O"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]", "[CX3]=[CX3][F,Cl,Br,I]", "[c][OX2][SX4]"],
+    "nucleophile_label": "硼酸/硼酸酯",
+    "electrophile_label": "芳基/乙烯基卤化物或三氟甲磺酸酯"
+  },
+
+  "heck": {
+    "match_names": ["heck"],
+    "description": "Heck reaction: aryl halide + alkene",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[CX3]=[CX3]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]", "[CX3]=[CX3][F,Cl,Br,I]"],
+    "nucleophile_label": "烯烃",
+    "electrophile_label": "芳基/乙烯基卤化物"
+  },
+
+  "sonogashira": {
+    "match_names": ["sonogashira"],
+    "description": "Sonogashira coupling: aryl halide + terminal alkyne",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_acetylide_terminal"],
+    "broad_nucleophile_smarts": ["[CX2]#[CH1]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]"],
+    "nucleophile_label": "末端炔烃",
+    "electrophile_label": "芳基卤化物"
+  },
+
+  "stille": {
+    "match_names": ["stille"],
+    "description": "Stille coupling: aryl halide + organostannane",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_allylstannane"],
+    "broad_nucleophile_smarts": ["[#6][Sn]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]", "[CX3]=[CX3][F,Cl,Br,I]"],
+    "nucleophile_label": "有机锡试剂",
+    "electrophile_label": "芳基/乙烯基卤化物"
+  },
+
+  "negishi": {
+    "match_names": ["negishi"],
+    "description": "Negishi coupling: aryl halide + organozinc",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_organozinc"],
+    "broad_nucleophile_smarts": ["[#6][Zn]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]"],
+    "nucleophile_label": "有机锌试剂",
+    "electrophile_label": "芳基卤化物"
+  },
+
+  "kumada": {
+    "match_names": ["kumada"],
+    "description": "Kumada coupling: aryl halide + Grignard",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_alkyl_grignard", "nucleophilic_C_aryl_grignard"],
+    "broad_nucleophile_smarts": ["[#6][Mg]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]"],
+    "nucleophile_label": "Grignard 试剂",
+    "electrophile_label": "芳基卤化物"
+  },
+
+  "hiyama": {
+    "match_names": ["hiyama"],
+    "description": "Hiyama coupling: aryl halide + organosilane",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_vinylsilane", "nucleophilic_C_allylsilane"],
+    "broad_nucleophile_smarts": ["[#6][Si]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[c][F,Cl,Br,I]"],
+    "nucleophile_label": "有机硅试剂",
+    "electrophile_label": "芳基卤化物"
+  },
+
+  "friedel_crafts_acyl": {
+    "match_names": ["friedel_crafts_acyl", "fc_acylation"],
+    "description": "Friedel-Crafts acylation",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[cH]"],
+    "required_electrophile_keys": ["electrophilic_C_acyl_halide"],
+    "broad_electrophile_smarts": ["[CX3](=[OX1])[Cl,Br]", "[CX3](=[OX1])[OX2][CX3](=[OX1])"],
+    "nucleophile_label": "富电子芳环",
+    "electrophile_label": "酰卤或酸酐"
+  },
+
+  "friedel_crafts_alkyl": {
+    "match_names": ["friedel_crafts_alkyl", "fc_alkylation"],
+    "description": "Friedel-Crafts alkylation",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[cH]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[CX4][F,Cl,Br,I]", "[CX3]=[CX3]"],
+    "nucleophile_label": "富电子芳环",
+    "electrophile_label": "烷基卤化物或烯烃"
+  },
+
+  "ester_formation": {
+    "match_names": ["fischer_ester", "ester", "esterification", "steglich", "yamaguchi", "mitsunobu_ester"],
+    "description": "Ester formation: carboxylic acid + alcohol",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_O_alcohol_generic", "nucleophilic_O_alcohol_primary",
+      "nucleophilic_O_alcohol_secondary", "nucleophilic_O_phenol"
+    ],
+    "broad_nucleophile_smarts": ["[OX2H][#6]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_acyl_halide", "electrophilic_C_anhydride",
+      "electrophilic_C_ester"
+    ],
+    "broad_electrophile_smarts": ["[CX3](=[OX1])[OX2H]", "[CX3](=[OX1])[Cl,Br]"],
+    "nucleophile_label": "醇或酚",
+    "electrophile_label": "羧酸/酰卤/酸酐"
+  },
+
+  "amide_formation": {
+    "match_names": ["amide", "amidation", "peptide_coupling", "schotten_baumann"],
+    "description": "Amide formation: amine + carboxylic acid derivative",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_N_amine_primary", "nucleophilic_N_amine_secondary"
+    ],
+    "broad_nucleophile_smarts": ["[NX3H2][#6]", "[NX3H1]([#6])[#6]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_acyl_halide", "electrophilic_C_anhydride",
+      "electrophilic_C_ester"
+    ],
+    "broad_electrophile_smarts": ["[CX3](=[OX1])[OX2H]", "[CX3](=[OX1])[Cl,Br]", "[CX3](=[OX1])[OX2][CX3]=[OX1]"],
+    "nucleophile_label": "伯胺或仲胺",
+    "electrophile_label": "羧酸/酰卤/酸酐/活化酯"
+  },
+
+  "reductive_amination": {
+    "match_names": ["reductive_amination"],
+    "description": "Reductive amination: amine + aldehyde/ketone + reductant",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [
+      "nucleophilic_N_amine_primary", "nucleophilic_N_amine_secondary"
+    ],
+    "broad_nucleophile_smarts": ["[NX3H2]", "[NX3H1]([#6])[#6]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_aldehyde", "electrophilic_C_ketone"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "胺",
+    "electrophile_label": "醛或酮"
+  },
+
+  "sn2": {
+    "match_names": ["sn2", "alkylation", "williamson_ether", "gabriel", "mitsunobu",
+                     "enolate_alpha_alkylation", "tsuji_trost"],
+    "description": "SN2 displacement",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[NX3H2]", "[NX3H1]", "[OX2H]", "[SX2H]", "[OX1-]", "[NX2-]",
+                                  "[CH2][CX3]=[OX1]", "[CH3][CX3]=[OX1]"],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": ["[CX4][F,Cl,Br,I]", "[CX4][OX2][SX4]", "[CX3]=[CX3][CX4][F,Cl,Br,I]"],
+    "nucleophile_label": "亲核体 (胺/醇/硫醇/烯醇盐等)",
+    "electrophile_label": "烷基卤化物/磺酸酯/烯丙基卤化物"
+  },
+
+  "henry": {
+    "match_names": ["henry", "nitroaldol"],
+    "description": "Henry (nitroaldol) reaction",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_nitroalkane_alpha"],
+    "broad_nucleophile_smarts": ["[CH2][NX3+](=[OX1])[OX1-]", "[CH3][NX3+](=[OX1])[OX1-]"],
+    "required_electrophile_keys": ["electrophilic_C_aldehyde", "electrophilic_C_ketone"],
+    "broad_electrophile_smarts": ["[CX3]=[OX1]"],
+    "nucleophile_label": "硝基烷烃",
+    "electrophile_label": "醛或酮"
+  },
+
+  "stetter": {
+    "match_names": ["stetter"],
+    "description": "Stetter reaction: NHC-catalyzed acyl anion + Michael acceptor",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[CX3H1]=[OX1]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_michael_enone", "electrophilic_C_michael_enoate"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[CX3][CX3]=[OX1]"],
+    "nucleophile_label": "醛 (经 NHC 活化为酰基阴离子)",
+    "electrophile_label": "Michael 受体"
+  },
+
+  "benzoin": {
+    "match_names": ["benzoin"],
+    "description": "Benzoin condensation: 2x aldehyde",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[CX3H1]=[OX1]"],
+    "required_electrophile_keys": ["electrophilic_C_aldehyde"],
+    "broad_electrophile_smarts": ["[CX3H1]=[OX1]"],
+    "nucleophile_label": "醛",
+    "electrophile_label": "醛"
+  },
+
+  "baylis_hillman": {
+    "match_names": ["baylis_hillman"],
+    "description": "Baylis-Hillman: activated alkene + aldehyde",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[CX3]=[CX3][CX3]=[OX1]", "[CX3]=[CX3][CX2]#[NX1]"],
+    "required_electrophile_keys": ["electrophilic_C_aldehyde"],
+    "broad_electrophile_smarts": ["[CX3H1]=[OX1]"],
+    "nucleophile_label": "活化烯烃 (丙烯酸酯/乙烯基酮)",
+    "electrophile_label": "醛"
+  },
+
+  "gilman_conjugate": {
+    "match_names": ["gilman", "cuprate", "organocuprate", "corey_house"],
+    "description": "Gilman (organocuprate) 1,4-conjugate addition",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": ["nucleophilic_C_organocopper"],
+    "broad_nucleophile_smarts": ["[#6][Cu]"],
+    "required_electrophile_keys": [
+      "electrophilic_C_michael_enone", "electrophilic_C_michael_enoate"
+    ],
+    "broad_electrophile_smarts": ["[CX3]=[CX3][CX3]=[OX1]"],
+    "nucleophile_label": "有机铜试剂 (R₂CuLi)",
+    "electrophile_label": "α,β-不饱和羰基"
+  },
+
+  "epoxide_opening": {
+    "match_names": ["epoxide_opening", "epoxide"],
+    "description": "Epoxide ring opening by nucleophile",
+    "roles_must_separate": true,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": ["[NX3H2]", "[NX3H1]", "[OX2H]", "[SX2H]", "[OX1-]", "[#6][Mg]", "[#6][Li]"],
+    "required_electrophile_keys": ["electrophilic_C_epoxide"],
+    "broad_electrophile_smarts": ["[CX4]1[OX2][CX4]1"],
+    "nucleophile_label": "亲核体",
+    "electrophile_label": "环氧化物"
+  },
+
+  "oxidation": {
+    "match_names": ["oxidation", "swern", "dess_martin", "pcc", "jones", "tempo"],
+    "description": "Alcohol oxidation to aldehyde/ketone",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": [],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": [],
+    "substrate_smarts": ["[CX4H][OX2H]"],
+    "substrate_label": "醇 (伯醇→醛, 仲醇→酮)"
+  },
+
+  "reduction": {
+    "match_names": ["reduction", "nabh4", "lialh4", "dibal", "hydrogenation"],
+    "description": "Carbonyl/alkene reduction",
+    "roles_must_separate": false,
+    "required_nucleophile_keys": [],
+    "broad_nucleophile_smarts": [],
+    "required_electrophile_keys": [],
+    "broad_electrophile_smarts": [],
+    "substrate_smarts": ["[CX3]=[OX1]", "[CX3]=[CX3]", "[CX2]#[CX2]"],
+    "substrate_label": "可还原底物 (C=O/C=C/C≡C)"
+  }
+}
