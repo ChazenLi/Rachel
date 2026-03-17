@@ -66,6 +66,7 @@ class LLMDecision:
     rejected_alternatives: List[Dict[str, str]] = field(default_factory=list)
     protection_needed: bool = False
     risk_assessment: str = ""
+    site_audit_summary: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -238,11 +239,45 @@ def parse_precursors(raw) -> List[str]:
       - "A + B" → ["A", "B"]
     """
     if isinstance(raw, str):
-        if "+" in raw:
-            parts = [s.strip() for s in raw.split("+")]
-        else:
-            parts = [s.strip() for s in raw.split(".")]
-        return [p for p in parts if p]
+        parts = []
+        buf = []
+        bracket_depth = 0
+        length = len(raw)
+
+        for idx, ch in enumerate(raw):
+            if ch == "[":
+                bracket_depth += 1
+                buf.append(ch)
+                continue
+
+            if ch == "]":
+                bracket_depth = max(0, bracket_depth - 1)
+                buf.append(ch)
+                continue
+
+            if bracket_depth == 0 and ch == ".":
+                part = "".join(buf).strip()
+                if part:
+                    parts.append(part)
+                buf = []
+                continue
+
+            if bracket_depth == 0 and ch == "+":
+                prev_ch = raw[idx - 1] if idx > 0 else ""
+                next_ch = raw[idx + 1] if idx + 1 < length else ""
+                if prev_ch.isspace() or next_ch.isspace():
+                    part = "".join(buf).strip()
+                    if part:
+                        parts.append(part)
+                    buf = []
+                    continue
+
+            buf.append(ch)
+
+        part = "".join(buf).strip()
+        if part:
+            parts.append(part)
+        return parts
 
     if isinstance(raw, list):
         result = []
@@ -405,9 +440,22 @@ class RetrosynthesisTree:
 
     # ── 状态查询 ──
 
+    def get_leaf_molecule_nodes(self) -> List[MoleculeNode]:
+        expanded_products = {rxn.product_node for rxn in self.reaction_nodes}
+        leaves = [
+            n for n in self.molecule_nodes.values()
+            if n.node_id not in expanded_products
+        ]
+        return leaves
+
+    def get_starting_material_nodes(self) -> List[MoleculeNode]:
+        return [
+            n for n in self.get_leaf_molecule_nodes()
+            if n.role == MoleculeRole.TERMINAL.value
+        ]
+
     def get_terminal_smiles(self) -> List[str]:
-        return [n.smiles for n in self.molecule_nodes.values()
-                if n.role == MoleculeRole.TERMINAL.value]
+        return [n.smiles for n in self.get_starting_material_nodes()]
 
     def get_pending_molecules(self) -> List[MoleculeNode]:
         """获取所有非 terminal、非 target 且未被拆解的中间体。"""

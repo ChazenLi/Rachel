@@ -52,6 +52,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from Rachel.chem_tools._rdkit_utils import canonical
+from Rachel.chem_tools.site_audit import reasoning_claims_site_retention
 from Rachel.tools.llm_retro_platform import build_decision_context
 from .retro_orchestrator import (
     RetrosynthesisOrchestrator,
@@ -85,6 +86,171 @@ class RetroSession:
         self.session_id = session_id or uuid.uuid4().hex[:8]
         self._sandbox_attempts: List[Dict[str, Any]] = []
         self._sandbox_selected: Optional[int] = None
+
+    def _record_gate_failed_attempt(
+        self,
+        attempt: Dict[str, Any],
+        *,
+        reason: str,
+        reasoning: str,
+        confidence: str,
+    ) -> None:
+        """Persist gate failures without destroying the active sandbox context."""
+        ctx = self.orch._current_context
+        molecule = ctx.smiles if ctx else ""
+        reaction_name = (
+            attempt.get("template_name")
+            or attempt.get("reaction_type")
+            or attempt.get("source")
+            or "llm_proposed"
+        )
+        self.orch.audit_state.record_failure(
+            molecule,
+            reaction_name,
+            reason,
+        )
+        self.orch.audit_state.record_decision(
+            step_id="",
+            molecule=molecule,
+            action="commit",
+            reaction_name=reaction_name,
+            reasoning_summary=reasoning or reason,
+            outcome="gate_failed",
+            confidence=confidence,
+        )
+
+    def _evaluate_site_retention_gate(
+        self,
+        attempt: Dict[str, Any],
+        *,
+        reasoning: str,
+    ) -> Optional[Dict[str, Any]]:
+        """Block incomplete or drifting same-core commits before they enter the tree."""
+        if attempt.get("source") != "llm_proposed":
+            return None
+
+        site_audit = attempt.get("site_audit") or {}
+        validation_micro = attempt.get("validation_micro") or {}
+        site_retentive = bool(site_audit.get("site_retentive"))
+        site_summary = str(site_audit.get("summary", "") or "")
+        site_rows = site_audit.get("site_rows")
+        changed_sites = site_audit.get("changed_sites")
+        preserved_sites = site_audit.get("preserved_sites")
+        changed_site_count = site_audit.get("changed_site_count")
+
+        if reasoning_claims_site_retention(reasoning) and not site_summary:
+            return {
+                "error": (
+                    "site-retention gate blocked commit: reasoning claimed same-site rollback "
+                    "but no explicit site audit summary was available."
+                ),
+                "gate_failed": True,
+                "gate_reason": "missing_explicit_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if not site_retentive:
+            return None
+
+        if not site_summary:
+            return {
+                "error": (
+                    "site-retention gate blocked commit: same-core hand-written precursor "
+                    "requires an explicit site audit summary."
+                ),
+                "gate_failed": True,
+                "gate_reason": "missing_explicit_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if not isinstance(site_rows, list) or not site_rows:
+            return {
+                "error": (
+                    "site-retention gate blocked commit: same-core hand-written precursor "
+                    "requires explicit site_rows before commit."
+                ),
+                "gate_failed": True,
+                "gate_reason": "incomplete_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if not isinstance(changed_sites, list) or not isinstance(preserved_sites, list):
+            return {
+                "error": (
+                    "site-retention gate blocked commit: same-core hand-written precursor "
+                    "requires explicit changed_sites and preserved_sites lists."
+                ),
+                "gate_failed": True,
+                "gate_reason": "incomplete_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        try:
+            changed_site_count_int = int(changed_site_count)
+        except (TypeError, ValueError):
+            return {
+                "error": (
+                    "site-retention gate blocked commit: same-core hand-written precursor "
+                    "requires a numeric changed_site_count."
+                ),
+                "gate_failed": True,
+                "gate_reason": "incomplete_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if len(changed_sites) != changed_site_count_int:
+            return {
+                "error": (
+                    "site-retention gate blocked commit: same-core hand-written precursor "
+                    "has inconsistent changed_site_count versus changed_sites."
+                ),
+                "gate_failed": True,
+                "gate_reason": "incomplete_site_audit",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if not bool(site_audit.get("pass", False)):
+            return {
+                "error": f"site-retention gate blocked commit: {site_summary}",
+                "gate_failed": True,
+                "gate_reason": "site_anchor_drift",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        if changed_site_count_int > 1:
+            return {
+                "error": f"site-retention gate blocked commit: {site_summary}",
+                "gate_failed": True,
+                "gate_reason": "site_anchor_drift",
+                "site_audit": site_audit,
+                "validation_micro": validation_micro,
+            }
+
+        # Historical scaffold-alignment hard gate kept as comments instead of deleting it.
+        # Reason: scaffold_alignment is useful global MCS telemetry, but it is not a
+        # bond/site-specific audit and was blocking chemically valid same-site rollbacks.
+        # template_attempted = validation_micro.get("template_attempted")
+        # scaffold_alignment = float(validation_micro.get("scaffold_alignment", 1.0))
+        # if template_attempted is False and scaffold_alignment < 1.0:
+        #     return {
+        #         "error": (
+        #             "site-retention gate blocked commit: template_execution.attempted=false "
+        #             f"and scaffold_alignment={scaffold_alignment:.3f} < 1.0 for a same-core proposal."
+        #         ),
+        #         "gate_failed": True,
+        #         "gate_reason": "scaffold_alignment_below_1_for_same_core",
+        #         "site_audit": site_audit,
+        #         "validation_micro": validation_micro,
+        #     }
+
+        return None
 
     # ── 工厂方法 ──
 
@@ -244,10 +410,32 @@ class RetroSession:
                 current["warnings"] = dc.get("warnings", [])
 
                 bonds = dc.get("disconnectable_bonds", [])
-                current["bond_summary"] = [
-                    {
+                # Keep the original list-comprehension summary as a comment instead of
+                # deleting it. Reason: the session-level compact payload should now
+                # expose only actual_bond_idx and role_pair in addition to the old
+                # summary, without reopening the full-molecule noise problem.
+                # current["bond_summary"] = [
+                #     {
+                #         "bond_idx": i,
+                #         "atoms": b.get("atoms", []),
+                #         "bond_type": b.get("bond_type", ""),
+                #         "in_ring": b.get("in_ring", False),
+                #         "heuristic_score": b.get("heuristic_score", 0),
+                #         "n_alternatives": len(b.get("alternatives", [])),
+                #         "reaction_types": [
+                #             a.get("template", "").split("(")[0].strip()
+                #             for a in b.get("alternatives", [])[:5]
+                #         ],
+                #     }
+                #     for i, b in enumerate(bonds)
+                # ]
+                bond_summary = []
+                for i, b in enumerate(bonds):
+                    bond_summary.append({
                         "bond_idx": i,
+                        "actual_bond_idx": b.get("actual_bond_idx", -1),
                         "atoms": b.get("atoms", []),
+                        "role_pair": b.get("role_pair", ["unclear", "unclear"]),
                         "bond_type": b.get("bond_type", ""),
                         "in_ring": b.get("in_ring", False),
                         "heuristic_score": b.get("heuristic_score", 0),
@@ -256,9 +444,8 @@ class RetroSession:
                             a.get("template", "").split("(")[0].strip()
                             for a in b.get("alternatives", [])[:5]
                         ],
-                    }
-                    for i, b in enumerate(bonds)
-                ]
+                    })
+                current["bond_summary"] = bond_summary
 
                 fgi = dc.get("fgi_options", [])
                 if fgi:
@@ -479,11 +666,25 @@ class RetroSession:
         reaction_type = attempt.get("reaction_type", "llm_proposed")
         template_id = attempt.get("template_id", "")
         template_name = attempt.get("template_name", "")
+        gate_failure = self._evaluate_site_retention_gate(
+            attempt,
+            reasoning=reasoning,
+        )
+        if gate_failure:
+            self._record_gate_failed_attempt(
+                attempt,
+                reason=gate_failure.get("error", "site-retention gate failed"),
+                reasoning=reasoning,
+                confidence=confidence,
+            )
+            self.save()
+            return gate_failure
 
         decision = LLMDecision(
             selection_reasoning=reasoning,
             confidence=confidence,
             rejected_alternatives=rejected or [],
+            site_audit_summary=(attempt.get("site_audit") or {}).get("summary", ""),
         )
 
         result = self.orch.commit_decision(

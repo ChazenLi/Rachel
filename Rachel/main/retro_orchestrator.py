@@ -33,9 +33,15 @@ from Rachel.chem_tools.bond_break import (
     execute_disconnection, execute_fgi, preview_disconnections,
 )
 from Rachel.chem_tools.forward_validate import validate_forward, check_atom_balance
+from Rachel.chem_tools.fg_detect import detect_functional_groups
 from Rachel.chem_tools.fg_warnings import suggest_protection_needs
+from Rachel.chem_tools.site_audit import audit_site_retention
 
-from Rachel.tools.llm_retro_platform import build_decision_context, format_context_text
+from Rachel.tools.llm_retro_platform import (
+    _compress_fg_instances,
+    build_decision_context,
+    format_context_text,
+)
 
 from .retro_tree import (
     RetrosynthesisTree,
@@ -49,6 +55,74 @@ from .retro_tree import (
 from .retro_state import SynthesisAuditState
 
 logger = logging.getLogger(__name__)
+
+
+def _build_validation_micro(forward_validation: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    """Keep only the gate-critical validation fields in sandbox/session payloads."""
+    if not isinstance(forward_validation, dict):
+        return {}
+
+    checks = forward_validation.get("checks", {})
+    assessment = forward_validation.get("assessment", {})
+    score_breakdown = assessment.get("score_breakdown", {})
+    template_exec = checks.get("template_execution", {})
+
+    return {
+        "template_attempted": bool(template_exec.get("attempted", False)),
+        "template_match": float(score_breakdown.get("template_match", 0.0)),
+        "scaffold_alignment": float(score_breakdown.get("scaffold_alignment", 0.0)),
+    }
+
+
+def _build_bond_fg_context(smiles: str, bond_atoms: Tuple[int, int]) -> Dict[str, List[str]]:
+    """Return a local FG micro-audit for explore_bond without expanding compact context."""
+    empty_context = {"atom_i": [], "atom_j": [], "spanning": [], "nearby": []}
+    if len(bond_atoms) != 2:
+        return empty_context
+
+    mol = parse_mol(smiles)
+    fg_result = detect_functional_groups(smiles)
+    groups_data = fg_result.get("groups", {})
+    if mol is None or not isinstance(groups_data, dict):
+        return empty_context
+
+    try:
+        atom_i, atom_j = int(bond_atoms[0]), int(bond_atoms[1])
+        local_shell = {atom_i, atom_j}
+        for atom_idx in (atom_i, atom_j):
+            atom = mol.GetAtomWithIdx(atom_idx)
+            local_shell.update(nb.GetIdx() for nb in atom.GetNeighbors())
+    except Exception:
+        return empty_context
+
+    # Recompute the local FG view on demand from the raw detector output. This keeps
+    # the complete SMARTS hit map in the tool layer and exposes only a bond-specific
+    # micro-audit at explore time, which is the right layer for site verification.
+    compressed_instances = _compress_fg_instances(groups_data)
+    seen: Dict[str, Set[str]] = {key: set() for key in empty_context}
+    bond_fg_context: Dict[str, List[str]] = {key: [] for key in empty_context}
+    for inst in compressed_instances:
+        display_name = str(inst.get("display_name") or inst.get("name") or "")
+        atom_set = set(inst.get("atoms", []))
+        if not display_name or not atom_set:
+            continue
+
+        if atom_i in atom_set and atom_j in atom_set:
+            bucket = "spanning"
+        elif atom_i in atom_set:
+            bucket = "atom_i"
+        elif atom_j in atom_set:
+            bucket = "atom_j"
+        elif atom_set & local_shell:
+            bucket = "nearby"
+        else:
+            continue
+
+        if display_name not in seen[bucket]:
+            seen[bucket].add(display_name)
+            bond_fg_context[bucket].append(display_name)
+
+    return bond_fg_context
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -137,9 +211,27 @@ class ProposalContext:
                 bond_summary = []
                 for i, b in enumerate(bonds[:top_n]):
                     alts = b.get("alternatives", [])
+                    # Keep the original compact summary shape as a comment instead of
+                    # deleting it. Reason: we only want to surface two extra audit
+                    # identifiers here (actual_bond_idx and role_pair) while preserving
+                    # the old compact layering and avoiding a noisy context expansion.
+                    # summary = {
+                    #     "bond_idx": i,
+                    #     "atoms": b.get("atoms", []),
+                    #     "bond_type": b.get("bond_type", ""),
+                    #     "in_ring": b.get("in_ring", False),
+                    #     "heuristic_score": b.get("heuristic_score", 0),
+                    #     "n_alternatives": len(alts),
+                    #     "reaction_types": [
+                    #         a.get("template", "").split("(")[0].strip()
+                    #         for a in alts[:3]
+                    #     ],
+                    # }
                     summary = {
                         "bond_idx": i,
+                        "actual_bond_idx": b.get("actual_bond_idx", -1),
                         "atoms": b.get("atoms", []),
+                        "role_pair": b.get("role_pair", ["unclear", "unclear"]),
                         "bond_type": b.get("bond_type", ""),
                         "in_ring": b.get("in_ring", False),
                         "heuristic_score": b.get("heuristic_score", 0),
@@ -214,8 +306,17 @@ class ProposalContext:
             for i, b in enumerate(bonds[:5]):
                 alts = b.get("alternatives", [])
                 types = [a.get("template", "").split("(")[0].strip() for a in alts[:3]]
+                # Keep the original one-line compact rendering as a comment instead of
+                # deleting it. Reason: this text path now needs the real RDKit bond id
+                # and the compressed endpoint roles, but should remain a compact summary.
+                # parts.append(
+                #     f"  [{i}] atoms={b['atoms']}  score={b.get('heuristic_score', 0):.3f}"
+                #     f"  方案={len(alts)}  ({', '.join(types)})"
+                # )
+                role_pair = "/".join(b.get("role_pair", ["unclear", "unclear"]))
                 parts.append(
-                    f"  [{i}] atoms={b['atoms']}  score={b.get('heuristic_score', 0):.3f}"
+                    f"  [{i}] atoms={b['atoms']}  rdkit_bond={b.get('actual_bond_idx', -1)}"
+                    f"  roles={role_pair}  score={b.get('heuristic_score', 0):.3f}"
                     f"  方案={len(alts)}  ({', '.join(types)})"
                 )
             if len(bonds) > 5:
@@ -277,6 +378,8 @@ class SandboxResult:
     reaction_type: str = ""
     template_id: str = ""
     template_name: str = ""
+    validation_micro: Optional[Dict[str, Any]] = None
+    site_audit: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
@@ -288,6 +391,8 @@ class SandboxResult:
         if self.forward_validation:
             from .retro_tree import _flatten_fv
             d["forward_validation"] = _flatten_fv(self.forward_validation)
+        if self.validation_micro:
+            d["validation_micro"] = self.validation_micro
         if self.atom_balance:
             d["atom_balance"] = {
                 "balanced": self.atom_balance.get("balanced", False),
@@ -299,6 +404,8 @@ class SandboxResult:
             d["reaction_type"] = self.reaction_type
         if self.template_name:
             d["template_name"] = self.template_name
+        if self.site_audit:
+            d["site_audit"] = self.site_audit
         if self.error:
             d["error"] = self.error
         d["hint"] = "这是沙盒结果，未写入树。满意请调 commit_decision()。"
@@ -766,9 +873,28 @@ class RetrosynthesisOrchestrator:
             return {"error": f"bond_idx {bond_idx} out of range (0-{len(bonds)-1})"}
 
         b = bonds[bond_idx]
+        # Keep the original detail payload as a comment instead of deleting it.
+        # Reason: we are adding only the two lightweight audit identifiers that
+        # help verify site identity, while leaving the rest of explore_bond intact.
+        # result = {
+        #     "bond_idx": bond_idx,
+        #     "atoms": b.get("atoms", []),
+        #     "bond_type": b.get("bond_type", ""),
+        #     "in_ring": b.get("in_ring", False),
+        #     "heuristic_score": b.get("heuristic_score", 0),
+        #     "alternatives": b.get("alternatives", []),
+        #     "hint": "用 try_disconnection(bond_idx, alt_idx) 沙盒试断。",
+        # }
+        bond_fg_context = _build_bond_fg_context(ctx.smiles, tuple(b.get("atoms", [])))
         result = {
             "bond_idx": bond_idx,
+            "actual_bond_idx": b.get("actual_bond_idx", -1),
             "atoms": b.get("atoms", []),
+            "role_pair": b.get("role_pair", ["unclear", "unclear"]),
+            # New minimal local audit: keep full molecular maps out of compact
+            # decision_context, but expose the bond-specific FG micro-context here
+            # where the model is actively checking site identity and mechanism fit.
+            "bond_fg_context": bond_fg_context,
             "bond_type": b.get("bond_type", ""),
             "in_ring": b.get("in_ring", False),
             "heuristic_score": b.get("heuristic_score", 0),
@@ -914,6 +1040,7 @@ class RetrosynthesisOrchestrator:
             precursors=precursors,
             precursor_details=details,
             forward_validation=fv,
+            validation_micro=_build_validation_micro(fv),
             atom_balance=ab,
             cycle_warnings=cycle_warnings,
             reaction_type=actual_type,
@@ -961,6 +1088,7 @@ class RetrosynthesisOrchestrator:
             precursors=precursors,
             precursor_details=details,
             forward_validation=fv,
+            validation_micro=_build_validation_micro(fv),
             cycle_warnings=cycle_warnings,
             reaction_type="fgi",
             template_id=tid,
@@ -1023,14 +1151,18 @@ class RetrosynthesisOrchestrator:
         except Exception:
             pass
 
+        site_audit = audit_site_retention(smiles, valid_precursors)
+
         return SandboxResult(
             success=True,
             precursors=valid_precursors,
             precursor_details=details,
             forward_validation=fv,
+            validation_micro=_build_validation_micro(fv),
             atom_balance=ab,
             cycle_warnings=cycle_warnings,
             reaction_type=reaction_type,
+            site_audit=site_audit,
         )
 
     def finalize(self, llm_summary: str = "") -> Dict[str, Any]:
