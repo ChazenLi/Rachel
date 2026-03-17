@@ -18,9 +18,11 @@
   <a href="#minimal-quickstart">Quickstart</a>
 </p>
 
-<a href="assets/media/rachel-trace.mp4">
-  <img src="assets/media/rachel-trace-poster.png" alt="Rachel trace walkthrough" width="920">
-</a>
+
+
+https://github.com/user-attachments/assets/4dc9990f-00b2-40d8-a8c3-181c6f0c568b
+
+
 
 </div>
 
@@ -29,8 +31,8 @@ Rachel treats retrosynthetic planning as a structured `state -> action -> valida
 ## Trace Demo
 
 The trace above is a visual walkthrough of the Rachel planning workflow from structured state to a committed retrosynthetic route.
+<img width="1560" height="1120" alt="trace_final" src="https://github.com/user-attachments/assets/0eca73f1-25c9-4816-b7da-6bbfc24853e3" />
 
-- Click the hero image to open the [MP4 trace](assets/media/rachel-trace.mp4)
 - The trace is meant to show planning behavior, not only final route output
 - It is the fastest way to see how Rachel moves from context to sandboxed candidates to validated commitment
 
@@ -38,7 +40,7 @@ The trace above is a visual walkthrough of the Rachel planning workflow from str
 
 The figure below shows a full route-level comparison between a PaRoutes ground-truth plan and Rachel's generated result on case `n1_366`.
 
-![Ground truth vs Rachel on PaRoutes n1_366](assets/cases/paroutes-n1-366-groundtruth-vs-rachel.png)
+<img width="2500" height="4459" alt="n1_366_groundtruth_vs_rachel_annotated_case_en" src="https://github.com/user-attachments/assets/38952d7e-8dc4-4f92-b13c-eee61175b0ec" />
 
 This example is included as a qualitative systems-level reference point. The point is not only whether a single step looks chemically plausible, but whether the route remains interpretable and structurally coherent at the full planning level.
 
@@ -85,19 +87,13 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 <table>
   <tr>
     <td align="center" width="33%">
-      <img src="assets/showcases/qntr/mol_0.png" alt="QNTR" width="220"><br>
-      <strong>QNTR</strong><br>
-      <sub>Experimentally grounded example</sub>
+      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/61f7e78b-053c-4ac4-a349-b22c9e5b1ae3  alt="QNTR" width="220"><br>
     </td>
     <td align="center" width="33%">
-      <img src="assets/showcases/losartan/mol_0.png" alt="Losartan" width="220"><br>
-      <strong>Losartan</strong><br>
-      <sub>Canonical medicinal chemistry target</sub>
+      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/e27005c7-9ba1-470b-a038-41d2190e3c72  alt="Losartan" width="220"><br>
     </td>
     <td align="center" width="33%">
-      <img src="assets/showcases/rivaroxaban/mol_0.png" alt="Rivaroxaban" width="220"><br>
-      <strong>Rivaroxaban</strong><br>
-      <sub>Deeper drug-like example</sub>
+      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/ff2abe54-20c4-427a-8363-b9b6b8634a23  alt="Rivaroxaban" width="220"><br>
     </td>
   </tr>
 </table>
@@ -136,7 +132,8 @@ A deeper drug-like example with a richer transformation mix.
 
 The figure below places the Losartan and Rivaroxaban examples into one annotated comparison view. It gives the README a more complete qualitative picture of how Rachel behaves on two recognizable drug-like targets with different route depths and transformation profiles.
 
-![Dual annotated comparison for Losartan and Rivaroxaban](assets/cases/rivaroxaban-losartan-dual-annotated-en.png)
+<img width="3000" height="3755" alt="rivaroxaban_losartan_dual_annotated_en" src="https://github.com/user-attachments/assets/8cb6c479-3f63-41fc-921f-62a565909dd1" />
+
 
 Taken together, these two cases make the contrast especially clear:
 
@@ -144,7 +141,6 @@ Taken together, these two cases make the contrast especially clear:
 - `Rivaroxaban` emphasizes deeper route depth and operator diversity
 - The pair helps readers compare route style, not just isolated outcomes
 
-See the full qualitative page in [showcases](docs/showcases.md).
 
 ## Minimal Quickstart
 
