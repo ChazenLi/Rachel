@@ -87,13 +87,16 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 <table>
   <tr>
     <td align="center" width="33%">
-      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/61f7e78b-053c-4ac4-a349-b22c9e5b1ae3  alt="QNTR" width="220"><br>
+      <img src="https://github.com/user-attachments/assets/61f7e78b-053c-4ac4-a349-b22c9e5b1ae3" alt="QNTR" width="220"><br>
+      <strong>QNTR</strong>
     </td>
     <td align="center" width="33%">
-      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/e27005c7-9ba1-470b-a038-41d2190e3c72  alt="Losartan" width="220"><br>
+      <img src="https://github.com/user-attachments/assets/e27005c7-9ba1-470b-a038-41d2190e3c72" alt="Losartan" width="220"><br>
+      <strong>Losartan</strong>
     </td>
     <td align="center" width="33%">
-      <img width="400" height="400" alt="mol_0" src="https://github.com/user-attachments/assets/ff2abe54-20c4-427a-8363-b9b6b8634a23  alt="Rivaroxaban" width="220"><br>
+      <img src="https://github.com/user-attachments/assets/ff2abe54-20c4-427a-8363-b9b6b8634a23" alt="Rivaroxaban" width="220"><br>
+      <strong>Rivaroxaban</strong>
     </td>
   </tr>
 </table>
