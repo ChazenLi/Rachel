@@ -1,3 +1,9 @@
+<div align="right">
+
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
+</div>
+
 <div align="center">
 
 # Rachel
@@ -18,11 +24,7 @@
   <a href="#minimal-quickstart">Quickstart</a>
 </p>
 
-
-
 https://github.com/user-attachments/assets/4dc9990f-00b2-40d8-a8c3-181c6f0c568b
-
-
 
 </div>
 
@@ -31,6 +33,7 @@ Rachel treats retrosynthetic planning as a structured `state -> action -> valida
 ## Trace Demo
 
 The trace above is a visual walkthrough of the Rachel planning workflow from structured state to a committed retrosynthetic route.
+
 <img width="1560" height="1120" alt="trace_final" src="https://github.com/user-attachments/assets/0eca73f1-25c9-4816-b7da-6bbfc24853e3" />
 
 - The trace is meant to show planning behavior, not only final route output
@@ -137,13 +140,11 @@ The figure below places the Losartan and Rivaroxaban examples into one annotated
 
 <img width="3000" height="3755" alt="rivaroxaban_losartan_dual_annotated_en" src="https://github.com/user-attachments/assets/8cb6c479-3f63-41fc-921f-62a565909dd1" />
 
-
 Taken together, these two cases make the contrast especially clear:
 
 - `Losartan` emphasizes classical convergent medicinal chemistry logic
 - `Rivaroxaban` emphasizes deeper route depth and operator diversity
 - The pair helps readers compare route style, not just isolated outcomes
-
 
 ## Minimal Quickstart
 
