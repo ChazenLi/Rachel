@@ -87,7 +87,7 @@ cmd.execute(
 - 双类型节点图：`MoleculeNode + ReactionNode`，以 canonical SMILES 去重
 - BFS 编排：广度优先展开，自动处理 terminal 分子
 - 沙盒机制：`try_*` 不写入主树，`commit` 后才持久化
-- 分层上下文：`compact / full / status / tree` 四级视图
+- 分层上下文：`compact / full / status / tree` 四级视图；`compact` 默认第一页并支持显式 window 参数
 - JSON 持久化：单文件保存完整状态，支持中断恢复
 - LLM 自提前体：在模板不足时允许提出候选前体，再由系统验证
 - 智能断键推理：`smart_cap` 基于化学环境提供 capping 建议
@@ -145,7 +145,10 @@ ctx = cmd.execute("next")
 # 返回 compact 上下文，或 {"action": "queue_empty"} 表示编排完成
 ```
 
-返回的 compact 上下文结构:
+返回的 compact 上下文结构：
+- 默认只返回第一页 compact window
+- `bond_summary` / `fgi_summary` 中的 `bond_idx` / `fgi_idx` 始终是全局索引
+- `bonds_omitted` / `fgi_omitted` 表示当前窗口之后仍未显示的条目数量，不承载后续内容本身
 
 ```json
 {
@@ -161,10 +164,14 @@ ctx = cmd.execute("next")
     "is_terminal": true,
     "is_target": true,
     "functional_groups": [ { "name": "amide_generic", "count": 1, "atoms": [...] }, ... ],
+    "n_bonds": 7,
+    "n_fgi": 6,
     "bond_summary": [
       {
         "bond_idx": 0,
+        "actual_bond_idx": 2,
         "atoms": [3, 4],
+        "role_pair": ["carbonyl_c", "amide_n"],
         "bond_type": "SINGLE",
         "in_ring": false,
         "heuristic_score": 0.603,
@@ -173,7 +180,13 @@ ctx = cmd.execute("next")
         "smart_capping": [ ... ]
       }
     ],
+    "bond_summary_offset": 0,
+    "bond_summary_limit": 5,
+    "bonds_omitted": 2,
     "fgi_summary": [ { "fgi_idx": 0, "template": "Swern (Retro, oxidation reduction)" } ],
+    "fgi_summary_offset": 0,
+    "fgi_summary_limit": 5,
+    "fgi_omitted": 1,
     "audit_state_summary": { "linear_steps": 0, "linear_target": 4 }
   }
 }
@@ -186,6 +199,28 @@ ctx = cmd.execute("next")
 ```python
 cmd.execute("context", {"detail": "compact"})  # compact / full / status / tree
 ```
+
+`compact` 支持显式 window 参数，用于取后续 bond / FGI summary：
+
+```python
+cmd.execute(
+    "context",
+    {
+        "detail": "compact",
+        "bond_offset": 5,
+        "bond_limit": 5,
+        "fgi_offset": 5,
+        "fgi_limit": 5,
+    },
+)
+```
+
+说明：
+- 默认 `next()` 与 `context(detail="compact")` 返回第一页 compact window
+- `bond_offset` / `bond_limit` 控制当前 bond summary 窗口
+- `fgi_offset` / `fgi_limit` 控制当前 FGI summary 窗口
+- `explore(bond_idx)`、`try_bond(bond_idx, alt_idx)` 继续使用全局 `bond_idx`
+- `session.json` 的 `current` 现在复用同一 default compact 生成逻辑，与 live compact 输出一致
 
 ### explore
 

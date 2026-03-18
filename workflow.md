@@ -200,8 +200,11 @@ ctx = cmd.execute("next")
 - `smiles`: Current molecule to analyze
 - `depth`: Current depth in tree
 - `cs_score`: Complexity score
-- `bond_summary`: Top N disconnectable bonds (compact view)
-- `fgi_summary`: Available FGI options
+- `bond_summary`: Default compact window of disconnectable bonds
+- `fgi_summary`: Default compact window of available FGI options
+- `bond_summary_offset` / `bond_summary_limit`: Current bond window metadata
+- `fgi_summary_offset` / `fgi_summary_limit`: Current FGI window metadata
+- `bonds_omitted` / `fgi_omitted`: Remaining undisplayed items after the current window
 - `warnings`: Functional group conflicts
 
 **Termination Check (3 levels):**
@@ -491,7 +494,8 @@ MoleculeNode                 ReactionNode
 │  - Bond summary (atoms, types, reaction types, counts)      │
 │  - NO precursor SMILES (use explore_bond to get them)       │
 │  - FGI summary (template names only)                        │
-│  - Top N bonds only (default: 5)                            │
+│  - Default first window only (bond_limit=5, fgi_limit=5)    │
+│  - Omitted counts + window metadata for later paging        │
 │  - Use for: Initial LLM review, token efficiency            │
 │  - Token cost: LOW                                          │
 └─────────────────────────────────────────────────────────────┘
@@ -818,20 +822,49 @@ ctx = cmd.execute("next")
     "cs_score": 3.82,
     "classification": "moderate",
     "is_terminal": False,
+    "n_bonds": 9,
+    "n_fgi": 3,
     "bond_summary": [
         {
             "bond_idx": 0,
+            "actual_bond_idx": 7,
             "atoms": [2, 5],
+            "role_pair": ["aryl_sp2_c", "carbonyl_c"],
             "bond_type": "SINGLE",
             "heuristic_score": 0.92,
             "n_alternatives": 2,
             "reaction_types": ["Amide bond formation", "Amide bond formation (alt)"]
         }
     ],
+    "bond_summary_offset": 0,
+    "bond_summary_limit": 5,
+    "bonds_omitted": 4,
     "fgi_summary": [],
+    "fgi_summary_offset": 0,
+    "fgi_summary_limit": 5,
     "hint": "这是精简视图。用 explore_bond(idx) 查看某键位的完整前体方案"
 }
 ```
+
+如果 `bonds_omitted > 0` 或 `fgi_omitted > 0`，可以显式取下一窗 summary：
+
+```python
+ctx_page_2 = cmd.execute(
+    "context",
+    {
+        "detail": "compact",
+        "bond_offset": 5,
+        "bond_limit": 5,
+        "fgi_offset": 5,
+        "fgi_limit": 5,
+    },
+)
+```
+
+注意：
+- `bond_summary` / `fgi_summary` 里的索引始终是全局索引
+- `explore(bond_idx)` 与 `try_bond(bond_idx, alt_idx)` 不受分页影响
+- `session.json` 中 `current` 复用同一 default compact 生成逻辑，与 live compact 保持一致
 
 #### Step 3: Explore Bond Options
 
@@ -975,7 +1008,7 @@ cmd.execute("export", {"name": "Paracetamol"})
 |---------|-----------|---------|-------------|
 | `init` | target, name, max_depth, max_steps, terminal_cs_threshold | session info | Create new session |
 | `next` | none | context or queue_empty | Get next molecule |
-| `context` | detail (compact/full/status/tree) | context | Get current context |
+| `context` | detail (compact/full/status/tree), bond_offset, bond_limit, fgi_offset, fgi_limit | context | Get current context or later compact windows |
 | `explore` | bond_idx | bond details | Expand bond info |
 | `explore_fgi` | none | FGI options | Expand FGI options |
 | `try_bond` | bond_idx, alt_idx | sandbox result | Test disconnection |
