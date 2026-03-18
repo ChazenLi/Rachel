@@ -155,7 +155,133 @@ class ProposalContext:
     failed_attempts_for_current: List[Dict[str, Any]] = field(default_factory=list)
     decision_tier: str = "standard"     # quick_pass / standard
 
-    def to_dict(self, detail: str = "compact", top_n: int = 5) -> Dict[str, Any]:
+    def _normalize_compact_window(
+        self,
+        *,
+        top_n: int = 5,
+        bond_offset: int = 0,
+        bond_limit: Optional[int] = None,
+        fgi_offset: int = 0,
+        fgi_limit: int = 5,
+    ) -> Tuple[int, int, int, int]:
+        """Normalize compact window parameters while preserving the old top_n contract."""
+        # Historical contract kept instead of being removed:
+        # top_n used to control the default compact truncation window by itself.
+        # We keep it alive for backward compatibility, but the new explicit window
+        # parameters now define which compact slice is being shown.
+        effective_bond_limit = top_n if bond_limit is None else bond_limit
+
+        try:
+            bond_offset = max(0, int(bond_offset))
+        except (TypeError, ValueError):
+            bond_offset = 0
+        try:
+            effective_bond_limit = max(0, int(effective_bond_limit))
+        except (TypeError, ValueError):
+            effective_bond_limit = max(0, int(top_n))
+        try:
+            fgi_offset = max(0, int(fgi_offset))
+        except (TypeError, ValueError):
+            fgi_offset = 0
+        try:
+            fgi_limit = max(0, int(fgi_limit))
+        except (TypeError, ValueError):
+            fgi_limit = 5
+
+        return bond_offset, effective_bond_limit, fgi_offset, fgi_limit
+
+    def _build_compact_payload(
+        self,
+        *,
+        top_n: int = 5,
+        bond_offset: int = 0,
+        bond_limit: Optional[int] = None,
+        fgi_offset: int = 0,
+        fgi_limit: int = 5,
+    ) -> Dict[str, Any]:
+        """Build a windowed compact payload from the full decision_context."""
+        compact: Dict[str, Any] = {}
+        if not self.decision_context:
+            return compact
+
+        bond_offset, bond_limit, fgi_offset, fgi_limit = self._normalize_compact_window(
+            top_n=top_n,
+            bond_offset=bond_offset,
+            bond_limit=bond_limit,
+            fgi_offset=fgi_offset,
+            fgi_limit=fgi_limit,
+        )
+
+        ctx = self.decision_context
+        compact["molecule"] = ctx.get("molecule", {})
+        compact["functional_groups"] = ctx.get("functional_groups", [])
+        compact["complexity"] = ctx.get("complexity", {})
+        compact["n_bonds"] = ctx.get("n_bonds", 0)
+        compact["n_fgi"] = len(ctx.get("fgi_options", []))
+        compact["warnings"] = ctx.get("warnings", [])
+
+        bonds = ctx.get("disconnectable_bonds", [])
+        bond_summary = []
+        bond_end = min(len(bonds), bond_offset + bond_limit)
+        for global_bond_idx in range(bond_offset, bond_end):
+            b = bonds[global_bond_idx]
+            alts = b.get("alternatives", [])
+            summary = {
+                "bond_idx": global_bond_idx,
+                "actual_bond_idx": b.get("actual_bond_idx", -1),
+                "atoms": b.get("atoms", []),
+                "role_pair": b.get("role_pair", ["unclear", "unclear"]),
+                "bond_type": b.get("bond_type", ""),
+                "in_ring": b.get("in_ring", False),
+                "heuristic_score": b.get("heuristic_score", 0),
+                "n_alternatives": len(alts),
+                "reaction_types": [
+                    a.get("template", "").split("(")[0].strip()
+                    for a in alts[:3]
+                ],
+            }
+            sc = b.get("smart_capping", [])
+            if sc:
+                summary["smart_capping"] = [
+                    {"type": c["reaction_type"], "conf": c["confidence"]}
+                    for c in sc[:2]
+                ]
+            bond_summary.append(summary)
+
+        compact["bond_summary"] = bond_summary
+        compact["bond_summary_offset"] = bond_offset
+        compact["bond_summary_limit"] = bond_limit
+        if bond_end < len(bonds):
+            compact["bonds_omitted"] = len(bonds) - bond_end
+
+        fgi_list = ctx.get("fgi_options", [])
+        if fgi_list:
+            fgi_end = min(len(fgi_list), fgi_offset + fgi_limit)
+            compact["fgi_summary"] = [
+                {"fgi_idx": global_fgi_idx, "template": fgi_list[global_fgi_idx].get("template", "")}
+                for global_fgi_idx in range(fgi_offset, fgi_end)
+            ]
+            compact["fgi_summary_offset"] = fgi_offset
+            compact["fgi_summary_limit"] = fgi_limit
+            if fgi_end < len(fgi_list):
+                compact["fgi_omitted"] = len(fgi_list) - fgi_end
+
+        compact["hint"] = (
+            "这是精简视图。用 explore_bond(idx) 查看某键位的完整前体方案，"
+            "用 try_disconnection() 沙盒试断，满意后 commit_decision()。"
+        )
+        return compact
+
+    def to_dict(
+        self,
+        detail: str = "compact",
+        top_n: int = 5,
+        *,
+        bond_offset: int = 0,
+        bond_limit: Optional[int] = None,
+        fgi_offset: int = 0,
+        fgi_limit: int = 5,
+    ) -> Dict[str, Any]:
         """分层输出。
 
         detail:
@@ -194,78 +320,38 @@ class ProposalContext:
 
         if self.decision_context:
             ctx = self.decision_context
-            d["molecule"] = ctx.get("molecule", {})
-            d["functional_groups"] = ctx.get("functional_groups", [])
-            d["complexity"] = ctx.get("complexity", {})
-            d["n_bonds"] = ctx.get("n_bonds", 0)
-            d["n_fgi"] = len(ctx.get("fgi_options", []))
-            d["warnings"] = ctx.get("warnings", [])
-
-            bonds = ctx.get("disconnectable_bonds", [])
             if detail == "full":
-                # 完整版：所有键位 + 所有前体方案
-                d["disconnectable_bonds"] = bonds
+                d["molecule"] = ctx.get("molecule", {})
+                d["functional_groups"] = ctx.get("functional_groups", [])
+                d["complexity"] = ctx.get("complexity", {})
+                d["n_bonds"] = ctx.get("n_bonds", 0)
+                d["n_fgi"] = len(ctx.get("fgi_options", []))
+                d["warnings"] = ctx.get("warnings", [])
+                d["disconnectable_bonds"] = ctx.get("disconnectable_bonds", [])
                 d["fgi_options"] = ctx.get("fgi_options", [])
             else:
-                # compact：只给键位概览，不含前体 SMILES
-                bond_summary = []
-                for i, b in enumerate(bonds[:top_n]):
-                    alts = b.get("alternatives", [])
-                    # Keep the original compact summary shape as a comment instead of
-                    # deleting it. Reason: we only want to surface two extra audit
-                    # identifiers here (actual_bond_idx and role_pair) while preserving
-                    # the old compact layering and avoiding a noisy context expansion.
-                    # summary = {
-                    #     "bond_idx": i,
-                    #     "atoms": b.get("atoms", []),
-                    #     "bond_type": b.get("bond_type", ""),
-                    #     "in_ring": b.get("in_ring", False),
-                    #     "heuristic_score": b.get("heuristic_score", 0),
-                    #     "n_alternatives": len(alts),
-                    #     "reaction_types": [
-                    #         a.get("template", "").split("(")[0].strip()
-                    #         for a in alts[:3]
-                    #     ],
-                    # }
-                    summary = {
-                        "bond_idx": i,
-                        "actual_bond_idx": b.get("actual_bond_idx", -1),
-                        "atoms": b.get("atoms", []),
-                        "role_pair": b.get("role_pair", ["unclear", "unclear"]),
-                        "bond_type": b.get("bond_type", ""),
-                        "in_ring": b.get("in_ring", False),
-                        "heuristic_score": b.get("heuristic_score", 0),
-                        "n_alternatives": len(alts),
-                        "reaction_types": [
-                            a.get("template", "").split("(")[0].strip()
-                            for a in alts[:3]
-                        ],
-                    }
-                    # 包含 smart_capping 概览（如果有）
-                    sc = b.get("smart_capping", [])
-                    if sc:
-                        summary["smart_capping"] = [
-                            {"type": c["reaction_type"], "conf": c["confidence"]}
-                            for c in sc[:2]
-                        ]
-                    bond_summary.append(summary)
-                d["bond_summary"] = bond_summary
-                if len(bonds) > top_n:
-                    d["bonds_omitted"] = len(bonds) - top_n
-
-                # FGI 也只给概览
-                fgi_list = ctx.get("fgi_options", [])
-                if fgi_list:
-                    d["fgi_summary"] = [
-                        {"fgi_idx": i, "template": f.get("template", "")}
-                        for i, f in enumerate(fgi_list[:5])
-                    ]
-                    if len(fgi_list) > 5:
-                        d["fgi_omitted"] = len(fgi_list) - 5
-
-                d["hint"] = (
-                    "这是精简视图。用 explore_bond(idx) 查看某键位的完整前体方案，"
-                    "用 try_disconnection() 沙盒试断，满意后 commit_decision()。"
+                # Historical inline compact builder kept as comments instead of being
+                # deleted. Reason: compact is now explicitly windowed, and the session
+                # path also reuses this exact builder so live/context/session stay in
+                # one contract instead of drifting.
+                # d["molecule"] = ctx.get("molecule", {})
+                # d["functional_groups"] = ctx.get("functional_groups", [])
+                # d["complexity"] = ctx.get("complexity", {})
+                # d["n_bonds"] = ctx.get("n_bonds", 0)
+                # d["n_fgi"] = len(ctx.get("fgi_options", []))
+                # d["warnings"] = ctx.get("warnings", [])
+                # bonds = ctx.get("disconnectable_bonds", [])
+                # bond_summary = []
+                # for i, b in enumerate(bonds[:top_n]):
+                #     ...
+                d.update(
+                    self._build_compact_payload(
+                        top_n=top_n,
+                        bond_offset=bond_offset,
+                        bond_limit=bond_limit,
+                        fgi_offset=fgi_offset,
+                        fgi_limit=fgi_limit,
+                    )
                 )
 
         if self.queue_preview:
@@ -276,7 +362,16 @@ class ProposalContext:
             d["failed_attempts_for_current"] = self.failed_attempts_for_current
         return d
 
-    def to_text(self, target_smiles: str = "", detail: str = "compact") -> str:
+    def to_text(
+        self,
+        target_smiles: str = "",
+        detail: str = "compact",
+        *,
+        bond_offset: int = 0,
+        bond_limit: Optional[int] = None,
+        fgi_offset: int = 0,
+        fgi_limit: int = 5,
+    ) -> str:
         """格式化为 LLM 可读文本。"""
         if self.decision_tier == "quick_pass":
             return (
@@ -294,39 +389,61 @@ class ProposalContext:
         if detail == "full" and self.decision_context:
             parts.append(format_context_text(self.decision_context))
         elif self.decision_context:
-            # compact 文本：只列键位概览
-            ctx = self.decision_context
-            fgs = ctx.get("functional_groups", [])
+            # Historical compact text path kept as comments instead of being deleted.
+            # Reason: text output now follows the same windowed compact payload as the
+            # JSON path, so omitted counts and global bond_idx stay aligned.
+            # ctx = self.decision_context
+            # fgs = ctx.get("functional_groups", [])
+            # bonds = ctx.get("disconnectable_bonds", [])
+            compact_ctx = self._build_compact_payload(
+                top_n=5,
+                bond_offset=bond_offset,
+                bond_limit=bond_limit,
+                fgi_offset=fgi_offset,
+                fgi_limit=fgi_limit,
+            )
+            fgs = compact_ctx.get("functional_groups", [])
             if fgs:
                 fg_names = [g["name"] for g in fgs[:10]]
                 parts.append(f"官能团: {', '.join(fg_names)}")
 
-            bonds = ctx.get("disconnectable_bonds", [])
-            parts.append(f"\n可断键位: {len(bonds)} 个")
-            for i, b in enumerate(bonds[:5]):
+            bond_summary = compact_ctx.get("bond_summary", [])
+            parts.append(f"\n可断键位: {compact_ctx.get('n_bonds', 0)} 个")
+            if bond_summary:
+                bond_window_start = compact_ctx.get("bond_summary_offset", 0)
+                bond_window_end = bond_window_start + len(bond_summary) - 1
+                if bond_window_start > 0 or compact_ctx.get("bonds_omitted", 0):
+                    parts.append(f"当前窗口: [{bond_window_start}-{bond_window_end}]")
+            for b in bond_summary:
                 alts = b.get("alternatives", [])
-                types = [a.get("template", "").split("(")[0].strip() for a in alts[:3]]
+                types = b.get("reaction_types", [])
                 # Keep the original one-line compact rendering as a comment instead of
                 # deleting it. Reason: this text path now needs the real RDKit bond id
                 # and the compressed endpoint roles, but should remain a compact summary.
                 # parts.append(
-                #     f"  [{i}] atoms={b['atoms']}  score={b.get('heuristic_score', 0):.3f}"
+                #     f"  [{b['bond_idx']}] atoms={b['atoms']}  score={b.get('heuristic_score', 0):.3f}"
                 #     f"  方案={len(alts)}  ({', '.join(types)})"
                 # )
                 role_pair = "/".join(b.get("role_pair", ["unclear", "unclear"]))
                 parts.append(
-                    f"  [{i}] atoms={b['atoms']}  rdkit_bond={b.get('actual_bond_idx', -1)}"
+                    f"  [{b.get('bond_idx', -1)}] atoms={b['atoms']}  rdkit_bond={b.get('actual_bond_idx', -1)}"
                     f"  roles={role_pair}  score={b.get('heuristic_score', 0):.3f}"
-                    f"  方案={len(alts)}  ({', '.join(types)})"
+                    f"  方案={b.get('n_alternatives', 0)}  ({', '.join(types)})"
                 )
-            if len(bonds) > 5:
-                parts.append(f"  ... 还有 {len(bonds) - 5} 个键位")
+            if compact_ctx.get("bonds_omitted", 0):
+                parts.append(f"  ... 还有 {compact_ctx['bonds_omitted']} 个键位")
 
-            fgi = ctx.get("fgi_options", [])
-            if fgi:
-                parts.append(f"\nFGI 选项: {len(fgi)} 个")
-                for i, f in enumerate(fgi[:3]):
-                    parts.append(f"  [{i}] {f.get('template', '')}")
+            fgi_summary = compact_ctx.get("fgi_summary", [])
+            if fgi_summary:
+                parts.append(f"\nFGI 选项: {compact_ctx.get('n_fgi', 0)} 个")
+                fgi_window_start = compact_ctx.get("fgi_summary_offset", 0)
+                fgi_window_end = fgi_window_start + len(fgi_summary) - 1
+                if fgi_window_start > 0 or compact_ctx.get("fgi_omitted", 0):
+                    parts.append(f"当前窗口: [{fgi_window_start}-{fgi_window_end}]")
+                for f in fgi_summary:
+                    parts.append(f"  [{f.get('fgi_idx', -1)}] {f.get('template', '')}")
+            if compact_ctx.get("fgi_omitted", 0):
+                parts.append(f"  ... 还有 {compact_ctx['fgi_omitted']} 个 FGI")
 
             parts.append("\n提示: explore_bond(idx) 查看详情, try_disconnection() 沙盒试断")
 

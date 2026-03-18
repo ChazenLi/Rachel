@@ -169,7 +169,13 @@ class RetroCmd:
     def cmd_context(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """获取当前上下文。detail: compact/full/status/tree"""
         detail = args.get("detail", "compact")
-        return self.session.get_context(detail)
+        return self.session.get_context(
+            detail,
+            bond_offset=args.get("bond_offset", 0),
+            bond_limit=args.get("bond_limit"),
+            fgi_offset=args.get("fgi_offset", 0),
+            fgi_limit=args.get("fgi_limit", 5),
+        )
 
     def cmd_explore(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """展开键位详情。args: bond_idx"""
@@ -386,7 +392,8 @@ def _run_from_cmd_json(rachel_dir: Optional[Path] = None):
         result_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
         return
 
-    with open(cmd_file, "r", encoding="utf-8") as f:
+    # Be tolerant of UTF-8 BOM (common on Windows) in cmd.json.
+    with open(cmd_file, "r", encoding="utf-8-sig") as f:
         cmd_data = json.load(f)
 
     command = cmd_data.get("command", "")

@@ -390,69 +390,24 @@ class RetroSession:
         # 当前工作区
         ctx = orch._current_context
         if ctx and ctx.decision_tier != "quick_pass":
-            current: Dict[str, Any] = {
-                "smiles": ctx.smiles,
-                "node_id": ctx.node_id,
-                "depth": ctx.depth,
-                "cs_score": ctx.cs_score,
-                "classification": ctx.classification,
-                "is_terminal": ctx.is_terminal,
-                "is_target": ctx.is_target,
-                "decision_tier": ctx.decision_tier,
-            }
-
-            # 精简键位概览
-            if ctx.decision_context:
-                dc = ctx.decision_context
-                current["molecule"] = dc.get("molecule", {})
-                current["functional_groups"] = dc.get("functional_groups", [])
-                current["complexity"] = dc.get("complexity", {})
-                current["warnings"] = dc.get("warnings", [])
-
-                bonds = dc.get("disconnectable_bonds", [])
-                # Keep the original list-comprehension summary as a comment instead of
-                # deleting it. Reason: the session-level compact payload should now
-                # expose only actual_bond_idx and role_pair in addition to the old
-                # summary, without reopening the full-molecule noise problem.
-                # current["bond_summary"] = [
-                #     {
-                #         "bond_idx": i,
-                #         "atoms": b.get("atoms", []),
-                #         "bond_type": b.get("bond_type", ""),
-                #         "in_ring": b.get("in_ring", False),
-                #         "heuristic_score": b.get("heuristic_score", 0),
-                #         "n_alternatives": len(b.get("alternatives", [])),
-                #         "reaction_types": [
-                #             a.get("template", "").split("(")[0].strip()
-                #             for a in b.get("alternatives", [])[:5]
-                #         ],
-                #     }
-                #     for i, b in enumerate(bonds)
-                # ]
-                bond_summary = []
-                for i, b in enumerate(bonds):
-                    bond_summary.append({
-                        "bond_idx": i,
-                        "actual_bond_idx": b.get("actual_bond_idx", -1),
-                        "atoms": b.get("atoms", []),
-                        "role_pair": b.get("role_pair", ["unclear", "unclear"]),
-                        "bond_type": b.get("bond_type", ""),
-                        "in_ring": b.get("in_ring", False),
-                        "heuristic_score": b.get("heuristic_score", 0),
-                        "n_alternatives": len(b.get("alternatives", [])),
-                        "reaction_types": [
-                            a.get("template", "").split("(")[0].strip()
-                            for a in b.get("alternatives", [])[:5]
-                        ],
-                    })
-                current["bond_summary"] = bond_summary
-
-                fgi = dc.get("fgi_options", [])
-                if fgi:
-                    current["fgi_summary"] = [
-                        {"fgi_idx": i, "template": f.get("template", "")}
-                        for i, f in enumerate(fgi)
-                    ]
+            # Historical manual session-current builder kept as comments instead of
+            # being deleted. Reason: session.json should now persist the exact default
+            # compact contract returned by next/context(compact), rather than a wider
+            # hand-built variant that drifted from live output.
+            # current = {
+            #     "smiles": ctx.smiles,
+            #     "node_id": ctx.node_id,
+            #     ...
+            # }
+            # if ctx.decision_context:
+            #     ...
+            current = ctx.to_dict(
+                detail="compact",
+                bond_offset=0,
+                bond_limit=5,
+                fgi_offset=0,
+                fgi_limit=5,
+            )
 
             # 沙盒
             current["sandbox"] = {
@@ -492,7 +447,15 @@ class RetroSession:
 
     # ── LLM 上下文输出（分层） ──
 
-    def get_context(self, detail: str = "compact") -> Dict[str, Any]:
+    def get_context(
+        self,
+        detail: str = "compact",
+        *,
+        bond_offset: int = 0,
+        bond_limit: Optional[int] = None,
+        fgi_offset: int = 0,
+        fgi_limit: int = 5,
+    ) -> Dict[str, Any]:
         """获取 LLM 决策上下文。
 
         detail:
@@ -514,7 +477,13 @@ class RetroSession:
 
         result: Dict[str, Any] = {
             "status": self.orch.get_status(),
-            "current": ctx.to_dict(detail=detail),
+            "current": ctx.to_dict(
+                detail=detail,
+                bond_offset=bond_offset,
+                bond_limit=bond_limit,
+                fgi_offset=fgi_offset,
+                fgi_limit=fgi_limit,
+            ),
         }
 
         # 附加沙盒历史
