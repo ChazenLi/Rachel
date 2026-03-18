@@ -112,7 +112,7 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 
 ### QNTR
 
-An experimentally grounded molecule connected to my own synthesis experience. This is a truly flurescence probe that target the NO2-reduction probe and I finished the whole chemical synthesis process, the next condition optimization. We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction.                    
+An experimentally grounded molecule connected to my own synthesis experience. This is a truly flurescence probe that target the NO2-reduction probe and I finished the whole chemical synthesis process, the condition optimization. We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction.                    
 Even though the first version of Rachel has the mistake and did fgi-action not that good, the ring close/open also not that easy to predict and run synthesis map before experiments without refs in reality. The whole route and design strategy did make me excited. This was also truly an important reason that I began to make it a more chemical-feasible system.
 
 #### My route                      
