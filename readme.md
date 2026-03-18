@@ -118,7 +118,7 @@ Even though the first version of Rachel has the mistake and did fgi-action not t
 #### My route                      
 <img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />           
                                 
-#### Rachel route                 
+#### Early version Rachel's route                 
 <img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
       
 
