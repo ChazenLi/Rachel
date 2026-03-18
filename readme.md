@@ -112,7 +112,8 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 
 ### QNTR
 
-An experimentally grounded molecule connected to my own synthesis experience. This is a truly flurescence probe that target the NO2-reduction probe and I finished the whole chemical synthesis process, the next condition optimization，cell cultural cytotoxicity, and in vivo mouse experiments to detect the properties of this probe. And this early version of Racehl do gave me the same choice as I have done.
+An experimentally grounded molecule connected to my own synthesis experience. This is a truly flurescence probe that target the NO2-reduction probe and I finished the whole chemical synthesis process, the next condition optimization. We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction.                    
+Even though the first version of Rachel has the mistake and did fgi-action not that good, the ring close/open also not that easy to predict and run synthesis map before experiments without refs in reality. The whole route and design strategy did make me excited . This was also truly an important reason that I began to make it better.
 
 #### My route                      
 <img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />           
@@ -121,7 +122,7 @@ An experimentally grounded molecule connected to my own synthesis experience. Th
 <img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
       
 
-We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction. Even though the red line mol has the mistake and halucination, but the ring close/open also hard for common students to predict and run synthesis map before experiments, and the whole route and design strategy do make me excited. This is also truly an important reason that I begin to make it better.
+
 
 - Short 2-step route from 3 starting materials
 - Useful as a compact demonstration of interpretable planning
