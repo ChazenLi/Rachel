@@ -1,5 +1,122 @@
 # Rachel 技术参考
 
+## 0. 项目概览（由原 readme 合并）
+
+本节整合了原根层 `readme.md` 中偏技术说明的内容，作为进入命令细节和数据结构之前的总览入口。
+
+### 0.1 项目定位
+
+Rachel 是一个 LLM 驱动的计算机辅助多步逆合成分析系统。它通过 JSON 命令接口让 LLM 与化学工具层交互，将目标分子逐步拆解为简单可得的起始原料，并把决策过程保留为可回放、可审计的会话对象。
+
+### 0.2 目录结构
+
+```text
+Rachel/
+├── main/                        # 编排引擎（LLM 交互层）
+│   ├── retro_cmd.py             # LLM 命令接口
+│   ├── retro_session.py         # JSON 会话持久化 + 沙盒管理
+│   ├── retro_orchestrator.py    # BFS 编排器 + 沙盒 + 终止判定
+│   ├── retro_tree.py            # 合成树数据模型
+│   ├── retro_state.py           # 审计状态
+│   ├── retro_report.py          # 正向报告与可视化数据
+│   ├── retro_output.py          # 结果导出
+│   └── retro_visualizer.py      # HTML/MD 报告与图像可视化
+│
+├── chem_tools/                  # 化学工具层
+│   ├── _rdkit_utils.py          # RDKit 公共工具
+│   ├── mol_info.py              # 分子分析
+│   ├── fg_detect.py             # 官能团识别
+│   ├── template_scan.py         # 模板扫描
+│   ├── bond_break.py            # 断键执行
+│   ├── forward_validate.py      # 正向验证
+│   ├── cs_score.py              # 复杂度评分
+│   ├── fg_warnings.py           # 官能团冲突警告
+│   ├── smart_cap.py             # 智能断键推理
+│   └── templates/               # 反应模板库
+│
+├── tools/                       # 独立工具脚本
+├── tests/                       # 测试与实验支撑材料
+├── data/                        # 数据集
+├── skill.md                     # LLM 操作手册
+├── refs.md                      # 本技术参考
+└── workflow.md                  # 工作流说明
+```
+
+### 0.3 快速开始
+
+```python
+from Rachel.main import RetroCmd
+
+cmd = RetroCmd("my_session.json")
+
+# 1. 创建会话
+cmd.execute(
+    "init",
+    {
+        "target": "CC(=O)Nc1ccc(O)cc1",
+        "name": "Paracetamol",
+        "terminal_cs_threshold": 1.5,
+    },
+)
+
+# 2. 取当前待决策分子
+ctx = cmd.execute("next")
+
+# 3. 沙盒试探前体
+cmd.execute(
+    "try_precursors",
+    {
+        "precursors": ["CC(=O)Cl", "Nc1ccc(O)cc1"],
+        "reaction_type": "Schotten-Baumann acylation",
+    },
+)
+
+# 4. 提交决策
+cmd.execute(
+    "commit",
+    {
+        "idx": 0,
+        "reasoning": "酰化步骤简单，前体可得。",
+        "confidence": "high",
+    },
+)
+```
+
+### 0.4 核心设计
+
+- 双类型节点图：`MoleculeNode + ReactionNode`，以 canonical SMILES 去重
+- BFS 编排：广度优先展开，自动处理 terminal 分子
+- 沙盒机制：`try_*` 不写入主树，`commit` 后才持久化
+- 分层上下文：`compact / full / status / tree` 四级视图；`compact` 默认第一页并支持显式 window 参数
+- JSON 持久化：单文件保存完整状态，支持中断恢复
+- LLM 自提前体：在模板不足时允许提出候选前体，再由系统验证
+- 智能断键推理：`smart_cap` 基于化学环境提供 capping 建议
+- 可视化报告：可导出 HTML/Markdown 结果与分子、反应图像
+
+### 0.5 依赖
+
+- Python 3.10+
+- RDKit
+- `numpy`
+- `Pillow`
+
+### 0.6 测试
+
+```bash
+# 运行主要单元/属性测试
+pytest Rachel/tests/ -m "not data_driven"
+
+# 运行数据驱动验证
+pytest Rachel/tests/data_driven/ --dataset=Rachel/data/USPTO50K/datasetBTF1.csv --sample-size=100 -m data_driven
+```
+
+### 0.7 相关文档
+
+- `skill.md`：LLM 操作手册、命令速查与工作流规则
+- `refs.md`：技术参考、数据结构与 API 细节
+- `chem_tools/README.md`：化学工具层说明
+- `docs/usage-notes.md`：当前仓库形态下的补充使用说明
+
 ## 1. RetroCmd 命令详情
 
 ### init
@@ -28,7 +145,10 @@ ctx = cmd.execute("next")
 # 返回 compact 上下文，或 {"action": "queue_empty"} 表示编排完成
 ```
 
-返回的 compact 上下文结构:
+返回的 compact 上下文结构：
+- 默认只返回第一页 compact window
+- `bond_summary` / `fgi_summary` 中的 `bond_idx` / `fgi_idx` 始终是全局索引
+- `bonds_omitted` / `fgi_omitted` 表示当前窗口之后仍未显示的条目数量，不承载后续内容本身
 
 ```json
 {
@@ -44,10 +164,14 @@ ctx = cmd.execute("next")
     "is_terminal": true,
     "is_target": true,
     "functional_groups": [ { "name": "amide_generic", "count": 1, "atoms": [...] }, ... ],
+    "n_bonds": 7,
+    "n_fgi": 6,
     "bond_summary": [
       {
         "bond_idx": 0,
+        "actual_bond_idx": 2,
         "atoms": [3, 4],
+        "role_pair": ["carbonyl_c", "amide_n"],
         "bond_type": "SINGLE",
         "in_ring": false,
         "heuristic_score": 0.603,
@@ -56,7 +180,13 @@ ctx = cmd.execute("next")
         "smart_capping": [ ... ]
       }
     ],
+    "bond_summary_offset": 0,
+    "bond_summary_limit": 5,
+    "bonds_omitted": 2,
     "fgi_summary": [ { "fgi_idx": 0, "template": "Swern (Retro, oxidation reduction)" } ],
+    "fgi_summary_offset": 0,
+    "fgi_summary_limit": 5,
+    "fgi_omitted": 1,
     "audit_state_summary": { "linear_steps": 0, "linear_target": 4 }
   }
 }
@@ -69,6 +199,28 @@ ctx = cmd.execute("next")
 ```python
 cmd.execute("context", {"detail": "compact"})  # compact / full / status / tree
 ```
+
+`compact` 支持显式 window 参数，用于取后续 bond / FGI summary：
+
+```python
+cmd.execute(
+    "context",
+    {
+        "detail": "compact",
+        "bond_offset": 5,
+        "bond_limit": 5,
+        "fgi_offset": 5,
+        "fgi_limit": 5,
+    },
+)
+```
+
+说明：
+- 默认 `next()` 与 `context(detail="compact")` 返回第一页 compact window
+- `bond_offset` / `bond_limit` 控制当前 bond summary 窗口
+- `fgi_offset` / `fgi_limit` 控制当前 FGI summary 窗口
+- `explore(bond_idx)`、`try_bond(bond_idx, alt_idx)` 继续使用全局 `bond_idx`
+- `session.json` 的 `current` 现在复用同一 default compact 生成逻辑，与 live compact 输出一致
 
 ### explore
 
