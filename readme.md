@@ -114,11 +114,11 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 
 An experimentally grounded molecule connected to my own synthesis experience. This is a truly flurescence probe that target the NO2-reduction probe and I finished the whole chemical synthesis process, the next condition optimization，cell cultural cytotoxicity, and in vivo mouse experiments to detect the properties of this probe. And this early version of Racehl do gave me the same choice as I have done.
 
-#### Rachel route                      
+#### My route                      
 <img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />           
                                 
-#### My route                 
-<img width="980" height="910" alt="7c4f25a48b103dd7cef5c6f512ae8be7" src="https://github.com/user-attachments/assets/f1444de1-7569-4bf8-8757-f746eedd6710" />            
+#### Rachel route                 
+      
 
 We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction. Well, this is truly an important sample that interested me and it is also the reason that I begin to make it.
 
