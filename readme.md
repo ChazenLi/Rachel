@@ -118,9 +118,10 @@ An experimentally grounded molecule connected to my own synthesis experience. Th
 <img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />           
                                 
 #### Rachel route                 
+<img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
       
 
-We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction. Well, this is truly an important sample that interested me and it is also the reason that I begin to make it.
+We both choose to split the target molcular into three main part as using the same terminal mols, same intermediate and reaction. Even though the red line mol has the mistake and halucination, but the ring close/open also hard for common students to predict and run synthesis map before experiments, and the whole route and design strategy do make me excited. This is also truly an important reason that I begin to make it better.
 
 - Short 2-step route from 3 starting materials
 - Useful as a compact demonstration of interpretable planning
