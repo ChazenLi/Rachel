@@ -122,7 +122,8 @@ Even though the first version of Rachel has the mistake and did fgi-action not t
 <img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
       
 #### Rachel's route
-<img width="2514" height="1465" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/960a18c1-46b8-4225-9848-5c5fbd3ec37b" />
+<img width="2580" height="2150" alt="synthesis_tree" src="https://github.com/user-attachments/assets/1761ab3e-baa9-411e-a787-51b454e021b6" />
+
 
 
 
@@ -205,7 +206,6 @@ This is a protocol-level example, not a full benchmark workflow. More technical 
 - [chem_tools](chem_tools): chemistry-grounded operators and validation utilities
 - [tools](tools): helper scripts for runs, analysis, visualization, and related research workflows
 - [tests](tests): current validation and experiment-support material
-- [plan](plan): manuscript drafts, writing materials, and paper-preparation assets
 
 </details>
 
