@@ -215,7 +215,6 @@ cmd.execute(
 - [chem_tools](chem_tools): 具备化学约束的操作器与验证工具
 - [tools](tools): 运行、分析、可视化及相关研究流程的辅助脚本
 - [tests](tests): 当前验证与实验支持材料
-- [plan](plan): 论文草稿、写作材料与论文准备资源
 
 </details>
 
