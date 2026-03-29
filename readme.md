@@ -106,7 +106,7 @@ Rachel is currently showcased with three qualitative examples chosen to cover co
 
 | Molecule | Role | Route depth | What it highlights |
 | --- | --- | ---: | --- |
-| `QNTR` | Experimentally grounded example | 2 steps | A short, interpretable route tied to real synthesis experience |
+| `QNTR` | Experimentally grounded example | 6 steps | A interpretable route tied to real synthesis experience |
 | `Losartan` | Canonical medicinal chemistry target | 4 steps | Convergent route logic with recognizable medicinal chemistry disconnections |
 | `Rivaroxaban` | Deeper drug-like example | 5 steps | Longer-horizon planning with a broader transformation mix |
 
@@ -126,8 +126,7 @@ Even though the first version of Rachel has the mistake and did fgi-action not t
 
 
 
-
-- Short 2-step route from 3 starting materials
+- Short 6-step route from 4 starting materials
 - Useful as a compact demonstration of interpretable planning
 - Especially valuable because the accepted route reflects strategy beyond simple template satisfaction
 
