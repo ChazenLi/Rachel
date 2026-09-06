@@ -1,7 +1,0 @@
-{
-  "command": "export",
-  "args": {
-    "name": "release_smoke_stale",
-    "output_dir": "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\stale_export"
-  }
-}

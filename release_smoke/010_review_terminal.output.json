@@ -1,7 +1,0 @@
-{
-  "ok": true,
-  "action": "terminal_review_queued",
-  "smiles": "CNC(C)=O",
-  "reason": "Reopen only to verify route-digest staleness.",
-  "next_step": "next"
-}

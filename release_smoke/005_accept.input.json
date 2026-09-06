@@ -1,6 +1,0 @@
-{
-  "command": "accept",
-  "args": {
-    "reason": "Small stable material used only for release audit smoke."
-  }
-}

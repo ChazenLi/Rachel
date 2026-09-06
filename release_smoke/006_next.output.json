@@ -1,4 +1,0 @@
-{
-  "action": "queue_empty",
-  "hint": "The queue is empty. Call finalize to complete the route."
-}
