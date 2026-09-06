@@ -1,0 +1,6 @@
+{
+  "command": "audit",
+  "args": {
+    "offline": true
+  }
+}

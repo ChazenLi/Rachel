@@ -1,0 +1,340 @@
+{
+  "schema": "rachel.smart-cap-rules.v1",
+  "entries": [
+    {
+      "id": "rachel.base.cap.ar_ar_coupling",
+      "priority": 1000,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_i.aromatic", "op": "eq", "value": true},
+          {"field": "atom_j.aromatic", "op": "eq", "value": true},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false}
+        ]
+      },
+      "proposals": [
+        {"reaction_type": "Suzuki coupling", "cap_i": "Br", "cap_j": "B(O)O", "confidence": 0.92, "description": "Ar-Ar -> ArBr + ArB(OH)2"},
+        {"reaction_type": "Suzuki coupling (reversed)", "cap_i": "B(O)O", "cap_j": "Br", "confidence": 0.90, "description": "Ar-Ar -> ArB(OH)2 + ArBr"},
+        {"reaction_type": "Negishi coupling", "cap_i": "Br", "cap_j": "[Zn]Cl", "confidence": 0.70, "description": "Ar-Ar -> ArBr + ArZnCl"},
+        {"reaction_type": "Stille coupling", "cap_i": "Br", "cap_j": "[Sn](C)(C)C", "confidence": 0.60, "description": "Ar-Ar -> ArBr + ArSnMe3"}
+      ]
+    },
+    {
+      "id": "rachel.base.cap.benzylic_i_aromatic",
+      "priority": 900,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_i.aromatic", "op": "eq", "value": true},
+          {"field": "atom_j.aromatic", "op": "eq", "value": false},
+          {"field": "atom_j.n_hs", "op": "gte", "value": 1},
+          {"field": "atom_j.has_halide_neighbor", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Benzylic alkylation (SN2)",
+      "cap_i": "[H]",
+      "cap_j": "Br",
+      "confidence": 0.75,
+      "description": "Ar-CH2R -> ArH + BrCH2R"
+    },
+    {
+      "id": "rachel.base.cap.benzylic_j_aromatic",
+      "priority": 890,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_i.aromatic", "op": "eq", "value": false},
+          {"field": "atom_j.aromatic", "op": "eq", "value": true},
+          {"field": "atom_i.n_hs", "op": "gte", "value": 1}
+        ]
+      },
+      "reaction_type": "Benzylic alkylation (SN2)",
+      "cap_i": "Br",
+      "cap_j": "[H]",
+      "confidence": 0.75,
+      "description": "RCH2-Ar -> RCH2Br + ArH"
+    },
+    {
+      "id": "rachel.base.cap.amide_i_carbonyl",
+      "priority": 850,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "N"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "atom_i.is_carbonyl_c", "op": "eq", "value": true}
+        ]
+      },
+      "proposals": [
+        {"reaction_type": "Amide bond formation", "cap_i": "O", "cap_j": "[H]", "confidence": 0.90, "description": "RC(=O)-NR2 -> RC(=O)OH + HNR2"},
+        {"reaction_type": "Amide bond formation (acid chloride)", "cap_i": "Cl", "cap_j": "[H]", "confidence": 0.80, "description": "RC(=O)-NR2 -> RC(=O)Cl + HNR2"}
+      ]
+    },
+    {
+      "id": "rachel.base.cap.amide_j_carbonyl",
+      "priority": 840,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "N"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "atom_j.is_carbonyl_c", "op": "eq", "value": true}
+        ]
+      },
+      "proposals": [
+        {"reaction_type": "Amide bond formation", "cap_i": "[H]", "cap_j": "O", "confidence": 0.90, "description": "NR2-C(=O)R -> HNR2 + RC(=O)OH"},
+        {"reaction_type": "Amide bond formation (acid chloride)", "cap_i": "[H]", "cap_j": "Cl", "confidence": 0.80, "description": "NR2-C(=O)R -> HNR2 + RC(=O)Cl"}
+      ]
+    },
+    {
+      "id": "rachel.base.cap.ester_i_carbonyl",
+      "priority": 800,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "O"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "atom_i.is_carbonyl_c", "op": "eq", "value": true},
+          {"field": "atom_i.is_carbamate_c", "op": "eq", "value": false},
+          {"field": "atom_j.is_carboxylic_acid_o", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Ester hydrolysis",
+      "cap_i": "O",
+      "cap_j": "[H]",
+      "confidence": 0.88,
+      "description": "RC(=O)-OR -> RC(=O)OH + ROH"
+    },
+    {
+      "id": "rachel.base.cap.ester_j_carbonyl",
+      "priority": 790,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "O"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "atom_j.is_carbonyl_c", "op": "eq", "value": true},
+          {"field": "atom_j.is_carbamate_c", "op": "eq", "value": false},
+          {"field": "atom_i.is_carboxylic_acid_o", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Ester hydrolysis",
+      "cap_i": "[H]",
+      "cap_j": "O",
+      "confidence": 0.88,
+      "description": "RO-C(=O)R -> ROH + RC(=O)OH"
+    },
+    {
+      "id": "rachel.base.cap.n_alkyl_i",
+      "priority": 750,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "N"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_i.is_amide_n", "op": "eq", "value": false},
+          {"field": "atom_j.aromatic", "op": "eq", "value": false}
+        ]
+      },
+      "proposals": [
+        {"reaction_type": "N-alkylation (SN2)", "cap_i": "[H]", "cap_j": "Br", "confidence": 0.82, "description": "N-CH2R -> NH + BrCH2R"},
+        {"reaction_type": "Reductive amination", "cap_i": "[H]", "cap_j": "=O", "confidence": 0.70, "description": "N-CH2R -> NH + RCHO"}
+      ]
+    },
+    {
+      "id": "rachel.base.cap.n_alkyl_j",
+      "priority": 740,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "N"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_j.is_amide_n", "op": "eq", "value": false},
+          {"field": "atom_i.aromatic", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "N-alkylation (SN2)",
+      "cap_i": "Br",
+      "cap_j": "[H]",
+      "confidence": 0.82,
+      "description": "RCH2-N -> RCH2Br + HN"
+    },
+    {
+      "id": "rachel.base.cap.o_alkyl_i",
+      "priority": 700,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "O"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_i.is_ester_o", "op": "eq", "value": false},
+          {"field": "atom_j.aromatic", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Williamson ether synthesis",
+      "cap_i": "[H]",
+      "cap_j": "Br",
+      "confidence": 0.78,
+      "description": "O-CH2R -> OH + BrCH2R"
+    },
+    {
+      "id": "rachel.base.cap.o_alkyl_j",
+      "priority": 690,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "O"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_j.is_ester_o", "op": "eq", "value": false},
+          {"field": "atom_i.aromatic", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Williamson ether synthesis",
+      "cap_i": "Br",
+      "cap_j": "[H]",
+      "confidence": 0.78,
+      "description": "RCH2-O -> RCH2Br + HO"
+    },
+    {
+      "id": "rachel.base.cap.heck",
+      "priority": 650,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {"field": "atom_i.is_sp2", "op": "eq", "value": true},
+          {"field": "atom_j.is_sp3", "op": "eq", "value": true},
+          {"field": "atom_i.aromatic", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Heck reaction",
+      "cap_i": "[H]",
+      "cap_j": "Br",
+      "confidence": 0.55,
+      "description": "C=C-CR -> C=CH + BrCR"
+    },
+    {
+      "id": "rachel.base.cap.ar_n_i",
+      "priority": 600,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "N"},
+          {"field": "atom_i.aromatic", "op": "eq", "value": true},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Buchwald-Hartwig amination",
+      "cap_i": "Br",
+      "cap_j": "[H]",
+      "confidence": 0.80,
+      "description": "Ar-NR2 -> ArBr + HNR2"
+    },
+    {
+      "id": "rachel.base.cap.ar_n_j",
+      "priority": 590,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "N"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.aromatic", "op": "eq", "value": true},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "Buchwald-Hartwig amination",
+      "cap_i": "[H]",
+      "cap_j": "Br",
+      "confidence": 0.80,
+      "description": "NR2-Ar -> HNR2 + ArBr"
+    },
+    {
+      "id": "rachel.base.cap.ar_o_i",
+      "priority": 550,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "O"},
+          {"field": "atom_i.aromatic", "op": "eq", "value": true},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "SNAr / Ullmann etherification",
+      "cap_i": "F",
+      "cap_j": "[H]",
+      "confidence": 0.65,
+      "description": "Ar-OR -> ArF + ROH"
+    },
+    {
+      "id": "rachel.base.cap.ar_o_j",
+      "priority": 540,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "O"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.aromatic", "op": "eq", "value": true},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false}
+        ]
+      },
+      "reaction_type": "SNAr / Ullmann etherification",
+      "cap_i": "[H]",
+      "cap_j": "F",
+      "confidence": 0.65,
+      "description": "RO-Ar -> ROH + ArF"
+    },
+    {
+      "id": "rachel.base.cap.grignard_fallback",
+      "priority": 100,
+      "fallback_rank": 10,
+      "condition": {
+        "all": [
+          {"field": "atom_i.symbol", "op": "eq", "value": "C"},
+          {"field": "atom_j.symbol", "op": "eq", "value": "C"},
+          {"field": "bond_type", "op": "eq", "value": "SINGLE"},
+          {"field": "in_ring", "op": "eq", "value": false},
+          {
+            "not": {
+              "all": [
+                {"field": "atom_i.aromatic", "op": "eq", "value": true},
+                {"field": "atom_j.aromatic", "op": "eq", "value": true}
+              ]
+            }
+          }
+        ]
+      },
+      "reaction_type": "Grignard reaction",
+      "cap_i": "Br",
+      "cap_j": "[Mg]Br",
+      "confidence": 0.45,
+      "description": "R-R' -> RBr + R'MgBr"
+    },
+    {
+      "id": "rachel.base.cap.simple_break_fallback",
+      "priority": 0,
+      "fallback_rank": 100,
+      "condition": {},
+      "reaction_type": "simple_break",
+      "cap_i": "[H]",
+      "cap_j": "[H]",
+      "confidence": 0.20,
+      "description": "Simple hydrogen capping fallback; chemical review required."
+    }
+  ]
+}

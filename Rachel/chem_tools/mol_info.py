@@ -359,6 +359,7 @@ def _score_confidence(method: str, coverage: float, priority: int) -> Dict[str, 
 def match_known_scaffolds(
     smiles: str,
     max_hits: int = 5,
+    knowledge_profile=None,
 ) -> Dict[str, Any]:
     """Match a molecule against the known scaffold library.
 
@@ -386,7 +387,10 @@ def match_known_scaffolds(
     target_murcko = _murcko_smiles(mol)
 
     # Load scaffold library
-    raw_data = load_template("known_scaffolds.json")
+    raw_data = load_template(
+        "known_scaffolds.json",
+        knowledge_profile=knowledge_profile,
+    )
     scaffolds: List[Dict[str, Any]]
     if isinstance(raw_data, dict):
         scaffolds = raw_data.get("scaffolds", [])

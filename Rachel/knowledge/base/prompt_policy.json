@@ -1,0 +1,1953 @@
+{
+  "schema": "rachel.prompt-policy.v1",
+  "entries": [
+    {
+      "id": "rachel.base.prompt.standing.llm_owns_strategy",
+      "kind": "standing_rule",
+      "priority": 140,
+      "locked": true,
+      "text": "Rachel supplies structured chemical facts, candidate scaffolds, risks, and audit obligations; the LLM owns route strategy, reaction design, precursor completion, and final chemistry judgment."
+    },
+    {
+      "id": "rachel.base.prompt.standing.route_plan_lifecycle",
+      "kind": "standing_rule",
+      "priority": 130,
+      "locked": true,
+      "text": "For a complex target without an active route plan, the LLM normally records a short revision-0 provisional whole-molecule thesis from the target, molecule_brief, and functional_group_brief, then uses reaction_sites/explore_site evidence to support, falsify, or enrich it into an evidence-enriched complete revision-1 plan. If molecule-level facts cannot yet support a useful seed, inspect relevant sites first and let the first route_plan call record an evidence-first complete revision-0 plan. Revise whenever evidence changes a recorded substantive plan claim; Rachel listed actions are evidence and peer candidates, not the plan itself."
+    },
+    {
+      "id": "rachel.base.prompt.standing.action_space_is_open",
+      "kind": "standing_rule",
+      "priority": 120,
+      "locked": true,
+      "text": "System action-space is a candidate scaffold, not the full retrosynthesis boundary; a stronger complete one-step LLM hypothesis may go directly through propose_action -> try_action, while route_sketch is useful for route-thesis changes or multi-event ideas."
+    },
+    {
+      "id": "rachel.base.prompt.standing.site_identity",
+      "kind": "standing_rule",
+      "priority": 110,
+      "locked": true,
+      "text": "For routine site identity, explore_site provides atoms, actual_bond_idx, role_pair, bond_type, in_ring, and bond_fg_context."
+    },
+    {
+      "id": "rachel.base.prompt.standing.route_plan_is_hypothesis",
+      "kind": "standing_rule",
+      "priority": 100,
+      "locked": true,
+      "text": "Treat route_plan as a revisable strategic hypothesis; keep it short and update it when evidence changes the route thesis."
+    },
+    {
+      "id": "rachel.base.prompt.standing.compare_route_modes",
+      "kind": "standing_rule",
+      "priority": 90,
+      "locked": true,
+      "text": "Before committing the first route thesis for a complex target, compare late FGI/editing with scaffold assembly or electronic-state strategy."
+    },
+    {
+      "id": "rachel.base.prompt.standing.template_is_evidence",
+      "kind": "standing_rule",
+      "priority": 80,
+      "locked": true,
+      "text": "Template pass is evidence, not a sufficient reason to commit."
+    },
+    {
+      "id": "rachel.base.prompt.standing.blocked_validation",
+      "kind": "standing_rule",
+      "priority": 70,
+      "locked": true,
+      "text": "Do not commit a blocked validation result; distinguish chemistry contradictions from validator errors."
+    },
+    {
+      "id": "rachel.base.prompt.standing.preserve_scaffolds",
+      "kind": "standing_rule",
+      "priority": 60,
+      "locked": true,
+      "text": "Prefer preserving mature heteroaryl scaffolds when routes are comparably credible; ring construction remains available when chemically justified."
+    },
+    {
+      "id": "rachel.base.prompt.standing.peer_hypotheses",
+      "kind": "standing_rule",
+      "priority": 50,
+      "locked": true,
+      "text": "Treat listed Rachel actions and complete LLM-designed one-step actions as peer chemical hypotheses. When an LLM-designed action appears stronger or more route-coherent, lead with its positive chemical case and use comparison only to explain why it is worth testing; then validate the selected executable candidate through try_action."
+    },
+    {
+      "id": "rachel.base.prompt.standing.custom_topology_evidence",
+      "kind": "standing_rule",
+      "priority": 40,
+      "locked": true,
+      "text": "For custom scaffold/ring actions, declare intended_deltas, expected_ring_change, changed_bonds, preserved_anchors, and mechanistic_evidence before sandboxing; family_evidence is optional support."
+    },
+    {
+      "id": "rachel.base.prompt.standing.guidance_is_direction",
+      "kind": "standing_rule",
+      "priority": 30,
+      "locked": true,
+      "text": "Treat chemist guidance as high-priority route direction, not as validation evidence."
+    },
+    {
+      "id": "rachel.base.prompt.standing.route_sketch",
+      "kind": "standing_rule",
+      "priority": 20,
+      "locked": true,
+      "text": "When local action-space is route-incoherent or an idea spans multiple events, consider a target-oriented route_sketch before forcing deep disconnections."
+    },
+    {
+      "id": "rachel.base.prompt.standing.advanced_terminal_rescue",
+      "kind": "standing_rule",
+      "priority": 10,
+      "locked": true,
+      "text": "Before accepting a nontrivial advanced terminal, explicitly ask: can this small target be made in 1-3 mechanistically selective steps from simpler precursors?"
+    },
+    {
+      "id": "rachel.base.prompt.runtime_config",
+      "kind": "runtime_config",
+      "priority": 100,
+      "locked": true,
+      "policy_version": "rachel-v2-policy-004",
+      "card_source": "experience_cards.json",
+      "default_stage": "context_compact",
+      "stage_aliases": {
+        "try_candidate": "try_action",
+        "propose_candidate": "propose_action"
+      },
+      "card_limits": {
+        "default": 4,
+        "terminal": 5,
+        "terminal_rescue": 5,
+        "topology_audit": 5
+      },
+      "terminal_rescue_events": [
+        "action.terminal_acceptance",
+        "decision.accept_terminal",
+        "stage.terminal",
+        "strategy.advanced_terminal_rescue_requested"
+      ],
+      "topology_audit_tags": [
+        "annulation",
+        "bridged",
+        "cyclization",
+        "fused_ring",
+        "high_risk_topology_requires_independent_evidence",
+        "macrocycle",
+        "new_bridged_system",
+        "new_bridged_system_requires_evidence",
+        "new_fused_medium_ring_requires_evidence",
+        "new_fused_ring_requires_evidence",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_macrocycle_requires_evidence",
+        "new_medium_ring",
+        "new_spiro_center",
+        "new_spiro_center_requires_evidence",
+        "ring",
+        "ring_bond",
+        "ring_closure",
+        "ring_construction",
+        "ring_opening",
+        "ring_system_merge",
+        "scaffold",
+        "scaffold_edit",
+        "spiro",
+        "topology"
+      ],
+      "topology_signal_risk_tags": [
+        "annulation",
+        "bridged",
+        "cyclization",
+        "fused_ring",
+        "high_risk_topology_requires_independent_evidence",
+        "macrocycle",
+        "new_bridged_system",
+        "new_bridged_system_requires_evidence",
+        "new_fused_medium_ring_requires_evidence",
+        "new_fused_ring_requires_evidence",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_macrocycle_requires_evidence",
+        "new_medium_ring",
+        "new_spiro_center",
+        "new_spiro_center_requires_evidence",
+        "ring",
+        "ring_bond",
+        "ring_closure",
+        "ring_construction",
+        "ring_opening",
+        "ring_system_merge",
+        "scaffold_edit",
+        "spiro",
+        "topology"
+      ],
+      "high_risk_topology_card_tags": [
+        "bridged",
+        "fused_ring",
+        "high_risk_topology_requires_independent_evidence",
+        "macrocycle",
+        "new_bridged_system",
+        "new_bridged_system_requires_evidence",
+        "new_fused_medium_ring_requires_evidence",
+        "new_fused_ring_requires_evidence",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_macrocycle_requires_evidence",
+        "new_medium_ring",
+        "new_spiro_center",
+        "new_spiro_center_requires_evidence",
+        "ring_system_merge",
+        "spiro"
+      ],
+      "atom_source_card_tags": [
+        "atom_mapping",
+        "atom_source",
+        "cleaved_bonds",
+        "evidence_packet",
+        "family_interpretation",
+        "formed_bonds",
+        "proof_obligation",
+        "unmapped_product_atoms",
+        "validation_micro"
+      ],
+      "required_audit_fields": [
+        "selected_action_id",
+        "rejected_action_ids",
+        "sandbox_evidence",
+        "applied_experience_card_ids",
+        "explicit_reasoning",
+        "risk_assessment",
+        "process_conditions",
+        "intended_deltas",
+        "expected_ring_change",
+        "changed_bonds",
+        "preserved_anchors",
+        "mechanistic_evidence",
+        "validation_observations",
+        "proof_obligations"
+      ],
+      "selection_contexts": [
+        {
+          "name": "terminal_rescue",
+          "priority": 200,
+          "limit_discovery": true,
+          "activation": {
+            "any_events": [
+              "stage.terminal",
+              "decision.accept_terminal",
+              "action.terminal_acceptance",
+              "strategy.advanced_terminal_rescue_requested"
+            ]
+          }
+        },
+        {
+          "name": "topology_audit",
+          "priority": 100,
+          "activation": {
+            "all": [
+              {
+                "any_events": [
+                  "stage.propose_action",
+                  "stage.try_action",
+                  "stage.sandbox_try",
+                  "stage.sandbox_list",
+                  "stage.commit"
+                ]
+              },
+              {
+                "any": [
+                  {"any_events": ["action.custom_precursors"]},
+                  {"event_prefixes": ["validation."]},
+                  {"any_tags": ["custom_precursor"]}
+                ]
+              },
+              {"any_tags": ["topology_signal"]}
+            ]
+          }
+        }
+      ],
+      "default_command_policy": {
+        "primary_next": [
+          "reaction_sites()"
+        ],
+        "support": [
+          "status",
+          "tree"
+        ],
+        "guardrails": [
+          "Do not use hidden legacy bond/FGI commands as the default route.",
+          "Use accept(reason) for explicit terminal decisions; skip marks the node terminal and is a last resort."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.context_compact",
+      "kind": "stage_policy",
+      "stage": "context_compact",
+      "mode": "discovery",
+      "priority": 100,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "With no active route_plan_brief, normally register a short revision-0 provisional thesis from molecule_brief and functional_group_brief before broad local search; if the target is simple or those facts cannot yet support a useful seed, use reaction_sites() first. If ring membership, stereocenter location, or whole-molecule atom/bond indexing is specifically needed, use context(detail=\"structure\").",
+        "Compare route paradigms first: late FGI/editing vs scaffold assembly vs electronic-state strategy.",
+        "Prefer real convergent handles and preserve mature scaffolds unless deep construction is justified."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "route_plan(...) for a short revision-0 provisional complex-target thesis",
+          "reaction_sites() if the target is simple or site evidence is needed before a useful seed"
+        ],
+        "support": [
+          "status",
+          "tree"
+        ],
+        "guardrails": [
+          "Use reaction_sites() to open the first-layer site menu before sandboxing.",
+          "Use accept(reason) only for explicit terminal or advanced-terminal stopping criteria.",
+          "skip marks the current molecule terminal; do not use it as a temporary defer."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.reaction_sites",
+      "kind": "stage_policy",
+      "stage": "reaction_sites",
+      "mode": "discovery",
+      "priority": 99,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Choose a real reaction site, not a reaction name in isolation.",
+        "At a directionally difficult node, consider one optional scout_node round when the local menu is narrow or repetitive, materially distinct disconnection or FGI directions remain unresolved, or prior attempts have not resolved direction. Molecular size or complexity alone is not a trigger; when one well-supported local direction is sufficient, continue directly to explore_site.",
+        "Prioritize convergence, site fidelity, handle timing, and functional-group compatibility; use context(detail=\"structure\") only when whole-molecule topology or atom-index evidence blocks site choice.",
+        "If no route_plan_brief exists after site evidence, establish an evidence-first complete revision-0 plan; if route_plan_brief is a short seed, use the site map and selected explore_site evidence to enrich it into a complete revision-1 plan; if a complete plan is active, identify support, falsification, or evidence that materially revises recorded disconnections, precursor logic, sequence, handle timing, preserve/build choices, risks, or revision triggers."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "explore_site(site_id)",
+          "route_plan(...) if site-map evidence now establishes an evidence-first complete revision-0 plan, enriches a provisional seed, or changes a recorded substantive plan claim"
+        ],
+        "support": [
+          "context(compact)",
+          "status"
+        ],
+        "guardrails": [
+          "Choose a real site_id first; do not sandbox directly from the first-layer menu.",
+          "Do not use hidden legacy commands for normal decisions."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.guide",
+      "kind": "stage_policy",
+      "stage": "guide",
+      "mode": "discovery",
+      "priority": 98,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Convert chemist guidance into route constraints and candidate priorities.",
+        "Still validate the chosen action; guidance is direction, not proof."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "reaction_sites()",
+          "explore_site(site_id) if the guided site is already known"
+        ],
+        "support": [
+          "route_plan(...) if guidance changes the global route thesis",
+          "route_sketch(...) if the chemist direction is strategic rather than one-step"
+        ],
+        "guardrails": [
+          "Treat chemist guidance as high-priority direction but still validate chemistry.",
+          "If guidance specifies a precursor or reaction, convert it through propose_action(...) before try_action."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.route_plan",
+      "kind": "stage_policy",
+      "stage": "route_plan",
+      "mode": "discovery",
+      "priority": 97,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Use route_plan in two paths: revision 0 may be a short LLM-owned provisional thesis seed grounded in the target and molecule-level Rachel facts and must use revision_reason=\"initial\"; if that seed was recorded, relevant reaction_sites/explore_site Rachel molecule/site facts should produce an evidence-enriched complete revision 1 plan, while an evidence-first initial call with no prior seed records the complete revision-0 plan directly.",
+        "On every later revision, restate the complete current plan because route_plan replaces rather than merges omitted fields; include route_mode, mode evidence, key disconnections, precursor logic, preserve/build decisions, strategic risks, revision triggers, terminal policy, and revision reason.",
+        "Revise when evidence changes a recorded substantive claim, including precursor family, sequence, handle timing, preserve/build choice, or selectivity strategy; do not revise for catalyst, reagent, solvent, or template-only changes within the same planned event.",
+        "Rachel listed actions and LLM-designed actions are peer executable evidence, not the global plan; use them to support, falsify, enrich, or revise the thesis rather than copying the local action menu."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "reaction_sites()",
+          "explore_site(site_id) if the next site is already known"
+        ],
+        "support": [
+          "route_sketch(...) for a local strategy-to-action checkpoint",
+          "propose_action(...) only for one executable next step"
+        ],
+        "guardrails": [
+          "A route plan is a persistent synthesis thesis, not a commit or validation result.",
+          "Use two paths: when a short revision-0 provisional seed exists, restate an evidence-enriched complete revision-1 plan after relevant site analysis; when site evidence comes first, the initial route_plan call records the complete revision-0 plan directly.",
+          "Rachel listed and LLM-designed actions are evidence and peer candidates, not the plan; use them to support, falsify, enrich, or revise the thesis.",
+          "Record the route paradigm as a hypothesis: late functionalization/FGI, scaffold assembly, electronic-state strategy, or a justified hybrid.",
+          "Revise when a recorded substantive claim changes; do not revise for implementation-only changes within the same disconnection and precursor logic.",
+          "Every revision restates the complete current plan because omitted fields are not merged from the previous revision.",
+          "Keep the brief short; do not paste full route history into LLM context."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.explore_site",
+      "kind": "stage_policy",
+      "stage": "explore_site",
+      "mode": "discovery",
+      "priority": 96,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "For site identity, first read atoms, actual_bond_idx, role_pair, bond_type, in_ring, and bond_fg_context; if these local facts are insufficient, use context(detail=\"structure\").",
+        "Treat listed and LLM-designed actions as peer chemical hypotheses. A stronger different same-site reaction or unlisted disconnection may go directly through propose_action when it is one complete event. Focus first on its positive chemical case: complete precursors and reagents, reaction/site, mechanism, atom sources, selectivity, topology/site fidelity, and route-plan alignment; compare listed actions only to explain why this candidate is worth testing. route_sketch is optional when the idea changes route strategy or spans multiple events.",
+        "If this evidence changes a recorded key disconnection, precursor family, sequence, handle timing, preserve/build decision, or selectivity strategy, revise route_plan and restate the complete current plan; if only catalyst, reagent, solvent, or template implementation changes within the same planned event, continue without a plan revision and record alignment at commit."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "try_action(action_id)",
+          "propose_action(...) for a complete different same-site reaction or unlisted disconnection; route_sketch is optional and is useful when the idea changes route strategy or spans multiple events"
+        ],
+        "support": [
+          "propose_action(...) after route_sketch",
+          "sandbox_list"
+        ],
+        "guardrails": [
+          "Compare same-site actions before committing.",
+          "Use smart_cap/custom_cap only as expert ideation; convert useful output through propose_action(...) then try_action(custom_id)."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.explore_reaction",
+      "kind": "stage_policy",
+      "stage": "explore_reaction",
+      "mode": "discovery",
+      "priority": 95,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Use this auxiliary reaction-family view to compare mechanism, site fidelity, precursor realism, and compatibility across actions.",
+        "Return to explore_site(site_id) for the normal site-first decision; validate a selected listed or LLM-designed peer action through try_action."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "try_action(action_id)"
+        ],
+        "support": [
+          "explore_site(site_id)",
+          "reaction_sites()"
+        ],
+        "guardrails": [
+          "This is an auxiliary diagnostic view; prefer explore_site(site_id) for normal same-site comparison."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.route_sketch",
+      "kind": "stage_policy",
+      "stage": "route_sketch",
+      "mode": "discovery",
+      "priority": 94,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Consider 1-3 target-oriented short hypotheses, then record exactly one next executable chemical event.",
+        "For advanced-terminal review, actionable means a complete precursor set, one real event, and a selectivity source; otherwise use no-actionable.",
+        "If the next event is unlisted, use propose_action(...) with complete precursor SMILES before try_action."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "propose_action(...) for the next unlisted real step",
+          "explore_site(site_id) if a listed site remains viable"
+        ],
+        "support": [
+          "accept(...) only when no actionable first mini-route event can be defined, using force_accept_without_rescue with rescue_not_actionable_reason"
+        ],
+        "guardrails": [
+          "A route sketch is an LLM strategic design checkpoint, not a validation gate.",
+          "Use it to challenge weak or route-incoherent system actions and propose a strategy-driven next step.",
+          "For advanced-terminal review, first ask how this molecule could be made as a target in 1-3 mechanistically selective steps.",
+          "Convert only one next executable chemical event into an action before try_action.",
+          "For a multi-step strategy, bind the first committed event to the precursor that should continue through strategy continuation.",
+          "It cannot commit or bypass sandbox validation."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.propose_action",
+      "kind": "stage_policy",
+      "stage": "propose_action",
+      "mode": "discovery",
+      "priority": 93,
+      "guardrail_limit": 7,
+      "self_prompts": [
+        "Build the positive chemical case for one real chemical event: provide complete precursor SMILES and reagents, reaction name/site, mechanism, atom sources, selectivity, topology/site fidelity, route-plan alignment, and atom accounting; include route_sketch_id only when a route sketch actually guides the action. Comparison is secondary; cite rejected action IDs/reasons only when actually rejecting those actions.",
+        "For ring/scaffold edits, fill intended_deltas, expected_ring_change, changed_bonds, preserved_anchors, and mechanistic_evidence; family_evidence is optional support."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "try_action(custom_id)"
+        ],
+        "support": [
+          "explore_site(site_id)",
+          "sandbox_list"
+        ],
+        "guardrails": [
+          "Registration is not validation; sandbox the returned custom action id before commit.",
+          "Custom chemistry must be one real step with complete precursor SMILES; lead with the positive chemical case and record rejection rationale only for actions actually rejected."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.try_action",
+      "kind": "stage_policy",
+      "stage": "try_action",
+      "mode": "audit",
+      "priority": 92,
+      "guardrail_limit": 4,
+      "self_prompts": [
+        "Treat sandbox execution as transport status only; inspect canonical validation, atom accounting, and site fidelity. Before commit, translate a chemically credible attempt into a tentative operating plan; when direct evidence is absent, use substrate-specific planning_hypothesis values or ranges and reserve unknown for fields with no responsible proposal.",
+        "Read the current validation state and its named observations, contradictions, proof_obligations, evidence_gaps, tool_limits, warnings, system_errors, and optional mechanism_interpretation; follow the state-specific recovery instruction without substituting the state label for chemical judgment.",
+        "Do not treat a reaction-family name, hidden steps, missing selectivity, or incomplete atom accounting as commit-ready support; add the missing chemical evidence, revise the action, or reject it on chemistry."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "sandbox_list",
+          "try_action(action_id) for another same-site competitor"
+        ],
+        "support": [
+          "sandbox_clear only if the visible comparison is polluted"
+        ],
+        "guardrails": [
+          "success=true is evidence only, not a commit decision.",
+          "Do not commit blocked validation. For proof_required, add evidence or revise the action before considering an explicit validation_override."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.sandbox_list",
+      "kind": "stage_policy",
+      "stage": "sandbox_list",
+      "mode": "audit",
+      "priority": 91,
+      "guardrail_limit": 4,
+      "self_prompts": [
+        "Compare attempts by action_id, reaction type, precursor realism, validation, and rejected alternatives.",
+        "Before commit, write a reaction-specific risk_assessment tied to named precursors, reagents, products/byproducts, or mechanistic events. Separate sourced facts from inference; cover material hazards, energy/gas/pressure or incompatibility hazards, exposure, controls, and unresolved SDS/SOP evidence; state uncertainty instead of a safe/unsafe verdict. Construct one coherent provisional process_conditions plan for the seven core fields solvent, equivalents, addition_order, temperature, atmosphere, reaction_time, and workup. Use evidence-backed specified values when available; otherwise propose useful substrate- and reaction-specific values, ranges, or alternatives as specified with basis_kind=planning_hypothesis and an explicit chemical basis. Absence of literature or SOP makes the basis unverified rather than automatically unknown; reserve {status: unknown, reason: ...} for a field with no responsible planning proposal. Workup should include candidate quench, isolation, and purification; add scale, concentration, or pressure only when supplied or materially relevant. Cross-check the plan against mechanism, functional-group compatibility, validation, and risk_assessment. Every specified value uses {status: specified, value: ..., basis_kind: user_provided|literature|experimental|sop|planning_hypothesis, basis: ...}; planning_hypothesis remains an unverified suggestion that requires substrate-specific literature, SDS, and SOP review before execution.",
+        "For custom topology attempts, reconcile validation observations with the declared mechanism, changed bonds, atom source, tether/anchor evidence, and optional mechanism interpretation before override or commit.",
+        "For terminal review, choose one outcome: commit a credible mini-route step, try one more concrete action, or accept only with explicit no-actionable reason."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "commit(idx=..., expected_action_id=..., reasoning=..., rejected=..., risk_assessment=..., process_conditions={...})",
+          "select(idx) then commit(...)"
+        ],
+        "support": [
+          "propose_action(...) for one more concrete rescue",
+          "accept(..., force_accept_without_rescue=true) only with a no-actionable reason",
+          "sandbox_clear"
+        ],
+        "guardrails": [
+          "select only marks the preferred attempt; commit still needs explicit reasoning.",
+          "For terminal review, reject weak attempts explicitly before trying another concrete action or accepting with a no-actionable reason.",
+          "sandbox_clear archives and clears the visible attempts, so use it only before a clean re-run."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.commit",
+      "kind": "stage_policy",
+      "stage": "commit",
+      "mode": "audit",
+      "priority": 90,
+      "guardrail_limit": 4,
+      "self_prompts": [
+        "Commit only after recording the selected action, sandbox evidence, applied card ids, reaction-specific risk_assessment, structured process_conditions, and other required audit evidence; when an alternative is actually rejected, record its id and state whether the rejection is chemical or only about the current Rachel representation/evidence.",
+        "If overriding a topology gate, cite proof_obligations plus changed bonds, preserved anchors, atom-source/tether evidence, and any optional mechanism support."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "next",
+          "tree",
+          "status"
+        ],
+        "support": [
+          "report after finalize"
+        ],
+        "guardrails": [
+          "Record selected action, rejected alternatives, sandbox evidence, and applied experience-card ids."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.terminal",
+      "kind": "stage_policy",
+      "stage": "terminal",
+      "mode": "audit",
+      "priority": 89,
+      "guardrail_limit": 5,
+      "self_prompts": [
+        "Before nontrivial advanced-terminal accept, run route_sketch(..., terminal_review=True) to test for a 1-3 step rescue.",
+        "After a terminal-review sketch, accept requires one route-sketch-derived custom sandbox attempt or an explicit no-actionable override."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "route_sketch(..., terminal_review=True)",
+          "accept(reason=...)"
+        ],
+        "support": [
+          "status",
+          "tree"
+        ],
+        "guardrails": [
+          "Accept terminal only with explicit buyability, stability, or advanced-terminal rationale.",
+          "For nontrivial advanced terminal, route_sketch comes before accept unless no credible mini-route exists.",
+          "After route_sketch(..., terminal_review=True), accept is blocked until one route-sketch-derived custom action is sandboxed, unless force_accept_without_rescue and rescue_not_actionable_reason are supplied.",
+          "skip marks the node terminal and should be reserved for blocked/no-viable-action cases."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.stage.sandbox_try",
+      "kind": "stage_policy",
+      "stage": "sandbox_try",
+      "mode": "audit",
+      "priority": 88,
+      "guardrail_limit": 4,
+      "self_prompts": [
+        "With no active route_plan_brief, normally register a short revision-0 provisional thesis from molecule_brief and functional_group_brief before broad local search; if the target is simple or those facts cannot yet support a useful seed, use reaction_sites() first. If ring membership, stereocenter location, or whole-molecule atom/bond indexing is specifically needed, use context(detail=\"structure\").",
+        "Compare route paradigms first: late FGI/editing vs scaffold assembly vs electronic-state strategy.",
+        "Prefer real convergent handles and preserve mature scaffolds unless deep construction is justified."
+      ],
+      "command_policy": {
+        "primary_next": [
+          "sandbox_list"
+        ],
+        "support": [
+          "sandbox_clear only if the visible comparison is polluted"
+        ],
+        "guardrails": [
+          "Hidden legacy sandboxing is diagnostic; prefer try_action(action_id) in normal flow."
+        ]
+      }
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_context_compact",
+      "kind": "event_tags",
+      "event": "stage.context_compact",
+      "tags": [
+        "molecule_triage",
+        "scaffold",
+        "convergent",
+        "route_mode"
+      ],
+      "priority": 1000,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_guide",
+      "kind": "event_tags",
+      "event": "stage.guide",
+      "tags": [
+        "chemist_guidance",
+        "site_fidelity",
+        "reaction_direction",
+        "audit"
+      ],
+      "priority": 999,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_route_plan",
+      "kind": "event_tags",
+      "event": "stage.route_plan",
+      "tags": [
+        "route_plan",
+        "route_mode",
+        "strategic_rescue",
+        "audit"
+      ],
+      "priority": 998,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_reaction_sites",
+      "kind": "event_tags",
+      "event": "stage.reaction_sites",
+      "tags": [
+        "site_fidelity",
+        "convergent",
+        "top_level",
+        "handle_timing"
+      ],
+      "priority": 997,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_explore_site",
+      "kind": "event_tags",
+      "event": "stage.explore_site",
+      "tags": [
+        "site_fidelity",
+        "competition"
+      ],
+      "priority": 996,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_explore_reaction",
+      "kind": "event_tags",
+      "event": "stage.explore_reaction",
+      "tags": [
+        "site_fidelity",
+        "competition"
+      ],
+      "priority": 995,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_route_sketch",
+      "kind": "event_tags",
+      "event": "stage.route_sketch",
+      "tags": [
+        "strategic_rescue",
+        "action_space_weak",
+        "custom_precursor",
+        "audit"
+      ],
+      "priority": 994,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_propose_action",
+      "kind": "event_tags",
+      "event": "stage.propose_action",
+      "tags": [
+        "custom_precursor",
+        "propose_action",
+        "action_rejection",
+        "audit"
+      ],
+      "priority": 993,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_try_action",
+      "kind": "event_tags",
+      "event": "stage.try_action",
+      "tags": [
+        "sandbox",
+        "template_evidence",
+        "forward_validation"
+      ],
+      "priority": 992,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_sandbox_try",
+      "kind": "event_tags",
+      "event": "stage.sandbox_try",
+      "tags": [
+        "sandbox",
+        "template_evidence",
+        "forward_validation"
+      ],
+      "priority": 991,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_sandbox_list",
+      "kind": "event_tags",
+      "event": "stage.sandbox_list",
+      "tags": [
+        "sandbox",
+        "template_evidence",
+        "action_rejection"
+      ],
+      "priority": 990,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_commit",
+      "kind": "event_tags",
+      "event": "stage.commit",
+      "tags": [
+        "commit",
+        "atom_accounting",
+        "site_fidelity",
+        "forward_validation"
+      ],
+      "priority": 989,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.stage_terminal",
+      "kind": "event_tags",
+      "event": "stage.terminal",
+      "tags": [
+        "advanced_terminal",
+        "terminal",
+        "buyability"
+      ],
+      "priority": 988,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_system_template",
+      "kind": "event_tags",
+      "event": "action.system_template",
+      "tags": [
+        "template_evidence"
+      ],
+      "priority": 987,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_intentional_attachment_placeholder",
+      "kind": "event_tags",
+      "event": "action.intentional_attachment_placeholder",
+      "tags": [
+        "intentional_attachment_placeholder",
+        "custom_precursor",
+        "propose_action",
+        "audit"
+      ],
+      "priority": 986,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_custom_precursors",
+      "kind": "event_tags",
+      "event": "action.custom_precursors",
+      "tags": [
+        "custom_precursor",
+        "llm_proposed",
+        "action_rejection",
+        "audit"
+      ],
+      "priority": 985,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_precursor_normalization",
+      "kind": "event_tags",
+      "event": "action.precursor_normalization",
+      "tags": [
+        "precursor_normalization",
+        "organometallic_source_obligation",
+        "organometallic"
+      ],
+      "priority": 984,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_duplicates_existing_action",
+      "kind": "event_tags",
+      "event": "action.duplicates_existing_action",
+      "tags": [
+        "action_rejection",
+        "custom_precursor",
+        "site_fidelity"
+      ],
+      "priority": 983,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_smart_capping",
+      "kind": "event_tags",
+      "event": "action.smart_capping",
+      "tags": [
+        "handle_timing",
+        "compatibility"
+      ],
+      "priority": 982,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.action_terminal_acceptance",
+      "kind": "event_tags",
+      "event": "action.terminal_acceptance",
+      "tags": [
+        "terminal",
+        "advanced_terminal",
+        "buyability"
+      ],
+      "priority": 981,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.sandbox_success",
+      "kind": "event_tags",
+      "event": "sandbox.success",
+      "tags": [
+        "sandbox"
+      ],
+      "priority": 980,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.sandbox_failure",
+      "kind": "event_tags",
+      "event": "sandbox.failure",
+      "tags": [
+        "sandbox",
+        "action_rejection"
+      ],
+      "priority": 979,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_same_site_competition",
+      "kind": "event_tags",
+      "event": "site.same_site_competition",
+      "tags": [
+        "competition",
+        "site_fidelity"
+      ],
+      "priority": 978,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_ring_bond_review",
+      "kind": "event_tags",
+      "event": "site.ring_bond_review",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_bond",
+        "ring_construction"
+      ],
+      "priority": 977,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_same_core_custom_precursor",
+      "kind": "event_tags",
+      "event": "site.same_core_custom_precursor",
+      "tags": [
+        "site_fidelity",
+        "custom_precursor"
+      ],
+      "priority": 976,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_site_anchor_drift",
+      "kind": "event_tags",
+      "event": "site.site_anchor_drift",
+      "tags": [
+        "site_fidelity",
+        "site_shift"
+      ],
+      "priority": 975,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_site_retention_missing_evidence",
+      "kind": "event_tags",
+      "event": "site.site_retention_missing_evidence",
+      "tags": [
+        "site_fidelity",
+        "forward_validation"
+      ],
+      "priority": 974,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.site_fused_heteroaryl_site_sensitive",
+      "kind": "event_tags",
+      "event": "site.fused_heteroaryl_site_sensitive",
+      "tags": [
+        "site_fidelity",
+        "fused_heteroaryl",
+        "heteroaryl"
+      ],
+      "priority": 973,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_clear",
+      "kind": "event_tags",
+      "event": "validation.clear",
+      "tags": [
+        "forward_validation",
+        "clear",
+        "template_evidence"
+      ],
+      "priority": 972,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_warning",
+      "kind": "event_tags",
+      "event": "validation.warning",
+      "tags": [
+        "forward_validation"
+      ],
+      "priority": 971,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_inconclusive",
+      "kind": "event_tags",
+      "event": "validation.inconclusive",
+      "tags": [
+        "forward_validation",
+        "inconclusive",
+        "commit_gate"
+      ],
+      "priority": 970,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_proof_required",
+      "kind": "event_tags",
+      "event": "validation.proof_required",
+      "tags": [
+        "forward_validation",
+        "proof_required",
+        "proof_obligation",
+        "commit_gate"
+      ],
+      "priority": 969,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_blocked",
+      "kind": "event_tags",
+      "event": "validation.blocked",
+      "tags": [
+        "forward_validation",
+        "blocked",
+        "hard_fail"
+      ],
+      "priority": 968,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_forward_template_unavailable",
+      "kind": "event_tags",
+      "event": "validation.forward_template_unavailable",
+      "tags": [
+        "forward_validation",
+        "tool_limit"
+      ],
+      "priority": 967,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_forward_template_target_not_regenerated",
+      "kind": "event_tags",
+      "event": "validation.forward_template_target_not_regenerated",
+      "tags": [
+        "forward_validation",
+        "tool_limit"
+      ],
+      "priority": 966,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_major_scaffold_not_inherited",
+      "kind": "event_tags",
+      "event": "validation.major_scaffold_not_inherited",
+      "tags": [
+        "site_fidelity",
+        "forward_validation"
+      ],
+      "priority": 965,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_new_fused_medium_ring_requires_evidence",
+      "kind": "event_tags",
+      "event": "validation.new_fused_medium_ring_requires_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "fused_ring",
+        "scaffold_edit"
+      ],
+      "priority": 964,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_new_fused_ring_requires_evidence",
+      "kind": "event_tags",
+      "event": "validation.new_fused_ring_requires_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "fused_ring",
+        "scaffold_edit"
+      ],
+      "priority": 963,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_new_spiro_center_requires_evidence",
+      "kind": "event_tags",
+      "event": "validation.new_spiro_center_requires_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "spiro",
+        "scaffold_edit"
+      ],
+      "priority": 962,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_new_bridged_system_requires_evidence",
+      "kind": "event_tags",
+      "event": "validation.new_bridged_system_requires_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "bridged",
+        "scaffold_edit"
+      ],
+      "priority": 961,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_new_macrocycle_requires_evidence",
+      "kind": "event_tags",
+      "event": "validation.new_macrocycle_requires_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "macrocycle",
+        "scaffold_edit"
+      ],
+      "priority": 960,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_high_risk_topology_requires_independent_evidence",
+      "kind": "event_tags",
+      "event": "validation.high_risk_topology_requires_independent_evidence",
+      "tags": [
+        "topology_signal",
+        "topology",
+        "ring_construction",
+        "scaffold_edit"
+      ],
+      "priority": 959,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_skeleton_imbalance",
+      "kind": "event_tags",
+      "event": "validation.skeleton_imbalance",
+      "tags": [
+        "atom_accounting",
+        "skeleton_imbalance",
+        "multicomponent"
+      ],
+      "priority": 958,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_severe_imbalance",
+      "kind": "event_tags",
+      "event": "validation.severe_imbalance",
+      "tags": [
+        "atom_accounting",
+        "hard_fail"
+      ],
+      "priority": 957,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.validation_functional_group_condition_conflict",
+      "kind": "event_tags",
+      "event": "validation.functional_group_condition_conflict",
+      "tags": [
+        "compatibility",
+        "protection"
+      ],
+      "priority": 956,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.decision_commit_requested",
+      "kind": "event_tags",
+      "event": "decision.commit_requested",
+      "tags": [
+        "commit",
+        "audit"
+      ],
+      "priority": 955,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.decision_commit_with_override",
+      "kind": "event_tags",
+      "event": "decision.commit_with_override",
+      "tags": [
+        "commit",
+        "audit",
+        "forward_validation",
+        "commit_gate"
+      ],
+      "priority": 954,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.decision_sandbox_clear",
+      "kind": "event_tags",
+      "event": "decision.sandbox_clear",
+      "tags": [
+        "sandbox",
+        "action_rejection"
+      ],
+      "priority": 953,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.decision_accept_terminal",
+      "kind": "event_tags",
+      "event": "decision.accept_terminal",
+      "tags": [
+        "terminal",
+        "advanced_terminal",
+        "buyability"
+      ],
+      "priority": 952,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.decision_skip_blocked",
+      "kind": "event_tags",
+      "event": "decision.skip_blocked",
+      "tags": [
+        "terminal",
+        "action_rejection"
+      ],
+      "priority": 951,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_directive",
+      "kind": "event_tags",
+      "event": "chemist.directive",
+      "tags": [
+        "chemist_guidance",
+        "audit"
+      ],
+      "priority": 950,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_site_hint",
+      "kind": "event_tags",
+      "event": "chemist.site_hint",
+      "tags": [
+        "chemist_guidance",
+        "site_fidelity"
+      ],
+      "priority": 949,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_reaction_hint",
+      "kind": "event_tags",
+      "event": "chemist.reaction_hint",
+      "tags": [
+        "chemist_guidance",
+        "reaction_direction"
+      ],
+      "priority": 948,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_precursor_hint",
+      "kind": "event_tags",
+      "event": "chemist.precursor_hint",
+      "tags": [
+        "chemist_guidance",
+        "custom_precursor"
+      ],
+      "priority": 947,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_terminal_hint",
+      "kind": "event_tags",
+      "event": "chemist.terminal_hint",
+      "tags": [
+        "chemist_guidance",
+        "terminal",
+        "advanced_terminal"
+      ],
+      "priority": 946,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.chemist_approval",
+      "kind": "event_tags",
+      "event": "chemist.approval",
+      "tags": [
+        "chemist_guidance",
+        "commit",
+        "audit"
+      ],
+      "priority": 945,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_action_space_weak",
+      "kind": "event_tags",
+      "event": "strategy.action_space_weak",
+      "tags": [
+        "strategic_rescue",
+        "action_space_weak",
+        "custom_precursor"
+      ],
+      "priority": 944,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_plan_active",
+      "kind": "event_tags",
+      "event": "strategy.route_plan_active",
+      "tags": [
+        "route_plan",
+        "strategic_rescue",
+        "audit"
+      ],
+      "priority": 943,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_plan_revised",
+      "kind": "event_tags",
+      "event": "strategy.route_plan_revised",
+      "tags": [
+        "route_plan",
+        "strategic_rescue",
+        "audit"
+      ],
+      "priority": 942,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_mode_triage",
+      "kind": "event_tags",
+      "event": "strategy.route_mode_triage",
+      "tags": [
+        "route_mode",
+        "late_functionalization",
+        "scaffold_assembly",
+        "electronic_state_strategy",
+        "strategic_rescue"
+      ],
+      "priority": 941,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_sketch_requested",
+      "kind": "event_tags",
+      "event": "strategy.route_sketch_requested",
+      "tags": [
+        "strategic_rescue",
+        "route_sketch",
+        "action_rejection"
+      ],
+      "priority": 940,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_sketch_active",
+      "kind": "event_tags",
+      "event": "strategy.route_sketch_active",
+      "tags": [
+        "strategic_rescue",
+        "route_sketch",
+        "audit"
+      ],
+      "priority": 939,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_route_sketch_used_for_custom_action",
+      "kind": "event_tags",
+      "event": "strategy.route_sketch_used_for_custom_action",
+      "tags": [
+        "strategic_rescue",
+        "custom_precursor",
+        "audit"
+      ],
+      "priority": 938,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.event.strategy_advanced_terminal_rescue_requested",
+      "kind": "event_tags",
+      "event": "strategy.advanced_terminal_rescue_requested",
+      "tags": [
+        "strategic_rescue",
+        "advanced_terminal",
+        "terminal_rescue",
+        "custom_precursor"
+      ],
+      "priority": 937,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.llm_owns_strategy",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Rachel supplies structured chemical facts, candidate scaffolds, risks, and challenges; the LLM owns provisional route hypotheses, reaction design, comparison, and final chemistry judgment.",
+      "priority": 2000,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.chemistry_outranks_tools",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Chemical plausibility and route quality outrank template score, validation convenience, and route depth.",
+      "priority": 1999,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.route_plan_initialization",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "At route-plan initialization, record the likely route paradigm, evidence, strategic risks, and revision triggers.",
+      "priority": 1998,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.action_space_is_evidence",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Treat local action-space as evidence, not the full retrosynthesis boundary; when it captures only local FGI while core construction remains unresolved, consider revising route_plan or using route_sketch.",
+      "priority": 1997,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.reactive_handles_late",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Prefer installing reactive temporary handles late when compatible with the route; protection/deprotection must remain explicit tree steps.",
+      "priority": 1996,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.topology_requires_justification",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Prefer preserving established scaffold topology when routes are comparably credible; any ring construction, opening, or scaffold change still requires explicit mechanistic and atom-source justification.",
+      "priority": 1995,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.peer_hypotheses",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Listed Rachel actions and complete LLM-designed one-step actions are peer hypotheses. For an LLM-designed candidate, build the positive chemical case first; use comparison as secondary selection provenance, then validate the selected event through the shared sandbox and commit path.",
+      "priority": 1994,
+      "activation": {
+        "any_events": [
+          "stage.propose_action",
+          "stage.reaction_sites",
+          "stage.context_compact",
+          "stage.route_sketch",
+          "stage.explore_site",
+          "stage.route_plan",
+          "stage.guide",
+          "stage.explore_reaction"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.blocked_system_error",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "A blocked validation caused by a system error is an execution stop: repair or rerun validation; it is not chemical disproof, and validation_override must not conceal unavailable validation.",
+      "priority": 1900,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.blocked"
+            ]
+          },
+          {
+            "any_tags": [
+              "system_error"
+            ]
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.blocked_contradiction",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "A chemically contradictory blocked result cannot be committed; revise or reject the candidate on the named contradiction.",
+      "priority": 1890,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.blocked"
+            ]
+          },
+          {
+            "not": {
+              "any_tags": [
+                "system_error"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.proof_required",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Treat proof_required as a proof obligation: add the named atom-source, tether, anchor, or mechanistic evidence, revise the precursor/action, or use an explicit override only after the concern is chemically managed.",
+      "priority": 1880,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.proof_required"
+            ]
+          },
+          {
+            "not": {
+              "any_events": [
+                "validation.blocked"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.validation_inconclusive",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "For inconclusive validation, separate evidence gaps from tool limits; tool or template absence is neither proof nor chemical disproof, so complete the chemistry review and repair or rerun tools when useful.",
+      "priority": 1870,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.inconclusive"
+            ]
+          },
+          {
+            "not": {
+              "any_events": [
+                "validation.blocked",
+                "validation.proof_required"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.validation_warning",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Address the named validation warnings and their chemical consequences before commit.",
+      "priority": 1860,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.warning"
+            ]
+          },
+          {
+            "not": {
+              "any_events": [
+                "validation.blocked",
+                "validation.proof_required",
+                "validation.inconclusive"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.validation_clear",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Clear validation has no gate objection; continue normal chemistry review because clear is not proof.",
+      "priority": 1850,
+      "activation": {
+        "all": [
+          {
+            "any_events": [
+              "validation.clear"
+            ]
+          },
+          {
+            "not": {
+              "any_events": [
+                "validation.blocked",
+                "validation.proof_required",
+                "validation.inconclusive",
+                "validation.warning"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.topology_preservation",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Prefer preserving established scaffold topology when routes are comparably credible; any ring construction, opening, or scaffold change still requires explicit mechanistic and atom-source justification.",
+      "priority": 1800,
+      "activation": {
+        "any_tags": [
+          "topology_signal"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.topology_verification",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "For ring, fused, spiro, bridged, macrocycle, rearrangement, or scaffold-editing actions, use reaction topology verification: observed deltas must match the declared mechanism, atom-source/tether evidence, preserved anchors, and any optional family interpretation.",
+      "priority": 1790,
+      "activation": {
+        "any_tags": [
+          "topology_signal"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.custom_peer_hypothesis",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Listed Rachel actions and complete LLM-designed one-step actions are peer hypotheses. For an LLM-designed candidate, build the positive chemical case first; use comparison as secondary selection provenance, then validate the selected event through the shared sandbox and commit path.",
+      "priority": 1780,
+      "activation": {
+        "all": [
+          {
+            "any_tags": [
+              "custom_precursor"
+            ]
+          },
+          {
+            "not": {
+              "any_tags": [
+                "topology_signal"
+              ]
+            }
+          }
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.atom_accounting",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Account for key C/N/S/halogen/protecting-group atoms and missing small molecules before commit.",
+      "priority": 1770,
+      "activation": {
+        "any_tags": [
+          "atom_accounting",
+          "atom_source",
+          "multicomponent"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.protection_compatibility",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Prefer installing reactive temporary handles late when compatible with the route; protection/deprotection must remain explicit tree steps.",
+      "priority": 1760,
+      "activation": {
+        "any_tags": [
+          "protection",
+          "compatibility"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.route_plan_hypothesis",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "At route-plan initialization, record the likely route paradigm, evidence, strategic risks, and revision triggers.",
+      "priority": 1750,
+      "activation": {
+        "any_events": [
+          "strategy.route_mode_triage",
+          "stage.route_plan"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.route_plan_limits",
+      "kind": "quality_guardrail",
+      "audience": "discovery",
+      "text": "Keep route_plan within these limits: route_thesis 360 chars; route_mode 100; key_disconnections 5 items x 160 chars; preferred_precursor_logic 4 x 180; protect_or_preserve 4 x 160; mode_evidence, strategic_risks, and revision_triggers 5 x 180 each; terminal_rescue_policy 220; revision_reason 160. Rachel rejects an over-limit update and never truncates it.",
+      "priority": 1999,
+      "activation": {
+        "any_events": [
+          "strategy.route_mode_triage",
+          "stage.route_plan"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.route_plan_action_space",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Treat local action-space as evidence, not the full retrosynthesis boundary; when it captures only local FGI while core construction remains unresolved, consider revising route_plan or using route_sketch.",
+      "priority": 1740,
+      "activation": {
+        "any_events": [
+          "strategy.route_mode_triage",
+          "stage.route_plan"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.advanced_terminal_quality",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Drive toward simple, stable, purchasable precursors when chemistry remains credible; accept honest advanced terminals over speculative low-confidence deep disconnections.",
+      "priority": 1730,
+      "activation": {
+        "any_events": [
+          "action.terminal_acceptance",
+          "decision.accept_terminal",
+          "stage.terminal",
+          "strategy.advanced_terminal_rescue_requested"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.guardrail.advanced_terminal_rescue",
+      "kind": "quality_guardrail",
+      "audience": "audit",
+      "text": "Do not accept a nontrivial advanced terminal until a short target-oriented rescue sketch has asked whether simpler precursors, selectivity, and one executable next step exist.",
+      "priority": 1720,
+      "activation": {
+        "any_events": [
+          "action.terminal_acceptance",
+          "decision.accept_terminal",
+          "stage.terminal",
+          "strategy.advanced_terminal_rescue_requested"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.self.intentional_attachment_placeholder",
+      "kind": "self_prompt",
+      "text": "A '*' dummy atom in a system precursor preview is an intentional attachment-site marker, not a real precursor or an incomplete-template verdict; complete the same disconnection with propose_action before validation.",
+      "placement": "prepend",
+      "priority": 1000,
+      "activation": {
+        "any_events": ["action.intentional_attachment_placeholder"]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.audit.commit_selection",
+      "kind": "audit_fields",
+      "fields": [
+        "selected_action_id",
+        "rejected_action_ids",
+        "sandbox_evidence",
+        "explicit_reasoning",
+        "risk_assessment",
+        "process_conditions"
+      ],
+      "priority": 1000,
+      "activation": {
+        "any_events": ["stage.sandbox_list", "stage.commit"]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.audit.commit_cards",
+      "kind": "audit_fields",
+      "fields": ["applied_experience_card_ids"],
+      "priority": 990,
+      "activation": {"any_events": ["stage.commit"]},
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.audit.topology",
+      "kind": "audit_fields",
+      "fields": [
+        "intended_deltas",
+        "expected_ring_change",
+        "changed_bonds",
+        "preserved_anchors",
+        "mechanistic_evidence"
+      ],
+      "priority": 980,
+      "activation": {"any_tags": ["topology_signal"]},
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.audit.validation",
+      "kind": "audit_fields",
+      "fields": ["validation_observations"],
+      "priority": 970,
+      "activation": {"event_prefixes": ["validation."]},
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.audit.proof",
+      "kind": "audit_fields",
+      "fields": ["proof_obligations"],
+      "priority": 960,
+      "activation": {
+        "any_events": [
+          "validation.proof_required",
+          "decision.commit_with_override"
+        ]
+      },
+      "locked": true
+    },
+    {
+      "id": "rachel.base.prompt.tool.inspect_structures",
+      "kind": "tool_hint",
+      "text": "inspect_structures(molecules=[{label: ..., smiles: ...}], include_current=true) is available for transient product/precursor atom, bond, and ring indices when preparing changed_bonds, preserved_anchors, or atom-source evidence.",
+      "priority": 1000,
+      "activation": {
+        "any": [
+          {"any_events": ["stage.propose_action"]},
+          {
+            "all": [
+              {"any_events": ["stage.route_sketch"]},
+              {"any_events": ["strategy.route_sketch_requested"]}
+            ]
+          },
+          {
+            "all": [
+              {
+                "any_events": [
+                  "stage.explore_site",
+                  "stage.try_action",
+                  "stage.sandbox_try",
+                  "stage.sandbox_list"
+                ]
+              },
+              {
+                "any_tags": [
+                  "topology_signal",
+                  "atom_mapping",
+                  "formed_bonds",
+                  "cleaved_bonds"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "locked": true
+    }
+  ]
+}

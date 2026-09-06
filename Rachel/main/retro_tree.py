@@ -49,6 +49,8 @@ class TemplateEvidence:
     bond_atoms: List[int] = field(default_factory=list)
     heuristic_score: float = 0.0
     is_fgi: bool = False
+    knowledge_profile_hash: str = ""
+    knowledge_refs: List[Dict[str, str]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -66,7 +68,11 @@ class LLMDecision:
     rejected_alternatives: List[Dict[str, str]] = field(default_factory=list)
     protection_needed: bool = False
     risk_assessment: str = ""
+    process_conditions: Dict[str, Any] = field(default_factory=dict)
     site_audit_summary: str = ""
+    selected_candidate_id: str = ""
+    selected_strategy_id: str = ""
+    decision_audit: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -90,20 +96,43 @@ def _flatten_fv(fv: Dict[str, Any]) -> Dict[str, Any]:
     if "assessment" in fv:
         # Original full dict from validate_forward
         assess = fv["assessment"]
-        return {
+        gate = assess.get("gate")
+        if gate is None:
+            try:
+                from Rachel.chem_tools.validation_policy import build_validation_gate
+                gate = build_validation_gate(fv)
+            except Exception:
+                gate = None
+        flattened = {
             "ok": fv.get("ok", False),
             "pass": assess.get("pass"),
             "feasibility_score": assess.get("feasibility_score"),
             "hard_fail_reasons": assess.get("hard_fail_reasons"),
         }
+        if gate is not None:
+            flattened["gate"] = gate
+        policy_preview = assess.get("policy_preview")
+        if policy_preview is not None:
+            flattened["policy_preview"] = policy_preview
+        evidence_packet = assess.get("evidence_packet")
+        if evidence_packet is not None:
+            flattened["evidence_packet"] = evidence_packet
+        return flattened
     else:
         # Already flattened (from a previous save/load round-trip)
-        return {
+        flattened = {
             "ok": fv.get("ok", False),
             "pass": fv.get("pass"),
             "feasibility_score": fv.get("feasibility_score"),
             "hard_fail_reasons": fv.get("hard_fail_reasons"),
         }
+        if "gate" in fv:
+            flattened["gate"] = fv.get("gate")
+        if "policy_preview" in fv:
+            flattened["policy_preview"] = fv.get("policy_preview")
+        if "evidence_packet" in fv:
+            flattened["evidence_packet"] = fv.get("evidence_packet")
+        return flattened
 
 
 @dataclass
@@ -179,6 +208,7 @@ class ReactionNode:
     reaction_smiles: str = ""               # "A.B>>Product" 格式
     product_node: str = ""                  # 产物 MoleculeNode.node_id
     reactant_nodes: List[str] = field(default_factory=list)
+    reagents: List[str] = field(default_factory=list)
     reaction_type: str = ""                 # 反应类型名称
     template_evidence: Optional[TemplateEvidence] = None
     llm_decision: Optional[LLMDecision] = None
@@ -191,6 +221,7 @@ class ReactionNode:
             "reaction_smiles": self.reaction_smiles,
             "product_node": self.product_node,
             "reactant_nodes": list(self.reactant_nodes),
+            "reagents": list(self.reagents),
             "reaction_type": self.reaction_type,
         }
         if self.template_evidence:
@@ -212,6 +243,7 @@ class ReactionNode:
             reaction_smiles=d.get("reaction_smiles", ""),
             product_node=d.get("product_node", ""),
             reactant_nodes=d.get("reactant_nodes", []),
+            reagents=d.get("reagents", []),
             reaction_type=d.get("reaction_type", ""),
             template_evidence=TemplateEvidence.from_dict(te) if te else None,
             llm_decision=LLMDecision.from_dict(ld) if ld else None,
@@ -405,6 +437,7 @@ class RetrosynthesisTree:
         self,
         product_smiles: str,
         precursors: List[str],
+        reagents: Optional[List[str]] = None,
         reaction_type: str = "",
         template_evidence: Optional[TemplateEvidence] = None,
         llm_decision: Optional[LLMDecision] = None,
@@ -430,6 +463,7 @@ class RetrosynthesisTree:
             reaction_smiles=rxn_smiles,
             product_node=product_node.node_id,
             reactant_nodes=reactant_ids,
+            reagents=[canonical(smi) or smi for smi in (reagents or [])],
             reaction_type=reaction_type,
             template_evidence=template_evidence,
             llm_decision=llm_decision,
@@ -437,6 +471,81 @@ class RetrosynthesisTree:
         )
         self.reaction_nodes.append(rxn)
         return rxn
+
+    def reachable_molecule_ids(
+        self,
+        reactions: Optional[List[ReactionNode]] = None,
+    ) -> set[str]:
+        """Return molecule ids reachable from the target through route reactions."""
+        target_node = self.get_molecule_by_smiles(self.target)
+        if target_node is None:
+            return set()
+
+        by_product: Dict[str, List[ReactionNode]] = {}
+        for reaction in self.reaction_nodes if reactions is None else reactions:
+            by_product.setdefault(reaction.product_node, []).append(reaction)
+
+        reachable: set[str] = set()
+        pending = [target_node.node_id]
+        while pending:
+            node_id = pending.pop()
+            if node_id in reachable:
+                continue
+            reachable.add(node_id)
+            for reaction in by_product.get(node_id, []):
+                pending.extend(reaction.reactant_nodes)
+        return reachable
+
+    def detach_expansion(self, node_id: str) -> Dict[str, List[str]]:
+        """Detach one product expansion and prune only newly unreachable route data."""
+        if node_id not in self.molecule_nodes:
+            raise ValueError(f"molecule node not found: {node_id}")
+        if node_id not in self.reachable_molecule_ids():
+            raise ValueError(f"molecule node is not reachable from target: {node_id}")
+
+        detached_step_ids = [
+            reaction.step_id
+            for reaction in self.reaction_nodes
+            if reaction.product_node == node_id
+        ]
+        remaining_reactions = [
+            reaction
+            for reaction in self.reaction_nodes
+            if reaction.product_node != node_id
+        ]
+        reachable = self.reachable_molecule_ids(remaining_reactions)
+        kept_reactions = [
+            reaction
+            for reaction in remaining_reactions
+            if reaction.product_node in reachable
+        ]
+        kept_step_ids = {reaction.step_id for reaction in kept_reactions}
+        removed_step_ids = [
+            reaction.step_id
+            for reaction in self.reaction_nodes
+            if reaction.step_id not in kept_step_ids
+        ]
+        removed_node_ids = [
+            molecule_id
+            for molecule_id in self.molecule_nodes
+            if molecule_id not in reachable
+        ]
+
+        self.reaction_nodes = kept_reactions
+        self.molecule_nodes = {
+            molecule_id: molecule
+            for molecule_id, molecule in self.molecule_nodes.items()
+            if molecule_id in reachable
+        }
+        self._smiles_index = {
+            molecule.smiles: molecule_id
+            for molecule_id, molecule in self.molecule_nodes.items()
+        }
+        return {
+            "detached_step_ids": detached_step_ids,
+            "removed_step_ids": removed_step_ids,
+            "removed_node_ids": removed_node_ids,
+        }
 
     # ── 状态查询 ──
 
@@ -491,6 +600,10 @@ class RetrosynthesisTree:
         self.status = TreeStatus.COMPLETE.value
         self.llm_summary = llm_summary
 
+    def reopen(self) -> None:
+        self.status = TreeStatus.IN_PROGRESS.value
+        self.llm_summary = ""
+
     def fail(self, reason: str = "") -> None:
         self.status = TreeStatus.FAILED.value
         self.llm_summary = reason
@@ -507,6 +620,10 @@ class RetrosynthesisTree:
             "llm_summary": self.llm_summary,
             "total_steps": self.total_steps,
             "max_depth": self.max_depth,
+            "id_counters": {
+                "molecule": self._mol_counter,
+                "reaction": self._rxn_counter,
+            },
             "molecule_nodes": {
                 nid: n.to_dict() for nid, n in self.molecule_nodes.items()
             },
@@ -550,6 +667,23 @@ class RetrosynthesisTree:
                 num = int(rxn.step_id.split("_")[1])
                 tree._rxn_counter = max(tree._rxn_counter, num)
             except (IndexError, ValueError):
+                pass
+
+        counters = data.get("id_counters") or {}
+        if isinstance(counters, dict):
+            try:
+                tree._mol_counter = max(
+                    tree._mol_counter,
+                    int(counters.get("molecule", 0)),
+                )
+            except (TypeError, ValueError):
+                pass
+            try:
+                tree._rxn_counter = max(
+                    tree._rxn_counter,
+                    int(counters.get("reaction", 0)),
+                )
+            except (TypeError, ValueError):
                 pass
 
         return tree

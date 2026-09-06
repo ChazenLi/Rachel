@@ -1,0 +1,359 @@
+{
+  "primary_disclosure": "site_reaction_map",
+  "site_expand_command": "explore_site(site_id)",
+  "action_count_meaning": "Number of concrete action instances at this site.",
+  "site_reaction_map": [
+    {
+      "site_id": "bond:0",
+      "site_type": "bond",
+      "site_hint": "alkyl_sp3_c-amide_n bond",
+      "action_count": 4,
+      "reaction_count": 4,
+      "source_summary": [
+        "bond",
+        "smart_capping"
+      ],
+      "risk_hint": "functional_group_compatibility, intentional_attachment_placeholder, requires_llm_completion, heuristic_cap",
+      "reactions": [
+        {
+          "reaction_id": "reaction:mitsunobu_amination",
+          "reaction_name": "Mitsunobu Amination",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility, intentional_attachment_placeholder, requires_llm_completion"
+        },
+        {
+          "reaction_id": "reaction:alkyl_halide_amination_sn2",
+          "reaction_name": "Alkyl Halide Amination SN2",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility, intentional_attachment_placeholder, requires_llm_completion"
+        },
+        {
+          "reaction_id": "reaction:mitsunobu",
+          "reaction_name": "Mitsunobu",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility"
+        },
+        {
+          "reaction_id": "reaction:llm_completed_structural_disconnection",
+          "reaction_name": "LLM-completed structural disconnection",
+          "action_count": 1,
+          "source_summary": [
+            "smart_capping"
+          ],
+          "risk_hint": "heuristic_cap, requires_llm_completion"
+        }
+      ],
+      "next_step": "explore_site('bond:0')",
+      "competition_hint": "same-site competition: 4 reactions"
+    },
+    {
+      "site_id": "bond:3",
+      "site_type": "bond",
+      "site_hint": "carbonyl_c-carbamate_o bond",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "smart_capping"
+      ],
+      "risk_hint": "heuristic_cap, requires_llm_completion",
+      "reactions": [
+        {
+          "reaction_id": "reaction:llm_completed_structural_disconnection",
+          "reaction_name": "LLM-completed structural disconnection",
+          "action_count": 1,
+          "source_summary": [
+            "smart_capping"
+          ],
+          "risk_hint": "heuristic_cap, requires_llm_completion"
+        }
+      ],
+      "next_step": "explore_site('bond:3')"
+    },
+    {
+      "site_id": "bond:1",
+      "site_type": "bond",
+      "site_hint": "amide_n-carbonyl_c bond",
+      "action_count": 6,
+      "reaction_count": 5,
+      "source_summary": [
+        "bond",
+        "smart_capping"
+      ],
+      "risk_hint": "functional_group_compatibility, intentional_attachment_placeholder, requires_llm_completion, heuristic_cap",
+      "reactions": [
+        {
+          "reaction_id": "reaction:amide_bond_formation",
+          "reaction_name": "Amide Bond Formation",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility"
+        },
+        {
+          "reaction_id": "reaction:amide_coupling_edc_hatu",
+          "reaction_name": "Amide Coupling EDC HATU",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility"
+        },
+        {
+          "reaction_id": "reaction:alkyl_halide_amination_sn2",
+          "reaction_name": "Alkyl Halide Amination SN2",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility, intentional_attachment_placeholder, requires_llm_completion"
+        },
+        {
+          "reaction_id": "reaction:amidation_from_acid_chloride",
+          "reaction_name": "Amidation From Acid Chloride",
+          "action_count": 1,
+          "source_summary": [
+            "bond"
+          ],
+          "risk_hint": "functional_group_compatibility"
+        },
+        {
+          "reaction_id": "reaction:llm_completed_structural_disconnection",
+          "reaction_name": "LLM-completed structural disconnection",
+          "action_count": 2,
+          "source_summary": [
+            "smart_capping"
+          ],
+          "risk_hint": "heuristic_cap, requires_llm_completion"
+        }
+      ],
+      "next_step": "explore_site('bond:1')",
+      "competition_hint": "same-site competition: 5 reactions"
+    },
+    {
+      "site_id": "fgi:0",
+      "site_type": "fgi",
+      "site_hint": "FGI: Beckmann",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "fgi"
+      ],
+      "risk_hint": "none",
+      "reactions": [
+        {
+          "reaction_id": "reaction:beckmann",
+          "reaction_name": "Beckmann",
+          "action_count": 1,
+          "source_summary": [
+            "fgi"
+          ],
+          "risk_hint": "none"
+        }
+      ],
+      "next_step": "explore_site('fgi:0')"
+    },
+    {
+      "site_id": "fgi:1",
+      "site_type": "fgi",
+      "site_hint": "FGI: Acetal Deprotect Hydrolysis",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "fgi"
+      ],
+      "risk_hint": "none",
+      "reactions": [
+        {
+          "reaction_id": "reaction:acetal_deprotect_hydrolysis",
+          "reaction_name": "Acetal Deprotect Hydrolysis",
+          "action_count": 1,
+          "source_summary": [
+            "fgi"
+          ],
+          "risk_hint": "none"
+        }
+      ],
+      "next_step": "explore_site('fgi:1')"
+    },
+    {
+      "site_id": "fgi:2",
+      "site_type": "fgi",
+      "site_hint": "FGI: Beckmann Rearrangement General",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "fgi"
+      ],
+      "risk_hint": "none",
+      "reactions": [
+        {
+          "reaction_id": "reaction:beckmann_rearrangement_general",
+          "reaction_name": "Beckmann Rearrangement General",
+          "action_count": 1,
+          "source_summary": [
+            "fgi"
+          ],
+          "risk_hint": "none"
+        }
+      ],
+      "next_step": "explore_site('fgi:2')"
+    },
+    {
+      "site_id": "fgi:3",
+      "site_type": "fgi",
+      "site_hint": "FGI: Ley Oxidation",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "fgi"
+      ],
+      "risk_hint": "none",
+      "reactions": [
+        {
+          "reaction_id": "reaction:ley_oxidation",
+          "reaction_name": "Ley Oxidation",
+          "action_count": 1,
+          "source_summary": [
+            "fgi"
+          ],
+          "risk_hint": "none"
+        }
+      ],
+      "next_step": "explore_site('fgi:3')"
+    },
+    {
+      "site_id": "fgi:4",
+      "site_type": "fgi",
+      "site_hint": "FGI: Boc Deprotect TFA",
+      "action_count": 1,
+      "reaction_count": 1,
+      "source_summary": [
+        "fgi"
+      ],
+      "risk_hint": "none",
+      "reactions": [
+        {
+          "reaction_id": "reaction:boc_deprotect_tfa",
+          "reaction_name": "Boc Deprotect TFA",
+          "action_count": 1,
+          "source_summary": [
+            "fgi"
+          ],
+          "risk_hint": "none"
+        }
+      ],
+      "next_step": "explore_site('fgi:4')"
+    }
+  ],
+  "site_count": 8,
+  "total_reaction_count": 15,
+  "next_step": "explore_site(site_id)",
+  "hint": "Choose a site_id, then call explore_site(site_id).",
+  "prompt_brief": {
+    "stage": "reaction_sites",
+    "events": [
+      "stage.reaction_sites",
+      "site.same_site_competition",
+      "strategy.route_plan_active"
+    ],
+    "next_actions": [
+      "explore_site(site_id)",
+      "route_plan(...) if site-map evidence now establishes an evidence-first complete revision-0 plan, enriches a provisional seed, or changes a recorded substantive plan claim"
+    ],
+    "language_guidance": "Use English for all user-facing planning prose and explanations unless the user explicitly requests another language. Preserve SMILES, schema identifiers, enum values, and exact source quotations unchanged.",
+    "quality_guardrails": [
+      "Rachel supplies structured chemical facts, candidate scaffolds, risks, and challenges; the LLM owns provisional route hypotheses, reaction design, comparison, and final chemistry judgment.",
+      "Chemical plausibility and route quality outrank template score, validation convenience, and route depth.",
+      "At route-plan initialization, record the likely route paradigm, evidence, strategic risks, and revision triggers.",
+      "Treat local action-space as evidence, not the full retrosynthesis boundary; when it captures only local FGI while core construction remains unresolved, consider revising route_plan or using route_sketch.",
+      "Prefer installing reactive temporary handles late when compatible with the route; protection/deprotection must remain explicit tree steps.",
+      "Prefer preserving established scaffold topology when routes are comparably credible; any ring construction, opening, or scaffold change still requires explicit mechanistic and atom-source justification.",
+      "Listed Rachel actions and complete LLM-designed one-step actions are peer hypotheses. For an LLM-designed candidate, build the positive chemical case first; use comparison as secondary selection provenance, then validate the selected event through the shared sandbox and commit path."
+    ],
+    "active_experience_card_ids": [
+      "exp_global_route_plan_persistence",
+      "exp_carbon_atom_accounting",
+      "exp_reactive_handle_late_install"
+    ],
+    "experience_prompts": [
+      {
+        "id": "exp_global_route_plan_persistence",
+        "one_line": "An active route_plan is the current synthesis thesis; local evidence should support, falsify, enrich, or materially revise it.",
+        "action_prompt": "Read route_plan_brief while comparing this site or action. State how the local choice preserves or changes the planned disconnection, precursor logic, sequence, handle timing, scaffold policy, or selectivity strategy.",
+        "avoid": "Do not let local template convenience silently replace the recorded route thesis."
+      },
+      {
+        "id": "exp_carbon_atom_accounting",
+        "one_line": "Key atom sources matter more than template names; every new C/N/S/halogen/protecting-group atom needs a source.",
+        "action_prompt": "Before commit, state where key C/N/S/halogen/protecting-group atoms come from. For fused-ring rescue, explicitly identify the source of any new C-C bond and whether it comes from tethered atoms, a small molecule, or a named fragment.",
+        "avoid": "Do not submit a route where the product gains carbon or a ring bond without a precursor or reagent source."
+      },
+      {
+        "id": "exp_reactive_handle_late_install",
+        "one_line": "Distinguish a permanent convergence handle from a temporary high-reactivity handle before deciding when it belongs in the route.",
+        "action_prompt": "For halides, organoboron/organotin groups, acid chlorides, benzyl halides, and related handles, compare installation timing against downstream compatibility and the planned convergent event.",
+        "avoid": "Prefer not to carry a temporary reactive handle through unnecessary steps; do not remove a permanent coupling handle before its planned use."
+      }
+    ],
+    "route_plan_brief": {
+      "id": "plan:51af693a",
+      "revision": 0,
+      "route_thesis": "Use a direct amide disconnection smoke strategy.",
+      "route_mode": "late_fgi",
+      "key_disconnections": [
+        "amide C-N"
+      ],
+      "mode_evidence": [
+        "small amide smoke target"
+      ],
+      "strategic_risks": [
+        "smoke test only"
+      ],
+      "revision_triggers": [
+        "unexpected missing action-space"
+      ],
+      "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+      "last_revision_reason": "release smoke"
+    },
+    "self_prompt": [
+      "Choose a real reaction site, not a reaction name in isolation.",
+      "At a directionally difficult node, consider one optional scout_node round when the local menu is narrow or repetitive, materially distinct disconnection or FGI directions remain unresolved, or prior attempts have not resolved direction. Molecular size or complexity alone is not a trigger; when one well-supported local direction is sufficient, continue directly to explore_site.",
+      "Prioritize convergence, site fidelity, handle timing, and functional-group compatibility; use context(detail=\"structure\") only when whole-molecule topology or atom-index evidence blocks site choice.",
+      "If no route_plan_brief exists after site evidence, establish an evidence-first complete revision-0 plan; if route_plan_brief is a short seed, use the site map and selected explore_site evidence to enrich it into a complete revision-1 plan; if a complete plan is active, identify support, falsification, or evidence that materially revises recorded disconnections, precursor logic, sequence, handle timing, preserve/build choices, risks, or revision triggers."
+    ],
+    "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+    "knowledge_refs": [
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_global_route_plan_persistence"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_carbon_atom_accounting"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_reactive_handle_late_install"
+      }
+    ]
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "status": {
+    "target": "CNC(C)=O",
+    "status": "in_progress",
+    "steps_executed": 0,
+    "pending_count": 0,
+    "total_molecules": 1,
+    "total_steps": 0,
+    "max_depth": 0,
+    "elapsed_sec": 0.1,
+    "tree_complete": false
+  },
+  "current": {
+    "action": "awaiting_decision",
+    "decision_tier": "standard",
+    "smiles": "CNC(C)=O",
+    "node_id": "mol_0",
+    "depth": 0,
+    "cs_score": 1.69,
+    "classification": "trivial",
+    "is_terminal": true,
+    "is_target": true,
+    "depth_limited": false,
+    "steps_executed": 0,
+    "steps_remaining": 10,
+    "molecule_structure": {
+      "smiles": "CNC(C)=O",
+      "formula": "C3H7NO",
+      "mw": 73.09,
+      "descriptors": {
+        "logP": -0.25,
+        "HBD": 1,
+        "HBA": 1,
+        "TPSA": 29.1,
+        "rotatable_bonds": 0,
+        "Fsp3": 0.667,
+        "ring_count": 0,
+        "aromatic_ring_count": 0,
+        "heterocycle_count": 0
+      },
+      "atoms": [
+        {
+          "idx": 0,
+          "element": "C",
+          "charge": 0,
+          "hybridization": "SP3",
+          "in_ring": false,
+          "aromatic": false,
+          "num_hs": 3,
+          "neighbors": [
+            1
+          ]
+        },
+        {
+          "idx": 1,
+          "element": "N",
+          "charge": 0,
+          "hybridization": "SP2",
+          "in_ring": false,
+          "aromatic": false,
+          "num_hs": 1,
+          "neighbors": [
+            0,
+            2
+          ]
+        },
+        {
+          "idx": 2,
+          "element": "C",
+          "charge": 0,
+          "hybridization": "SP2",
+          "in_ring": false,
+          "aromatic": false,
+          "num_hs": 0,
+          "neighbors": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "idx": 3,
+          "element": "C",
+          "charge": 0,
+          "hybridization": "SP3",
+          "in_ring": false,
+          "aromatic": false,
+          "num_hs": 3,
+          "neighbors": [
+            2
+          ]
+        },
+        {
+          "idx": 4,
+          "element": "O",
+          "charge": 0,
+          "hybridization": "SP2",
+          "in_ring": false,
+          "aromatic": false,
+          "num_hs": 0,
+          "neighbors": [
+            2
+          ]
+        }
+      ],
+      "bonds": [
+        {
+          "idx": 0,
+          "atoms": [
+            0,
+            1
+          ],
+          "bond_type": "SINGLE",
+          "in_ring": false,
+          "aromatic": false,
+          "conjugated": false
+        },
+        {
+          "idx": 1,
+          "atoms": [
+            1,
+            2
+          ],
+          "bond_type": "SINGLE",
+          "in_ring": false,
+          "aromatic": false,
+          "conjugated": true
+        },
+        {
+          "idx": 2,
+          "atoms": [
+            2,
+            3
+          ],
+          "bond_type": "SINGLE",
+          "in_ring": false,
+          "aromatic": false,
+          "conjugated": false
+        },
+        {
+          "idx": 3,
+          "atoms": [
+            2,
+            4
+          ],
+          "bond_type": "DOUBLE",
+          "in_ring": false,
+          "aromatic": false,
+          "conjugated": true
+        }
+      ],
+      "rings": [],
+      "stereo": {
+        "chiral_centers": [],
+        "double_bond_stereo": []
+      },
+      "symmetry": {
+        "ratio": 1.0,
+        "level": "none"
+      },
+      "scaffold": {
+        "murcko": "",
+        "tags": [
+          "acyclic"
+        ],
+        "fused_pairs": 0,
+        "bridged_pairs": 0,
+        "spiro_pairs": 0
+      }
+    },
+    "audit_state_summary": {
+      "linear_steps": 0,
+      "linear_target": 4
+    },
+    "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+    "knowledge_refs": [
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.functional_groups",
+        "entry_id": "secondary_amide"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.functional_groups",
+        "entry_id": "acetyl_group"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.cs_smarts",
+        "entry_id": "rachel.base.cs.complexity.amide"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.cs_smarts",
+        "entry_id": "rachel.base.cs.pg.acetyl"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "E08_mitsunobu_amine_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "E18_alkyl_halide_amination_sn2_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "I23_mitsunobu_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.smart_cap_rules",
+        "entry_id": "rachel.base.cap.simple_break_fallback"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "G02_amide_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "G14_amide_coupling_edc_hatu_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "G10_amidation_from_acid_chloride_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.smart_cap_rules",
+        "entry_id": "rachel.base.cap.amide_j_carbonyl"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "E05_beckmann_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "B15_acetal_deprotect_hydrolysis_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "F11_beckmann_rearrangement_general_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "I20_ley_oxidation_retro"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "chem.reactions",
+        "entry_id": "B13_boc_deprotect_TFA_retro"
+      }
+    ],
+    "prompt_brief": {
+      "stage": "context_compact",
+      "events": [
+        "stage.context_compact"
+      ],
+      "next_actions": [
+        "route_plan(...) for a short revision-0 provisional complex-target thesis",
+        "reaction_sites() if the target is simple or site evidence is needed before a useful seed"
+      ],
+      "language_guidance": "Use English for all user-facing planning prose and explanations unless the user explicitly requests another language. Preserve SMILES, schema identifiers, enum values, and exact source quotations unchanged.",
+      "quality_guardrails": [
+        "Rachel supplies structured chemical facts, candidate scaffolds, risks, and challenges; the LLM owns provisional route hypotheses, reaction design, comparison, and final chemistry judgment.",
+        "Chemical plausibility and route quality outrank template score, validation convenience, and route depth.",
+        "At route-plan initialization, record the likely route paradigm, evidence, strategic risks, and revision triggers.",
+        "Treat local action-space as evidence, not the full retrosynthesis boundary; when it captures only local FGI while core construction remains unresolved, consider revising route_plan or using route_sketch.",
+        "Prefer installing reactive temporary handles late when compatible with the route; protection/deprotection must remain explicit tree steps.",
+        "Prefer preserving established scaffold topology when routes are comparably credible; any ring construction, opening, or scaffold change still requires explicit mechanistic and atom-source justification.",
+        "Listed Rachel actions and complete LLM-designed one-step actions are peer hypotheses. For an LLM-designed candidate, build the positive chemical case first; use comparison as secondary selection provenance, then validate the selected event through the shared sandbox and commit path."
+      ],
+      "active_experience_card_ids": [
+        "exp_carbon_atom_accounting"
+      ],
+      "experience_prompts": [
+        {
+          "id": "exp_carbon_atom_accounting",
+          "one_line": "Key atom sources matter more than template names; every new C/N/S/halogen/protecting-group atom needs a source.",
+          "action_prompt": "Before commit, state where key C/N/S/halogen/protecting-group atoms come from. For fused-ring rescue, explicitly identify the source of any new C-C bond and whether it comes from tethered atoms, a small molecule, or a named fragment.",
+          "avoid": "Do not submit a route where the product gains carbon or a ring bond without a precursor or reagent source."
+        }
+      ],
+      "self_prompt": [
+        "With no active route_plan_brief, normally register a short revision-0 provisional thesis from molecule_brief and functional_group_brief before broad local search; if the target is simple or those facts cannot yet support a useful seed, use reaction_sites() first. If ring membership, stereocenter location, or whole-molecule atom/bond indexing is specifically needed, use context(detail=\"structure\").",
+        "Compare route paradigms first: late FGI/editing vs scaffold assembly vs electronic-state strategy.",
+        "Prefer real convergent handles and preserve mature scaffolds unless deep construction is justified."
+      ],
+      "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+      "knowledge_refs": [
+        {
+          "pack_id": "rachel.base",
+          "pack_version": "1.0.0",
+          "pack_kind": "base",
+          "resource": "prompt.experience_cards",
+          "entry_id": "exp_carbon_atom_accounting"
+        }
+      ]
+    }
+  }
+}

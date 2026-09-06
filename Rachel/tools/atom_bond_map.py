@@ -2,9 +2,9 @@
 """Print atom and bond index annotations for a SMILES string.
 
 Examples:
-    python E:/Python/skills/Rachel/tools/atom_bond_map.py --smiles "CCO"
-    echo CCO | python E:/Python/skills/Rachel/tools/atom_bond_map.py
-    python E:/Python/skills/Rachel/tools/atom_bond_map.py --smiles "CCO" --json
+    python -m Rachel.tools.atom_bond_map --smiles "CCO"
+    echo CCO | python -m Rachel.tools.atom_bond_map
+    python -m Rachel.tools.atom_bond_map --smiles "CCO" --json
 """
 
 from __future__ import annotations
@@ -19,53 +19,49 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from rdkit import Chem, RDLogger
-from rdkit.Chem import rdMolDescriptors
+from rdkit import RDLogger
+
+from Rachel.chem_tools.mol_info import analyze_molecule
 
 RDLogger.DisableLog("rdApp.*")
 
 
 def build_atom_bond_map(smiles: str) -> Dict[str, Any]:
-    """Return a structured atom/bond annotation for a SMILES string."""
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
+    """Return the stable atom/bond annotation projected from mol_info."""
+    info = analyze_molecule(smiles)
+    if info.get("ok") is False:
         raise ValueError(f"invalid SMILES: {smiles}")
 
-    canonical_smiles = Chem.MolToSmiles(mol)
-    atoms: List[Dict[str, Any]] = []
-    bonds: List[Dict[str, Any]] = []
-
-    for atom in mol.GetAtoms():
-        atoms.append(
-            {
-                "idx": atom.GetIdx(),
-                "symbol": atom.GetSymbol(),
-                "is_aromatic": atom.GetIsAromatic(),
-                "formal_charge": atom.GetFormalCharge(),
-                "total_hs": atom.GetTotalNumHs(),
-                "degree": atom.GetDegree(),
-                "hybridization": str(atom.GetHybridization()),
-            }
-        )
-
-    for bond in mol.GetBonds():
-        bonds.append(
-            {
-                "idx": bond.GetIdx(),
-                "begin_atom_idx": bond.GetBeginAtomIdx(),
-                "end_atom_idx": bond.GetEndAtomIdx(),
-                "bond_type": str(bond.GetBondType()),
-                "is_aromatic": bond.GetIsAromatic(),
-                "is_in_ring": bond.IsInRing(),
-            }
-        )
+    atoms = [
+        {
+            "idx": atom["idx"],
+            "symbol": atom["element"],
+            "is_aromatic": atom["aromatic"],
+            "formal_charge": atom["charge"],
+            "total_hs": atom["num_hs"],
+            "degree": len(atom["neighbors"]),
+            "hybridization": atom["hybridization"],
+        }
+        for atom in info.get("atoms", [])
+    ]
+    bonds = [
+        {
+            "idx": bond["idx"],
+            "begin_atom_idx": bond["atoms"][0],
+            "end_atom_idx": bond["atoms"][1],
+            "bond_type": bond["bond_type"],
+            "is_aromatic": bond["aromatic"],
+            "is_in_ring": bond["in_ring"],
+        }
+        for bond in info.get("bonds", [])
+    ]
 
     return {
         "input_smiles": smiles,
-        "canonical_smiles": canonical_smiles,
-        "formula": rdMolDescriptors.CalcMolFormula(mol),
-        "atom_count": mol.GetNumAtoms(),
-        "bond_count": mol.GetNumBonds(),
+        "canonical_smiles": info.get("smiles", smiles),
+        "formula": info.get("formula", ""),
+        "atom_count": len(atoms),
+        "bond_count": len(bonds),
         "atoms": atoms,
         "bonds": bonds,
     }

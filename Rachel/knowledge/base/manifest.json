@@ -1,0 +1,119 @@
+{
+  "schema": "rachel.knowledge-pack.v1",
+  "id": "rachel.base",
+  "version": "1.0.0",
+  "kind": "base",
+  "dependencies": [],
+  "resources": {
+    "prompt.runtime_policy": {
+      "path": "prompt_policy.json",
+      "sha256": "eaf5ad9e8d1277c432b4a80a86782c50f04e2a4f3ed185b4cddc36fcbd8be7b7",
+      "merge": "catalog",
+      "entries_path": "entries",
+      "id_field": "id"
+    },
+    "prompt.experience_cards": {
+      "path": "../../experience_cards.json",
+      "sha256": "22956ccaa3d3c8cd55de3cab343c2a40a15b2338e6e3a2c36bbe76f993154275",
+      "merge": "catalog",
+      "entries_path": "cards",
+      "id_field": "id"
+    },
+    "chem.smart_cap_rules": {
+      "path": "smart_cap_rules.json",
+      "sha256": "e23595cdff9d259a4d04c0653a999f0dd90a322cacacf78af5cfcae048013f03",
+      "merge": "catalog",
+      "entries_path": "entries",
+      "id_field": "id"
+    },
+    "chem.reaction_families": {
+      "path": "reaction_families.json",
+      "sha256": "421b452fc34c74276c4d8677f0af4d3535720666dd9889d4ba5d4c3b58c2618f",
+      "merge": "catalog",
+      "entries_path": "entries",
+      "id_field": "id",
+      "locked": true
+    },
+    "chem.eas_directing_rules": {
+      "path": "eas_directing_rules.json",
+      "sha256": "c45cee9d498c2fd07386fafcfefdea056dbd64d05d4a5ba6d94f22cb18fec749",
+      "merge": "catalog",
+      "entries_path": "entries",
+      "id_field": "id",
+      "locked": true
+    },
+    "chem.cs_smarts": {
+      "path": "cs_smarts.json",
+      "sha256": "bd0e7103018926399c1a73a51a38b2ab8e3a093b63a428c017022ab0a68807ee",
+      "merge": "catalog",
+      "entries_path": "entries",
+      "id_field": "id"
+    },
+    "chem.byproducts": {
+      "path": "../../chem_tools/templates/byproducts.json",
+      "sha256": "95b12a4d455186ed6a2f12b789fa19269fc8d2c8c13f0c040ec59b5c236c9672",
+      "merge": "mapping"
+    },
+    "chem.dangerous_combos": {
+      "path": "../../chem_tools/templates/dangerous_combos.json",
+      "sha256": "719e07a1a469f4f8a041e11f997cf9004b16501bcc2fc52b1ef363e5cbb0b398",
+      "merge": "mapping",
+      "locked": true
+    },
+    "chem.fg_compatibility": {
+      "path": "../../chem_tools/templates/fg_compatibility_matrix.json",
+      "sha256": "58ada6f647642c5b906d69d3fad55463cd315a1938d7b02cec440e1f22281771",
+      "merge": "mapping",
+      "locked": true
+    },
+    "chem.functional_groups": {
+      "path": "../../chem_tools/templates/functional_groups.json",
+      "sha256": "bd135486d3b982d9d729405ffd34d7af47f4e7894b7bff438f9a8d5cd685ec02",
+      "merge": "mapping"
+    },
+    "chem.known_scaffolds": {
+      "path": "../../chem_tools/templates/known_scaffolds.json",
+      "sha256": "0d61ac008914863eaee9c82d2ea6539fa0e089ea943f5382fca9b08eb02d5886",
+      "merge": "list_catalog",
+      "id_field": "id"
+    },
+    "chem.protecting_groups": {
+      "path": "../../chem_tools/templates/protecting_groups.json",
+      "sha256": "de994ce0374e69d9ee1ddc083543969e94feeedc298f9a0da198eb6976b11ae9",
+      "merge": "mapping"
+    },
+    "chem.reaction_roles": {
+      "path": "../../chem_tools/templates/reaction_role_requirements.json",
+      "sha256": "cc5bd101ee625fe9589915d3dc0977244b3294be041cb10231f624931b4ee26c",
+      "merge": "mapping"
+    },
+    "chem.reactions": {
+      "path": "../../chem_tools/templates/reactions.json",
+      "sha256": "8cd221edca9630c1afd82996e3f3d20d3cda960e8573dcb7581af6b24eee2485",
+      "merge": "mapping"
+    },
+    "chem.reactive_sites": {
+      "path": "../../chem_tools/templates/reactive_sites.json",
+      "sha256": "aaecedc24506f0b438eea37a2ab0c8baf16c7d677f1a97957262949de219171b",
+      "merge": "mapping"
+    },
+    "chem.selectivity_conflicts": {
+      "path": "../../chem_tools/templates/selectivity_conflicts.json",
+      "sha256": "71a9f05ec6c14b4a27a8c367642a0ff3e17fb1f9f906e24aaeb4fa1f53737d68",
+      "merge": "mapping",
+      "locked": true
+    },
+    "chem.selectivity_reactivity": {
+      "path": "../../chem_tools/templates/selectivity_reactivity.json",
+      "sha256": "a8ddbab5a65098c42fc674d9fd2cb665a3b9d2594d8092a16b67bc552100cc82",
+      "merge": "mapping",
+      "locked": true
+    },
+    "chem.structural_alerts": {
+      "path": "../../chem_tools/templates/structural_alerts.json",
+      "sha256": "65521611d566cc5c1ec5134441d6cb178870f49a3f1b73baeb18a959e56a75ef",
+      "merge": "mapping",
+      "locked": true
+    }
+  }
+}

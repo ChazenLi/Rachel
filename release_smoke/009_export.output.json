@@ -1,0 +1,35 @@
+{
+  "output_dir": "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export",
+  "relative_dir": "release_smoke\\export",
+  "files": [
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\SYNTHESIS_REPORT.md",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\SYNTHESIS_REPORT.html",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\images\\synthesis_tree.png",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\images\\synthesis_tree.svg",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\report.txt",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\tree.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\tree.txt",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\terminals.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\visualization.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\knowledge_profile.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\session.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\post_route_audit.json",
+    "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\post_route_audit.md"
+  ],
+  "n_files": 13,
+  "n_images": 3,
+  "html_report": "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\SYNTHESIS_REPORT.html",
+  "md_report": "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\export\\SYNTHESIS_REPORT.md",
+  "visualization_ok": true,
+  "visualization_error": null,
+  "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+  "post_route_audit_status": {
+    "state": "current",
+    "audit_id": "audit_20260906T073900.445347+0000_1edc3e0d",
+    "audit_status": "incomplete",
+    "route_digest": "sha256:5d24616dabb6782adecbd7b7e3eeb5906ee8c2567a1b92804599827e1edc3e0d",
+    "generated_at": "2026-09-06T07:39:00.445347+00:00"
+  },
+  "post_route_audit_export_error": "",
+  "summary": "release_smoke_acetamide: 0 steps, 1 starting materials, visualization=ok (1 molecule images + 0 reaction images), exported to release_smoke\\export"
+}

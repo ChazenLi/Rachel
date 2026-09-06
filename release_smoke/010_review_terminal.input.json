@@ -1,0 +1,7 @@
+{
+  "command": "review_terminal",
+  "args": {
+    "smiles": "CC(=O)NC",
+    "reason": "Reopen only to verify route-digest staleness."
+  }
+}

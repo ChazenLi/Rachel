@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from Rachel.display_language import dangerous_combo_text, selectivity_conflict_text
+from Rachel.knowledge import get_base_profile
+
 from ._rdkit_utils import load_template, parse_mol, smarts_match
 from .fg_detect import detect_functional_groups, detect_protecting_groups
 
@@ -24,6 +27,8 @@ _CATEGORY_FAMILY_MAP: Dict[str, List[str]] = {
     "halogenation": ["radical"],
     "cross_coupling": ["pd_catalysis"],
     "coupling": ["pd_catalysis"],
+    "amide_coupling": ["nucleophilic_addition"],
+    "peptide_coupling": ["nucleophilic_addition"],
     "suzuki": ["pd_catalysis"],
     "heck": ["pd_catalysis"],
     "sonogashira": ["pd_catalysis"],
@@ -33,6 +38,8 @@ _CATEGORY_FAMILY_MAP: Dict[str, List[str]] = {
     "grignard": ["strong_base", "nucleophilic_addition"],
     "alkylation": ["strong_base"],
     "elimination": ["strong_base"],
+    "acidic_ester_hydrolysis": ["strong_acid"],
+    "base_promoted_ester_hydrolysis": ["strong_base"],
     "ester_hydrolysis": ["strong_acid", "strong_base"],
     "amide_formation": ["nucleophilic_addition"],
     "condensation": ["strong_acid"],
@@ -56,6 +63,51 @@ _CATEGORY_FAMILY_MAP: Dict[str, List[str]] = {
     "organolithium_cuprate": ["organolithium_cuprate"],
     "fluoride_deprotection": ["fluoride_deprotection"],
 }
+
+_CONDITION_AMBIGUOUS_CATEGORY_TOKENS = {"oxidation", "reduction"}
+_CONDITION_FALLBACK_CATEGORY_TOKENS = {"coupling"}
+
+
+def _category_matches(category: str, key: str) -> bool:
+    if category == key:
+        return True
+    category_tokens = [token for token in category.split("_") if token]
+    key_tokens = [token for token in key.split("_") if token]
+    if not category_tokens or not key_tokens:
+        return False
+    window = len(key_tokens)
+    return any(
+        category_tokens[index : index + window] == key_tokens
+        for index in range(len(category_tokens) - window + 1)
+    )
+
+
+def resolve_reaction_condition_families(
+    reaction_category: str,
+    compatibility_matrix: Dict[str, Any] | None = None,
+) -> List[str]:
+    """Resolve only condition families justified by an explicit category."""
+    category = reaction_category.lower().strip().replace("-", "_").replace(" ", "_")
+    if category in _CATEGORY_FAMILY_MAP:
+        families = list(_CATEGORY_FAMILY_MAP[category])
+    else:
+        matched: List[tuple[str, List[str]]] = []
+        for key, mapped in _CATEGORY_FAMILY_MAP.items():
+            if key in _CONDITION_AMBIGUOUS_CATEGORY_TOKENS:
+                continue
+            if _category_matches(category, key):
+                matched.append((key, mapped))
+        if any(key not in _CONDITION_FALLBACK_CATEGORY_TOKENS for key, _ in matched):
+            matched = [
+                (key, mapped)
+                for key, mapped in matched
+                if key not in _CONDITION_FALLBACK_CATEGORY_TOKENS
+            ]
+        families = [family for _, mapped in matched for family in mapped]
+        if not families and compatibility_matrix and category in compatibility_matrix:
+            families = [category]
+
+    return list(dict.fromkeys(families))
 
 
 # ---------------------------------------------------------------------------
@@ -94,7 +146,7 @@ _SUPERCLASS: Dict[str, str] = {
 # check_fg_conflicts
 # ---------------------------------------------------------------------------
 
-def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
+def check_fg_conflicts(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Detect functional-group conflicts within a molecule.
 
     Calls :func:`detect_functional_groups` to obtain the FGs present, then
@@ -113,7 +165,7 @@ def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    fg_result = detect_functional_groups(smiles)
+    fg_result = detect_functional_groups(smiles, knowledge_profile=knowledge_profile)
     if not fg_result.get("ok"):
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
@@ -121,9 +173,15 @@ def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
     detected_names = set(detected_groups.keys())
 
     # --- load templates ---
-    conflicts_data = load_template("selectivity_conflicts.json")
-    dangerous_data = load_template("dangerous_combos.json")
-    reactivity_data = load_template("selectivity_reactivity.json")
+    conflicts_data = load_template(
+        "selectivity_conflicts.json", knowledge_profile=knowledge_profile
+    )
+    dangerous_data = load_template(
+        "dangerous_combos.json", knowledge_profile=knowledge_profile
+    )
+    reactivity_data = load_template(
+        "selectivity_reactivity.json", knowledge_profile=knowledge_profile
+    )
 
     # Build a reverse map: fg_key → set of selectivity categories
     fg_key_to_categories: Dict[str, set] = {}
@@ -152,7 +210,9 @@ def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
                 "group_b": cat_b,
                 "reaction_type": reaction_type,
                 "severity": severity,
-                "note": note,
+                "note": selectivity_conflict_text(
+                    cat_a, cat_b, reaction_type, note
+                ),
             })
 
     # --- 2. Competing groups (same superclass present multiple times) ---
@@ -183,7 +243,7 @@ def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
         if match_a and match_b:
             dangerous_list.append({
                 "groups": [combo_name],
-                "warning": warning,
+                "warning": dangerous_combo_text(combo_name, warning),
             })
 
     return {
@@ -199,7 +259,7 @@ def check_fg_conflicts(smiles: str) -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def check_reaction_compatibility(
-    smiles: str, reaction_category: str
+    smiles: str, reaction_category: str, knowledge_profile=None
 ) -> Dict[str, Any]:
     """Check functional-group compatibility with a given reaction category.
 
@@ -222,7 +282,9 @@ def check_reaction_compatibility(
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    fg_result = detect_functional_groups(smiles)
+    profile = knowledge_profile or get_base_profile()
+
+    fg_result = detect_functional_groups(smiles, knowledge_profile=profile)
     if not fg_result.get("ok"):
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
@@ -230,36 +292,17 @@ def check_reaction_compatibility(
     detected_names = set(detected_groups.keys())
 
     # --- load compatibility matrix ---
-    compat_matrix = load_template("fg_compatibility_matrix.json")
+    compat_matrix = load_template(
+        "fg_compatibility_matrix.json", knowledge_profile=profile
+    )
 
     # --- resolve reaction_category to reaction families ---
-    cat_lower = reaction_category.lower().strip().replace("-", "_").replace(" ", "_")
-    families: List[str] = []
-
-    # Direct lookup first
-    if cat_lower in _CATEGORY_FAMILY_MAP:
-        families = _CATEGORY_FAMILY_MAP[cat_lower]
-    else:
-        # Fuzzy: check if cat_lower is a substring of any key or vice versa
-        for key, fams in _CATEGORY_FAMILY_MAP.items():
-            if key in cat_lower or cat_lower in key:
-                families.extend(fams)
-        # If still nothing, check if it's directly a family name in the matrix
-        if not families and cat_lower in compat_matrix:
-            families = [cat_lower]
-
-    # Deduplicate while preserving order
-    seen: set = set()
-    unique_families: List[str] = []
-    for f in families:
-        if f not in seen:
-            seen.add(f)
-            unique_families.append(f)
-    families = unique_families
+    families = resolve_reaction_condition_families(reaction_category, compat_matrix)
 
     # --- check each detected FG against each reaction family ---
     warnings: List[Dict[str, Any]] = []
     has_forbidden = False
+    matched_families: set[str] = set()
 
     for family in families:
         family_rules = compat_matrix.get(family, {})
@@ -272,6 +315,7 @@ def check_reaction_compatibility(
 
             if level == "forbidden":
                 has_forbidden = True
+            matched_families.add(family)
 
             note = (
                 f"{fg_name} is {level} under {family} conditions"
@@ -289,6 +333,11 @@ def check_reaction_compatibility(
     return {
         "compatible": not has_forbidden,
         "warnings": warnings,
+        "knowledge_profile_hash": profile.digest,
+        "knowledge_refs": [
+            profile.source("chem.fg_compatibility", family)
+            for family in sorted(matched_families)
+        ],
     }
 
 
@@ -388,7 +437,7 @@ _REMOVAL_KEYWORD_TO_FAMILIES: List[tuple] = [
 # ---------------------------------------------------------------------------
 
 def suggest_protection_needs(
-    smiles: str, planned_reaction: str
+    smiles: str, planned_reaction: str, knowledge_profile=None
 ) -> Dict[str, Any]:
     """Suggest functional groups that need protection for a planned reaction.
 
@@ -418,11 +467,11 @@ def suggest_protection_needs(
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    fg_result = detect_functional_groups(smiles)
+    fg_result = detect_functional_groups(smiles, knowledge_profile=knowledge_profile)
     if not fg_result.get("ok"):
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    pg_result = detect_protecting_groups(smiles)
+    pg_result = detect_protecting_groups(smiles, knowledge_profile=knowledge_profile)
 
     detected_groups = fg_result.get("groups", {})
     detected_names = set(detected_groups.keys())
@@ -434,28 +483,14 @@ def suggest_protection_needs(
             existing_pg.append(pg_entry.get("name", ""))
 
     # --- resolve planned_reaction to reaction families ---
-    cat_lower = planned_reaction.lower().strip().replace("-", "_").replace(" ", "_")
-    families: List[str] = []
-
-    if cat_lower in _CATEGORY_FAMILY_MAP:
-        families = _CATEGORY_FAMILY_MAP[cat_lower]
-    else:
-        for key, fams in _CATEGORY_FAMILY_MAP.items():
-            if key in cat_lower or cat_lower in key:
-                families.extend(fams)
-
-    # Deduplicate
-    seen: set = set()
-    unique_families: List[str] = []
-    for f in families:
-        if f not in seen:
-            seen.add(f)
-            unique_families.append(f)
-    families = unique_families
-
     # --- load templates ---
-    compat_matrix = load_template("fg_compatibility_matrix.json")
-    pg_data = load_template("protecting_groups.json")
+    compat_matrix = load_template(
+        "fg_compatibility_matrix.json", knowledge_profile=knowledge_profile
+    )
+    families = resolve_reaction_condition_families(planned_reaction, compat_matrix)
+    pg_data = load_template(
+        "protecting_groups.json", knowledge_profile=knowledge_profile
+    )
     pg_defs = {
         k: v for k, v in pg_data.get("definitions", {}).items()
         if not k.startswith("__")
@@ -535,7 +570,7 @@ def suggest_protection_needs(
 # ---------------------------------------------------------------------------
 
 def check_deprotection_safety(
-    smiles: str, pg_to_remove: str
+    smiles: str, pg_to_remove: str, knowledge_profile=None
 ) -> Dict[str, Any]:
     """Check whether removing a protecting group is safe for other FGs.
 
@@ -565,7 +600,7 @@ def check_deprotection_safety(
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    fg_result = detect_functional_groups(smiles)
+    fg_result = detect_functional_groups(smiles, knowledge_profile=knowledge_profile)
     if not fg_result.get("ok"):
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
@@ -573,7 +608,9 @@ def check_deprotection_safety(
     detected_names = set(detected_groups.keys())
 
     # --- load protecting_groups.json and find the PG entry ---
-    pg_data = load_template("protecting_groups.json")
+    pg_data = load_template(
+        "protecting_groups.json", knowledge_profile=knowledge_profile
+    )
     pg_defs = {
         k: v for k, v in pg_data.get("definitions", {}).items()
         if not k.startswith("__")
@@ -600,7 +637,9 @@ def check_deprotection_safety(
                     deprotection_families.append(fam)
 
     # --- check FG compatibility against deprotection families ---
-    compat_matrix = load_template("fg_compatibility_matrix.json")
+    compat_matrix = load_template(
+        "fg_compatibility_matrix.json", knowledge_profile=knowledge_profile
+    )
 
     risks: List[Dict[str, Any]] = []
     for family in deprotection_families:

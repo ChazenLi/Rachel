@@ -22,6 +22,7 @@ from rdkit import Chem
 from rdkit.Chem import RWMol
 
 from ._rdkit_utils import parse_mol, canonical
+from Rachel.knowledge.conditions import condition_matches
 
 
 @dataclass
@@ -70,8 +71,11 @@ def _atom_env(mol: Chem.Mol, idx: int) -> Dict[str, Any]:
 
     # 检测特殊环境
     is_carbonyl_c = False
+    is_carbamate_c = False
     is_amide_n = False
     is_ester_o = False
+    is_carbamate_o = False
+    is_carboxylic_acid_o = False
     adjacent_carbonyl = False
 
     if symbol == "C" and not aromatic:
@@ -80,6 +84,20 @@ def _atom_env(mol: Chem.Mol, idx: int) -> Dict[str, Any]:
             if nb.GetSymbol() == "O" and bond and "DOUBLE" in str(bond.GetBondType()):
                 is_carbonyl_c = True
                 break
+        if is_carbonyl_c:
+            has_single_bond_n = any(
+                nb.GetSymbol() == "N"
+                and mol.GetBondBetweenAtoms(idx, nb.GetIdx()).GetBondType()
+                == Chem.BondType.SINGLE
+                for nb in atom.GetNeighbors()
+            )
+            has_single_bond_o = any(
+                nb.GetSymbol() == "O"
+                and mol.GetBondBetweenAtoms(idx, nb.GetIdx()).GetBondType()
+                == Chem.BondType.SINGLE
+                for nb in atom.GetNeighbors()
+            )
+            is_carbamate_c = has_single_bond_n and has_single_bond_o
 
     if symbol == "N":
         for nb in atom.GetNeighbors():
@@ -99,6 +117,20 @@ def _atom_env(mol: Chem.Mol, idx: int) -> Dict[str, Any]:
                     bond2 = mol.GetBondBetweenAtoms(nb.GetIdx(), nb2.GetIdx())
                     if nb2.GetSymbol() == "O" and bond2 and "DOUBLE" in str(bond2.GetBondType()):
                         is_ester_o = True
+                        is_carbamate_o = any(
+                            other.GetSymbol() == "N"
+                            and mol.GetBondBetweenAtoms(
+                                nb.GetIdx(), other.GetIdx()
+                            ).GetBondType() == Chem.BondType.SINGLE
+                            for other in nb_atom.GetNeighbors()
+                        )
+                        is_carboxylic_acid_o = (
+                            degree == 1
+                            and (n_hs > 0 or formal_charge < 0)
+                            and not is_carbamate_o
+                        )
+                        if is_carboxylic_acid_o:
+                            is_ester_o = False
                         break
 
     # 相邻是否有 C=O
@@ -121,9 +153,17 @@ def _atom_env(mol: Chem.Mol, idx: int) -> Dict[str, Any]:
         "formal_charge": formal_charge,
         "neighbors": neighbors,
         "is_carbonyl_c": is_carbonyl_c,
+        "is_carbamate_c": is_carbamate_c,
         "is_amide_n": is_amide_n,
         "is_ester_o": is_ester_o,
+        "is_carbamate_o": is_carbamate_o,
+        "is_carboxylic_acid_o": is_carboxylic_acid_o,
         "adjacent_carbonyl": adjacent_carbonyl,
+        "is_sp2": "SP2" in hyb,
+        "is_sp3": "SP3" in hyb,
+        "has_halide_neighbor": any(
+            item["symbol"] in {"Br", "Cl", "I"} for item in neighbors
+        ),
     }
 
 
@@ -341,249 +381,75 @@ def _replace_dummy_with_cap(frag_input, cap_smiles: str,
 # cap_for_i: 给 i 端加的基团 SMILES
 # cap_for_j: 给 j 端加的基团 SMILES
 
-CappingRule = Tuple[
-    str,   # rule_name
-    float, # confidence
-    str,   # description
-]
+def _build_profile_capping_rules(
+    env: Dict[str, Any], knowledge_profile=None
+) -> List[Dict[str, Any]]:
+    """Evaluate resolved declarative rules against one bond environment."""
+    if knowledge_profile is None:
+        from Rachel.knowledge import get_base_profile
 
+        knowledge_profile = get_base_profile()
+    resource = knowledge_profile.get("chem.smart_cap_rules")
+    entries = [
+        entry
+        for entry in resource.get("entries", []) or []
+        if isinstance(entry, dict) and entry.get("id")
+    ]
+    entries.sort(
+        key=lambda entry: (
+            -int(entry.get("priority", 0) or 0),
+            str(entry.get("id", "")),
+        )
+    )
 
-def _build_capping_rules(env: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """根据键环境生成所有适用的 capping 规则。
+    matched = [
+        entry
+        for entry in entries
+        if entry.get("fallback_rank") is None
+        and condition_matches(entry.get("condition"), env)
+    ]
+    if not matched:
+        fallbacks = [
+            entry
+            for entry in entries
+            if entry.get("fallback_rank") is not None
+            and condition_matches(entry.get("condition"), env)
+        ]
+        if fallbacks:
+            first_rank = min(int(entry["fallback_rank"]) for entry in fallbacks)
+            matched = [
+                entry
+                for entry in fallbacks
+                if int(entry["fallback_rank"]) == first_rank
+            ]
 
-    返回 [{reaction_type, cap_i, cap_j, confidence, description}, ...]
-    其中 cap_i 是给 atom_i 端加的基团，cap_j 是给 atom_j 端加的基团。
-    """
-    ai = env["atom_i"]
-    aj = env["atom_j"]
-    bt = env["bond_type"]
-    in_ring = env["in_ring"]
+    proposals: List[Dict[str, Any]] = []
+    for entry in matched:
+        source = knowledge_profile.source(
+            "chem.smart_cap_rules", str(entry["id"])
+        )
+        candidates = entry.get("proposals") or [entry]
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            proposals.append(
+                {
+                    "reaction_type": str(candidate.get("reaction_type", "")),
+                    "cap_i": str(candidate.get("cap_i", "")),
+                    "cap_j": str(candidate.get("cap_j", "")),
+                    "confidence": float(candidate.get("confidence", 0.0) or 0.0),
+                    "description": str(candidate.get("description", "")),
+                    "knowledge_ref": source,
+                }
+            )
+    return proposals
 
-    rules: List[Dict[str, Any]] = []
-
-    si, sj = ai["symbol"], aj["symbol"]
-    hi, hj = ai["aromatic"], aj["aromatic"]
-
-    # ── 规则 1: Ar-Ar 联苯键 (Suzuki/Negishi/Stille) ──
-    if si == "C" and sj == "C" and hi and hj and "SINGLE" in bt and not in_ring:
-        rules.append({
-            "reaction_type": "Suzuki coupling",
-            "cap_i": "Br", "cap_j": "B(O)O",
-            "confidence": 0.92,
-            "description": "Ar-Ar → ArBr + ArB(OH)₂",
-        })
-        rules.append({
-            "reaction_type": "Suzuki coupling (reversed)",
-            "cap_i": "B(O)O", "cap_j": "Br",
-            "confidence": 0.90,
-            "description": "Ar-Ar → ArB(OH)₂ + ArBr",
-        })
-        rules.append({
-            "reaction_type": "Negishi coupling",
-            "cap_i": "Br", "cap_j": "[Zn]Cl",
-            "confidence": 0.70,
-            "description": "Ar-Ar → ArBr + ArZnCl",
-        })
-        rules.append({
-            "reaction_type": "Stille coupling",
-            "cap_i": "Br", "cap_j": "[Sn](C)(C)C",
-            "confidence": 0.60,
-            "description": "Ar-Ar → ArBr + ArSnMe₃",
-        })
-
-    # ── 规则 2: Ar-C(sp3) 苄基键 ──
-    if si == "C" and sj == "C" and "SINGLE" in bt and not in_ring:
-        # Ar-CH2 (苄基)
-        if hi and not hj:
-            if aj.get("n_hs", 0) >= 1:  # 苄基 CH2 或 CH
-                # 检查 j 端是否连接卤素或杂原子
-                j_has_halide = any(
-                    nb["symbol"] in ("Br", "Cl", "I") for nb in aj["neighbors"]
-                    if nb["idx"] != ai["idx"]
-                )
-                if not j_has_halide:
-                    rules.append({
-                        "reaction_type": "Benzylic alkylation (SN2)",
-                        "cap_i": "[H]", "cap_j": "Br",
-                        "confidence": 0.75,
-                        "description": "Ar-CH₂R → ArH + BrCH₂R",
-                    })
-        # C(sp3)-Ar
-        if not hi and hj:
-            if ai.get("n_hs", 0) >= 1:
-                rules.append({
-                    "reaction_type": "Benzylic alkylation (SN2)",
-                    "cap_i": "Br", "cap_j": "[H]",
-                    "confidence": 0.75,
-                    "description": "RCH₂-Ar → RCH₂Br + ArH",
-                })
-
-    # ── 规则 3: C(=O)-N 酰胺键 ──
-    if si == "C" and sj == "N" and "SINGLE" in bt and ai.get("is_carbonyl_c"):
-        rules.append({
-            "reaction_type": "Amide bond formation",
-            "cap_i": "O", "cap_j": "[H]",
-            "confidence": 0.90,
-            "description": "RC(=O)-NR₂ → RC(=O)OH + HNR₂",
-        })
-        rules.append({
-            "reaction_type": "Amide bond formation (acid chloride)",
-            "cap_i": "Cl", "cap_j": "[H]",
-            "confidence": 0.80,
-            "description": "RC(=O)-NR₂ → RC(=O)Cl + HNR₂",
-        })
-    if sj == "C" and si == "N" and "SINGLE" in bt and aj.get("is_carbonyl_c"):
-        rules.append({
-            "reaction_type": "Amide bond formation",
-            "cap_j": "O", "cap_i": "[H]",
-            "confidence": 0.90,
-            "description": "NR₂-C(=O)R → HNR₂ + RC(=O)OH",
-        })
-        rules.append({
-            "reaction_type": "Amide bond formation (acid chloride)",
-            "cap_j": "Cl", "cap_i": "[H]",
-            "confidence": 0.80,
-            "description": "NR₂-C(=O)R → HNR₂ + RC(=O)Cl",
-        })
-
-    # ── 规则 4: C(=O)-O 酯键 ──
-    if si == "C" and sj == "O" and "SINGLE" in bt and ai.get("is_carbonyl_c"):
-        rules.append({
-            "reaction_type": "Ester hydrolysis",
-            "cap_i": "O", "cap_j": "[H]",
-            "confidence": 0.88,
-            "description": "RC(=O)-OR' → RC(=O)OH + R'OH",
-        })
-    if sj == "C" and si == "O" and "SINGLE" in bt and aj.get("is_carbonyl_c"):
-        rules.append({
-            "reaction_type": "Ester hydrolysis",
-            "cap_j": "O", "cap_i": "[H]",
-            "confidence": 0.88,
-            "description": "R'O-C(=O)R → R'OH + RC(=O)OH",
-        })
-
-    # ── 规则 5: N-alkyl (非酰胺) — N-烷基化逆向 ──
-    if si == "N" and sj == "C" and "SINGLE" in bt and not ai.get("is_amide_n") and not in_ring:
-        if not aj.get("aromatic"):
-            rules.append({
-                "reaction_type": "N-alkylation (SN2)",
-                "cap_i": "[H]", "cap_j": "Br",
-                "confidence": 0.82,
-                "description": "N-CH₂R → NH + BrCH₂R",
-            })
-            rules.append({
-                "reaction_type": "Reductive amination",
-                "cap_i": "[H]", "cap_j": "=O",
-                "confidence": 0.70,
-                "description": "N-CH₂R → NH + R'CHO (还原胺化逆向)",
-            })
-    if sj == "N" and si == "C" and "SINGLE" in bt and not aj.get("is_amide_n") and not in_ring:
-        if not ai.get("aromatic"):
-            rules.append({
-                "reaction_type": "N-alkylation (SN2)",
-                "cap_j": "[H]", "cap_i": "Br",
-                "confidence": 0.82,
-                "description": "RCH₂-N → RCH₂Br + HN",
-            })
-
-    # ── 规则 6: O-alkyl (醚键) ──
-    if si == "O" and sj == "C" and "SINGLE" in bt and not ai.get("is_ester_o") and not in_ring:
-        if not aj.get("aromatic"):
-            rules.append({
-                "reaction_type": "Williamson ether synthesis",
-                "cap_i": "[H]", "cap_j": "Br",
-                "confidence": 0.78,
-                "description": "O-CH₂R → OH + BrCH₂R",
-            })
-    if sj == "O" and si == "C" and "SINGLE" in bt and not aj.get("is_ester_o") and not in_ring:
-        if not ai.get("aromatic"):
-            rules.append({
-                "reaction_type": "Williamson ether synthesis",
-                "cap_j": "[H]", "cap_i": "Br",
-                "confidence": 0.78,
-                "description": "RCH₂-O → RCH₂Br + HO",
-            })
-
-    # ── 规则 7: C(sp2)-C(sp3) 烯丙基/苄基 ──
-    if si == "C" and sj == "C" and "SINGLE" in bt and not in_ring:
-        sp2_i = "SP2" in ai.get("hybridization", "")
-        sp2_j = "SP2" in aj.get("hybridization", "")
-        sp3_i = "SP3" in ai.get("hybridization", "")
-        sp3_j = "SP3" in aj.get("hybridization", "")
-
-        if sp2_i and sp3_j and not hi:
-            # C(sp2)=C-C(sp3): 可能是 Heck 产物
-            rules.append({
-                "reaction_type": "Heck reaction",
-                "cap_i": "[H]", "cap_j": "Br",
-                "confidence": 0.55,
-                "description": "C=C-CR → C=CH + BrCR (Heck 逆向)",
-            })
-
-    # ── 规则 8: Ar-N (芳胺键) — Buchwald-Hartwig ──
-    if si == "C" and sj == "N" and hi and "SINGLE" in bt and not in_ring:
-        rules.append({
-            "reaction_type": "Buchwald-Hartwig amination",
-            "cap_i": "Br", "cap_j": "[H]",
-            "confidence": 0.80,
-            "description": "Ar-NR₂ → ArBr + HNR₂",
-        })
-    if sj == "C" and si == "N" and hj and "SINGLE" in bt and not in_ring:
-        rules.append({
-            "reaction_type": "Buchwald-Hartwig amination",
-            "cap_j": "Br", "cap_i": "[H]",
-            "confidence": 0.80,
-            "description": "NR₂-Ar → HNR₂ + ArBr",
-        })
-
-    # ── 规则 9: Ar-O (芳醚键) — SNAr / Ullmann ──
-    if si == "C" and sj == "O" and hi and "SINGLE" in bt and not in_ring:
-        rules.append({
-            "reaction_type": "SNAr / Ullmann etherification",
-            "cap_i": "F", "cap_j": "[H]",
-            "confidence": 0.65,
-            "description": "Ar-OR → ArF + ROH",
-        })
-    if sj == "C" and si == "O" and hj and "SINGLE" in bt and not in_ring:
-        rules.append({
-            "reaction_type": "SNAr / Ullmann etherification",
-            "cap_j": "F", "cap_i": "[H]",
-            "confidence": 0.65,
-            "description": "RO-Ar → ROH + ArF",
-        })
-
-    # ── 规则 10: C-C 通用 (Grignard / organolithium) ──
-    if si == "C" and sj == "C" and "SINGLE" in bt and not in_ring:
-        if not (hi and hj):  # 不是 Ar-Ar（已被规则 1 覆盖）
-            # 通用 C-C 断键：一端加 Br，另一端加 MgBr (Grignard)
-            if not rules:  # 只在没有更好的规则时才加
-                rules.append({
-                    "reaction_type": "Grignard reaction",
-                    "cap_i": "Br", "cap_j": "[Mg]Br",
-                    "confidence": 0.45,
-                    "description": "R-R' → RBr + R'MgBr (Grignard)",
-                })
-
-    # ── 兜底: simple H capping ──
-    if not rules:
-        rules.append({
-            "reaction_type": "simple_break",
-            "cap_i": "[H]", "cap_j": "[H]",
-            "confidence": 0.20,
-            "description": "简单断键加 H（兜底，化学上可能不正确）",
-        })
-
-    return rules
-
-
-# ─────────────────────────────────────────────────────────────────────────
-# 公开 API
-# ─────────────────────────────────────────────────────────────────────────
 
 def suggest_capping(
     smiles: str,
     bond: Tuple[int, int],
     max_proposals: int = 5,
+    knowledge_profile=None,
 ) -> Dict[str, Any]:
     """为指定键位推断合理的 capping 方案。
 
@@ -636,7 +502,7 @@ def suggest_capping(
     env = _bond_env(mol, i, j)
 
     # 生成 capping 规则
-    rules = _build_capping_rules(env)
+    rules = _build_profile_capping_rules(env, knowledge_profile)
 
     # 对每条规则，尝试生成前体 SMILES
     proposals: List[Dict[str, Any]] = []
@@ -661,6 +527,7 @@ def suggest_capping(
             "confidence": rule["confidence"],
             "description": rule["description"],
             "ring_opening": len(frags) == 1,
+            "knowledge_ref": rule["knowledge_ref"],
         })
 
     # 去重（按 fragments 集合）

@@ -1,0 +1,415 @@
+{
+  "session_id": "51af693a",
+  "target": {
+    "smiles": "CNC(C)=O",
+    "name": "release_smoke_acetamide",
+    "cs_score": 1.69
+  },
+  "config": {
+    "max_depth": 4,
+    "max_steps": 10,
+    "max_queue_size": 200,
+    "terminal_cs_threshold": 0.0,
+    "auto_forward_validate": true
+  },
+  "status": {
+    "target": "CNC(C)=O",
+    "status": "complete",
+    "steps_executed": 0,
+    "pending_count": 0,
+    "total_molecules": 1,
+    "total_steps": 0,
+    "max_depth": 0,
+    "elapsed_sec": 1.2,
+    "tree_complete": true,
+    "active_rescue_continuations": [],
+    "blocked_rescue_count": 0,
+    "total_rescue_continuations": 0,
+    "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+    "post_route_audit": {
+      "state": "current",
+      "audit_id": "audit_20260906T073900.445347+0000_1edc3e0d",
+      "audit_status": "incomplete",
+      "route_digest": "sha256:5d24616dabb6782adecbd7b7e3eeb5906ee8c2567a1b92804599827e1edc3e0d",
+      "generated_at": "2026-09-06T07:39:00.445347+00:00"
+    }
+  },
+  "knowledge": {
+    "schema": "rachel.knowledge-profile.v1",
+    "digest": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+    "packs": [
+      {
+        "id": "rachel.base",
+        "version": "1.0.0",
+        "kind": "base",
+        "manifest_sha256": "79a20b17ffa1ff0f373aba21e3d9e1deb152c8da24b1a914055d80909f24fca3"
+      }
+    ]
+  },
+  "post_route_audits": [
+    {
+      "schema": "rachel.post_route_audit.v2",
+      "audit_id": "audit_20260906T073900.445347+0000_1edc3e0d",
+      "generated_at": "2026-09-06T07:39:00.445347+00:00",
+      "route_digest": "sha256:5d24616dabb6782adecbd7b7e3eeb5906ee8c2567a1b92804599827e1edc3e0d",
+      "scopes": [
+        "buyability",
+        "safety"
+      ],
+      "offline": true,
+      "status": "incomplete",
+      "source_manifest": [
+        {
+          "source": "PubChem PUG REST",
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug",
+          "purpose": "CID and identity properties"
+        },
+        {
+          "source": "PubChem PUG View",
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view",
+          "purpose": "vendor catalog rows and source-attributed GHS classifications"
+        }
+      ],
+      "limitations": [
+        "This audit does not change route chemistry, terminal decisions, validation gates, or route ranking.",
+        "No result in this payload is a generic safe/unsafe verdict."
+      ],
+      "buyability": {
+        "policy": "pubchem_identity_and_vendor_catalog_only",
+        "summary": {
+          "total_terminals": 1,
+          "pubchem_cid_closed": 0,
+          "vendor_closed": 0,
+          "organic_starting_material_closures": 0,
+          "by_pubchem_cid_status": {
+            "not_queried": 1
+          },
+          "by_chemical_vendor_status": {
+            "not_queried": 1
+          },
+          "by_buyability_state": {
+            "not_queried_manual_review": 1
+          },
+          "by_local_classification": {
+            "ordinary_organic_candidate": 1
+          },
+          "by_evidence_grade": {
+            "B0": 1,
+            "B1": 0,
+            "B2": 0
+          }
+        },
+        "terminals": [
+          {
+            "node_id": "mol_0",
+            "smiles": "CNC(C)=O",
+            "cs_score": 1.69,
+            "rachel_classification": "trivial",
+            "local": {
+              "input_smiles": "CNC(C)=O",
+              "valid_smiles": true,
+              "canonical_smiles": "CNC(C)=O",
+              "query_smiles": "CNC(C)=O",
+              "query_mode": "query_direct",
+              "local_classification": "ordinary_organic_candidate",
+              "terminal_material_policy": "direct_terminal_candidate",
+              "risk_flags": [],
+              "normalization_notes": [],
+              "fragments": [
+                {
+                  "smiles": "CNC(C)=O",
+                  "heavy_atoms": 5,
+                  "carbons": 3,
+                  "metals": 0,
+                  "halogens": 0,
+                  "formal_charge": 0
+                }
+              ]
+            },
+            "allowlist": {
+              "hit": false,
+              "source": "terminal_allowlist.json",
+              "id": "",
+              "label": "",
+              "allowlist_class": "",
+              "counts_as_terminal_closure": false,
+              "counts_as_organic_starting_material": false,
+              "note": "",
+              "evidence_policy": "",
+              "representative_forms": [],
+              "source_reagents": [],
+              "evidence": {
+                "basis": "no_allowlist_match",
+                "pubchem_cid_closed": false,
+                "vendor_closed": false,
+                "forms": [],
+                "source_reagents": []
+              }
+            },
+            "pubchem": {
+              "queried": false,
+              "query_smiles": "CNC(C)=O",
+              "cid_lookup": {
+                "status": "not_queried",
+                "cids": [],
+                "error": ""
+              },
+              "cids": [],
+              "best_cid": null,
+              "best_cid_url": "",
+              "properties": {},
+              "vendor_evidence": {
+                "queried": false,
+                "vendor_flag": null,
+                "vendor_count": null,
+                "vendor_names": [],
+                "vendor_url": ""
+              }
+            },
+            "pubchem_metrics": {
+              "query_mode": "query_direct",
+              "query_smiles": "CNC(C)=O",
+              "cid_hit": false,
+              "public_record": false,
+              "cid_status": "not_queried",
+              "cid_lookup_error": "",
+              "cid_count": 0,
+              "best_cid": null,
+              "vendor_hit": false,
+              "vendor_status": "not_queried",
+              "vendor_count": null,
+              "vendor_names": [],
+              "best_cid_url": "",
+              "cid_urls": [],
+              "vendor_url": "",
+              "counts_as_organic_starting_material": false,
+              "pubchem_cid_closed": false,
+              "vendor_closed": false,
+              "closure_basis": "not_closed",
+              "closure_evidence": {
+                "basis": "not_closed",
+                "direct_query": {
+                  "cid_hit": false,
+                  "vendor_hit": false,
+                  "query_smiles": "CNC(C)=O",
+                  "cids": [],
+                  "cid_urls": [],
+                  "vendor_url": ""
+                },
+                "allowlist": {}
+              }
+            },
+            "buyability_decision": {
+              "state": "not_queried_manual_review",
+              "confidence": "medium",
+              "reason": "No PubChem query was run for this local classification."
+            },
+            "evidence_grade": "B0",
+            "identity_match_level": "unresolved",
+            "vendor_catalog": {
+              "status": "not_queried",
+              "vendor_count": null,
+              "listing_count": null,
+              "vendor_names": [],
+              "rows": [],
+              "rows_truncated": false,
+              "retrieved_at": "",
+              "from_cache": false
+            }
+          }
+        ],
+        "limitations": [
+          "B1 proves a PubChem identity record, not commercial availability.",
+          "B2 proves depositor/vendor catalog rows, not live stock, price, lead time, region, purity, pack size, or procurement.",
+          "No hit means no evidence in the checked PubChem sources; it does not prove that a material cannot be purchased."
+        ]
+      },
+      "safety": {
+        "summary": {
+          "substance_count": 1,
+          "substances_with_source_attributed_ghs": 0,
+          "substances_with_structural_screening_alerts": 0,
+          "step_count": 0,
+          "steps_with_explicit_risk_assessment": 0,
+          "steps_missing_explicit_risk_assessment": 0,
+          "steps_with_process_conditions_for_preliminary_review": 0,
+          "steps_with_incomplete_process_conditions": 0,
+          "steps_with_local_screening_alerts": 0
+        },
+        "substances": [
+          {
+            "entity_id": "material_1",
+            "smiles": "CNC(C)=O",
+            "canonical_smiles": "CNC(C)=O",
+            "roles": [
+              "terminal"
+            ],
+            "node_ids": [
+              "mol_0"
+            ],
+            "step_ids": [],
+            "structural_screening": [],
+            "identity_status": "not_queried",
+            "cid_candidates": [],
+            "identity_match_level": "unresolved",
+            "cid": null,
+            "ghs": {
+              "state": "not_queried",
+              "classifications": []
+            },
+            "status": "incomplete",
+            "evidence_grade": "S0"
+          }
+        ],
+        "steps": [],
+        "limitations": [
+          "GHS classifications are source-specific substance evidence and may differ across authorities or depositors.",
+          "Supplier- and product-specific SDS records were not retrieved in this version.",
+          "Structured condition coverage checks declared field presence and shape only; it does not validate chemical correctness or establish process safety.",
+          "Even complete declared condition coverage supports only preliminary review and does not replace SDS, SOP, calorimetry, exposure, scale-up, or equipment assessment.",
+          "S0 structural and combination alerts are screening hypotheses, not process hazard conclusions.",
+          "Absence of a checked-source classification or alert does not mean safe."
+        ]
+      },
+      "incompleteness_reasons": [
+        "substance_safety_lookup_incomplete",
+        "offline_mode"
+      ]
+    }
+  ],
+  "route_plan": {
+    "current": {
+      "id": "plan:51af693a",
+      "revision": 0,
+      "route_thesis": "Use a direct amide disconnection smoke strategy.",
+      "route_mode": "late_fgi",
+      "key_disconnections": [
+        "amide C-N"
+      ],
+      "preferred_precursor_logic": [],
+      "protect_or_preserve": [],
+      "mode_evidence": [
+        "small amide smoke target"
+      ],
+      "strategic_risks": [
+        "smoke test only"
+      ],
+      "revision_triggers": [
+        "unexpected missing action-space"
+      ],
+      "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+      "last_revision_reason": "release smoke",
+      "node_id": "mol_0",
+      "smiles": "CNC(C)=O",
+      "updated_at": "2026-09-06T15:39:00",
+      "created_at": "2026-09-06T15:39:00"
+    },
+    "history": [
+      {
+        "id": "plan:51af693a",
+        "revision": 0,
+        "route_thesis": "Use a direct amide disconnection smoke strategy.",
+        "route_mode": "late_fgi",
+        "key_disconnections": [
+          "amide C-N"
+        ],
+        "preferred_precursor_logic": [],
+        "protect_or_preserve": [],
+        "mode_evidence": [
+          "small amide smoke target"
+        ],
+        "strategic_risks": [
+          "smoke test only"
+        ],
+        "revision_triggers": [
+          "unexpected missing action-space"
+        ],
+        "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+        "last_revision_reason": "release smoke",
+        "node_id": "mol_0",
+        "smiles": "CNC(C)=O",
+        "updated_at": "2026-09-06T15:39:00",
+        "created_at": "2026-09-06T15:39:00"
+      }
+    ]
+  },
+  "current": null,
+  "queue": [],
+  "seen_smiles": [
+    "CNC(C)=O"
+  ],
+  "tree": {
+    "target": "CNC(C)=O",
+    "target_name": "release_smoke_acetamide",
+    "tree_id": "809d15ff",
+    "created_at": "2026-09-06T07:39:00.292195+00:00",
+    "status": "complete",
+    "llm_summary": "Offline post-route audit smoke.",
+    "total_steps": 0,
+    "max_depth": 0,
+    "id_counters": {
+      "molecule": 1,
+      "reaction": 0
+    },
+    "molecule_nodes": {
+      "mol_0": {
+        "smiles": "CNC(C)=O",
+        "node_id": "mol_0",
+        "role": "terminal",
+        "depth": 0,
+        "complexity": {
+          "cs_score": 1.69,
+          "classification": "trivial",
+          "is_terminal": true
+        }
+      }
+    },
+    "reaction_nodes": []
+  },
+  "audit_state": {
+    "strategic_plan": {
+      "route_plan": {
+        "id": "plan:51af693a",
+        "revision": 0,
+        "route_thesis": "Use a direct amide disconnection smoke strategy.",
+        "route_mode": "late_fgi",
+        "key_disconnections": [
+          "amide C-N"
+        ],
+        "mode_evidence": [
+          "small amide smoke target"
+        ],
+        "strategic_risks": [
+          "smoke test only"
+        ],
+        "revision_triggers": [
+          "unexpected missing action-space"
+        ],
+        "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+        "last_revision_reason": "release smoke"
+      },
+      "history_count": 1
+    },
+    "protections": [],
+    "decision_history": [
+      {
+        "step_id": "",
+        "molecule": "CNC(C)=O",
+        "action": "accept-terminal",
+        "reaction_name": "",
+        "reasoning_summary": "Small stable material used only for release audit smoke.",
+        "reasoning_detail": "Small stable material used only for release audit smoke.",
+        "outcome": "terminal",
+        "confidence": "medium"
+      }
+    ],
+    "failed_attempts": [],
+    "experimental_outcomes": [],
+    "knowledge_drafts": [],
+    "candidate_audit_trail": [],
+    "node_scouting_rounds": [],
+    "linear_step_count": 0,
+    "max_linear_target": 4,
+    "target_cs_score": 1.69
+  }
+}

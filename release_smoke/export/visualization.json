@@ -1,0 +1,24 @@
+{
+  "nodes": [
+    {
+      "id": "mol_0",
+      "canonical_id": "mol_0",
+      "type": "molecule",
+      "smiles": "CNC(C)=O",
+      "role": "terminal",
+      "depth": 0,
+      "cs_score": 1.69,
+      "classification": "trivial"
+    }
+  ],
+  "edges": [],
+  "meta": {
+    "target": "CNC(C)=O",
+    "target_name": "release_smoke_acetamide",
+    "status": "complete",
+    "total_steps": 0,
+    "total_molecules": 1,
+    "display_molecules": 1,
+    "forward_step_count": 0
+  }
+}

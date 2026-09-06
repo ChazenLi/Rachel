@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Optional, Set
 from rdkit import Chem
 from rdkit.Chem import AllChem, DataStructs, Descriptors
 
+from Rachel.knowledge import get_base_profile
+
 from ._rdkit_utils import parse_mol, smarts_match, tanimoto
 
 # ---------------------------------------------------------------------------
@@ -23,21 +25,18 @@ CS_DIMENSIONS: Dict[str, float] = {
     "fg_density": 0.35, # 官能团密度
 }
 
-CS_TRIVIAL: float = 2.5   # ≤2.5: trivial, is_terminal=true
+CS_TRIVIAL: float = 2.25  # ≤2.25: trivial, is_terminal=true
 CS_MODERATE: float = 6.0  # ≤6.0: moderate; >6.0: complex
 
-# Common protecting-group SMARTS for fg_density dimension.
-# Kept local to avoid circular dependency on fg_detect (M2).
-_PG_SMARTS: List[str] = [
-    "[Si](C)(C)C",          # TMS / TBS / TIPS silyl ethers
-    "C(=O)OC(C)(C)C",       # Boc
-    "C(=O)OCc1ccccc1",      # Cbz
-    "C(=O)C",               # Ac  (acetyl)
-    "[CH2]c1ccccc1",        # Bn  (benzyl)
-    "S(=O)(=O)c1ccc(C)cc1", # Ts  (tosyl)
-    "C(=O)OC",              # methyl ester / Moc
-    "C(OC)(OC)",            # acetal / ketal
-]
+def _cs_rules(knowledge_profile=None):
+    profile = knowledge_profile or get_base_profile()
+    payload = profile.get("chem.cs_smarts")
+    entries = payload.get("entries", []) if isinstance(payload, dict) else []
+    return profile, [entry for entry in entries if isinstance(entry, dict)]
+
+
+def _knowledge_refs(profile, entry_ids: Set[str]) -> List[Dict[str, str]]:
+    return [profile.source("chem.cs_smarts", entry_id) for entry_id in sorted(entry_ids)]
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +185,11 @@ def _dim_symmetry(mol: Chem.Mol) -> float:
     return 0.0
 
 
-def _dim_fg_density(mol: Chem.Mol) -> float:
+def _dim_fg_density(
+    mol: Chem.Mol,
+    pg_rules: List[Dict[str, Any]],
+    complexity_rules: List[Dict[str, Any]],
+) -> tuple[float, Set[str]]:
     """FG density: count complexity-adding functional groups. Cap 2.5.
 
     Counts both protecting groups and synthetic-step-adding FGs
@@ -195,35 +198,29 @@ def _dim_fg_density(mol: Chem.Mol) -> float:
     """
     # Protecting groups (higher weight — they imply protect+deprotect steps)
     n_pg = 0
-    for smarts_str in _PG_SMARTS:
-        matches = smarts_match(mol, smarts_str)
+    matched_ids: Set[str] = set()
+    for rule in pg_rules:
+        matches = smarts_match(mol, str(rule.get("smarts", "")))
         n_pg += len(matches)
+        if matches:
+            matched_ids.add(str(rule["id"]))
 
-    # Complexity-adding functional groups (each ≈ 1 synthetic step)
-    _COMPLEX_FG = [
-        "[NX3][CX3](=[OX1])[#6]",     # amide bond
-        "[#6]S(=O)(=O)[NX3]",          # sulfonamide
-        "[OX2][CX3](=[OX1])[NX3]",     # carbamate
-        "[NX3][CX3](=[OX1])[NX3]",     # urea
-        "[#6][CX3](=[OX1])[OX2][#6]",  # ester
-        "[NX3][CX3](=[OX1])[OX2]",     # mixed: urethane / carbamate
-        "[#6]C(=O)Cl",                  # acid chloride (reactive)
-        "[#6]B([OH])[OH]",             # boronic acid
-    ]
-    n_fg = 0
-    for smarts_str in _COMPLEX_FG:
-        matches = smarts_match(mol, smarts_str)
-        n_fg += len(matches)
+    complexity_score = 0.0
+    for rule in complexity_rules:
+        matches = smarts_match(mol, str(rule.get("smarts", "")))
+        complexity_score += len(matches) * float(rule.get("weight", 0.25))
+        if matches:
+            matched_ids.add(str(rule["id"]))
 
-    score = n_pg * 0.35 + n_fg * 0.25
-    return min(score, 2.5)
+    score = n_pg * 0.35 + complexity_score
+    return min(score, 2.5), matched_ids
 
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
-def compute_cs_score(smiles: str) -> Dict[str, Any]:
+def compute_cs_score(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Compute the CS (Complicated Score) for a molecule.
 
     Evaluates 6 dimensions (size, ring, stereo, hetero, symmetry, fg_density),
@@ -257,13 +254,19 @@ def compute_cs_score(smiles: str) -> Dict[str, Any]:
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
+    profile, rules = _cs_rules(knowledge_profile)
+    pg_rules = [rule for rule in rules if rule.get("kind") == "protecting_group"]
+    complexity_rules = [
+        rule for rule in rules if rule.get("kind") == "complexity_group"
+    ]
+
     # Compute raw dimension values
     raw_size = _dim_size(mol)
     raw_ring = _dim_ring(mol)
     raw_stereo = _dim_stereo(mol)
     raw_hetero = _dim_hetero(mol)
     raw_symmetry = _dim_symmetry(mol)   # positive magnitude
-    raw_fg = _dim_fg_density(mol)
+    raw_fg, matched_ids = _dim_fg_density(mol, pg_rules, complexity_rules)
 
     # Weighted contributions
     w = CS_DIMENSIONS
@@ -294,6 +297,8 @@ def compute_cs_score(smiles: str) -> Dict[str, Any]:
         "classification": classification,
         "is_terminal": is_terminal,
         "is_heuristic": True,
+        "knowledge_profile_hash": profile.digest,
+        "knowledge_refs": _knowledge_refs(profile, matched_ids),
         "breakdown": {
             "size": round(c_size, 4),
             "ring": round(c_ring, 4),
@@ -305,7 +310,7 @@ def compute_cs_score(smiles: str) -> Dict[str, Any]:
     }
 
 
-def classify_complexity(smiles: str) -> Dict[str, Any]:
+def classify_complexity(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Quick complexity classification without full breakdown.
 
     Returns
@@ -323,7 +328,7 @@ def classify_complexity(smiles: str) -> Dict[str, Any]:
 
             {"ok": False, "error": "invalid SMILES", "input": smiles}
     """
-    result = compute_cs_score(smiles)
+    result = compute_cs_score(smiles, knowledge_profile=knowledge_profile)
 
     # Propagate error
     if "ok" in result and result["ok"] is False:
@@ -333,39 +338,27 @@ def classify_complexity(smiles: str) -> Dict[str, Any]:
         "classification": result["classification"],
         "is_terminal": result["is_terminal"],
         "is_heuristic": True,
+        "knowledge_profile_hash": result["knowledge_profile_hash"],
+        "knowledge_refs": result["knowledge_refs"],
     }
-
-
-# ---------------------------------------------------------------------------
-# Common FG SMARTS pairs for FG conversion bonus detection.
-# Each tuple: (source_smarts, target_smarts, description)
-# If intermediate has source FG and target has target FG, it suggests a
-# plausible functional-group conversion step → small bonus.
-# ---------------------------------------------------------------------------
-
-_FG_CONVERSION_PAIRS: List[tuple] = [
-    ("[OH]", "[OX2]C=O", "alcohol → ester"),
-    ("[NH2]", "[NX3]C=O", "amine → amide"),
-    ("C=C", "C-C", "alkene → alkane (reduction)"),
-    ("[CH]=O", "C(=O)[OH]", "aldehyde → carboxylic acid"),
-    ("[CH]=O", "C([OH])", "aldehyde → alcohol (reduction)"),
-    ("C#N", "C(=O)[OH]", "nitrile → carboxylic acid"),
-    ("C(=O)Cl", "C(=O)[OH]", "acyl chloride → carboxylic acid"),
-    ("[Br]", "[OH]", "bromide → alcohol (substitution)"),
-    ("[Cl]", "[OH]", "chloride → alcohol (substitution)"),
-]
 
 
 # ---------------------------------------------------------------------------
 # score_progress helpers
 # ---------------------------------------------------------------------------
 
-def _count_pg_matches(mol: Chem.Mol) -> int:
-    """Count total protecting-group matches on *mol* using _PG_SMARTS."""
+def _count_pg_matches(
+    mol: Chem.Mol, pg_rules: List[Dict[str, Any]]
+) -> tuple[int, Set[str]]:
+    """Count protecting-group matches and return the matching rule IDs."""
     n = 0
-    for smarts_str in _PG_SMARTS:
-        n += len(smarts_match(mol, smarts_str))
-    return n
+    matched_ids: Set[str] = set()
+    for rule in pg_rules:
+        matches = smarts_match(mol, str(rule.get("smarts", "")))
+        n += len(matches)
+        if matches:
+            matched_ids.add(str(rule["id"]))
+    return n, matched_ids
 
 
 def _has_substructure_relation(mol_a: Chem.Mol, mol_b: Chem.Mol) -> bool:
@@ -380,20 +373,33 @@ def _has_substructure_relation(mol_a: Chem.Mol, mol_b: Chem.Mol) -> bool:
     return False
 
 
-def _fg_conversion_bonus(mol_inter: Chem.Mol, mol_target: Chem.Mol) -> float:
+def _fg_conversion_bonus(
+    mol_inter: Chem.Mol,
+    mol_target: Chem.Mol,
+    conversion_rules: List[Dict[str, Any]],
+) -> tuple[float, Set[str]]:
     """Return +0.02 if any FG conversion pair matches (intermediate has source,
     target has dest), else 0.0."""
-    for src_smarts, dst_smarts, _desc in _FG_CONVERSION_PAIRS:
-        if smarts_match(mol_inter, src_smarts) and smarts_match(mol_target, dst_smarts):
-            return 0.02
-    return 0.0
+    matches: List[tuple[float, str]] = []
+    for rule in conversion_rules:
+        if smarts_match(mol_inter, str(rule.get("source_smarts", ""))) and smarts_match(
+            mol_target, str(rule.get("target_smarts", ""))
+        ):
+            matches.append((float(rule.get("bonus", 0.02)), str(rule["id"])))
+    if not matches:
+        return 0.0, set()
+    return max(bonus for bonus, _entry_id in matches), {
+        entry_id for _bonus, entry_id in matches
+    }
 
 
 # ---------------------------------------------------------------------------
 # Public API — progress scoring
 # ---------------------------------------------------------------------------
 
-def score_progress(intermediate: str, target: str) -> Dict[str, Any]:
+def score_progress(
+    intermediate: str, target: str, knowledge_profile=None
+) -> Dict[str, Any]:
     """Evaluate synthesis progress from *intermediate* toward *target*.
 
     Scoring components:
@@ -431,6 +437,10 @@ def score_progress(intermediate: str, target: str) -> Dict[str, Any]:
     if mol_target is None:
         return {"ok": False, "error": "invalid SMILES", "input": target}
 
+    profile, rules = _cs_rules(knowledge_profile)
+    pg_rules = [rule for rule in rules if rule.get("kind") == "protecting_group"]
+    conversion_rules = [rule for rule in rules if rule.get("kind") == "fg_conversion"]
+
     # 1. Tanimoto base
     tan_score = tanimoto(mol_inter, mol_target)
 
@@ -438,13 +448,15 @@ def score_progress(intermediate: str, target: str) -> Dict[str, Any]:
     sub_bonus = 0.05 if _has_substructure_relation(mol_inter, mol_target) else 0.0
 
     # 3. Deprotection bonus: +0.03 per PG that intermediate has but target doesn't
-    pg_inter = _count_pg_matches(mol_inter)
-    pg_target = _count_pg_matches(mol_target)
+    pg_inter, inter_pg_ids = _count_pg_matches(mol_inter, pg_rules)
+    pg_target, target_pg_ids = _count_pg_matches(mol_target, pg_rules)
     extra_pg = max(pg_inter - pg_target, 0)
     deprot_bonus = extra_pg * 0.03
 
     # 4. FG conversion bonus
-    fg_bonus = _fg_conversion_bonus(mol_inter, mol_target)
+    fg_bonus, conversion_ids = _fg_conversion_bonus(
+        mol_inter, mol_target, conversion_rules
+    )
 
     progress = min(1.0, tan_score + sub_bonus + deprot_bonus + fg_bonus)
 
@@ -455,11 +467,15 @@ def score_progress(intermediate: str, target: str) -> Dict[str, Any]:
         "deprotection_bonus": round(deprot_bonus, 6),
         "fg_conversion_bonus": round(fg_bonus, 6),
         "is_heuristic": True,
+        "knowledge_profile_hash": profile.digest,
+        "knowledge_refs": _knowledge_refs(
+            profile, inter_pg_ids | target_pg_ids | conversion_ids
+        ),
     }
 
 
 def batch_score_progress(
-    intermediates: List[str], target: str
+    intermediates: List[str], target: str, knowledge_profile=None
 ) -> List[Dict[str, Any]]:
     """Batch-evaluate synthesis progress for multiple intermediates.
 
@@ -481,14 +497,20 @@ def batch_score_progress(
             for _ in intermediates
         ]
 
+    profile, rules = _cs_rules(knowledge_profile)
+    pg_rules = [rule for rule in rules if rule.get("kind") == "protecting_group"]
+    conversion_rules = [rule for rule in rules if rule.get("kind") == "fg_conversion"]
+
     # Pre-compute target-side data
     fp_target = AllChem.GetMorganFingerprintAsBitVect(mol_target, radius=2, nBits=2048)
-    pg_target = _count_pg_matches(mol_target)
+    pg_target, target_pg_ids = _count_pg_matches(mol_target, pg_rules)
 
     # Pre-compile FG conversion destination patterns for target
     _fg_dst_hits: List[bool] = []
-    for _src, dst_smarts, _desc in _FG_CONVERSION_PAIRS:
-        _fg_dst_hits.append(bool(smarts_match(mol_target, dst_smarts)))
+    for rule in conversion_rules:
+        _fg_dst_hits.append(
+            bool(smarts_match(mol_target, str(rule.get("target_smarts", ""))))
+        )
 
     results: List[Dict[str, Any]] = []
     for smi in intermediates:
@@ -505,16 +527,23 @@ def batch_score_progress(
         sub_bonus = 0.05 if _has_substructure_relation(mol_inter, mol_target) else 0.0
 
         # 3. Deprotection bonus
-        pg_inter = _count_pg_matches(mol_inter)
+        pg_inter, inter_pg_ids = _count_pg_matches(mol_inter, pg_rules)
         extra_pg = max(pg_inter - pg_target, 0)
         deprot_bonus = extra_pg * 0.03
 
         # 4. FG conversion bonus (use pre-computed target dst hits)
-        fg_bonus = 0.0
-        for idx, (src_smarts, _dst, _desc) in enumerate(_FG_CONVERSION_PAIRS):
-            if _fg_dst_hits[idx] and smarts_match(mol_inter, src_smarts):
-                fg_bonus = 0.02
-                break
+        conversion_matches: List[tuple[float, str]] = []
+        for idx, rule in enumerate(conversion_rules):
+            if _fg_dst_hits[idx] and smarts_match(
+                mol_inter, str(rule.get("source_smarts", ""))
+            ):
+                conversion_matches.append(
+                    (float(rule.get("bonus", 0.02)), str(rule["id"]))
+                )
+        fg_bonus = max(
+            (bonus for bonus, _entry_id in conversion_matches), default=0.0
+        )
+        conversion_ids = {entry_id for _bonus, entry_id in conversion_matches}
 
         progress = min(1.0, tan_score + sub_bonus + deprot_bonus + fg_bonus)
 
@@ -525,6 +554,10 @@ def batch_score_progress(
             "deprotection_bonus": round(deprot_bonus, 6),
             "fg_conversion_bonus": round(fg_bonus, 6),
             "is_heuristic": True,
+            "knowledge_profile_hash": profile.digest,
+            "knowledge_refs": _knowledge_refs(
+                profile, inter_pg_ids | target_pg_ids | conversion_ids
+            ),
         })
 
     return results

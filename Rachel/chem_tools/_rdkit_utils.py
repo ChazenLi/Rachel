@@ -55,6 +55,17 @@ def canonical(smiles: str) -> Optional[str]:
         return None
 
 
+def has_assigned_stereocenter(smiles: str) -> bool:
+    """Return whether *smiles* contains an explicitly assigned chiral center."""
+    mol = parse_mol(smiles)
+    if mol is None:
+        return False
+    try:
+        return bool(Chem.FindMolChiralCenters(mol, includeUnassigned=False))
+    except Exception:
+        return False
+
+
 def validate_smiles(smiles: str) -> Tuple[bool, str]:
     """Validate a SMILES string.
 
@@ -169,6 +180,20 @@ def mol_formula_counter(mol: Chem.Mol) -> Counter:
 # ---------------------------------------------------------------------------
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
+_TEMPLATE_RESOURCES = {
+    "byproducts.json": "chem.byproducts",
+    "dangerous_combos.json": "chem.dangerous_combos",
+    "fg_compatibility_matrix.json": "chem.fg_compatibility",
+    "functional_groups.json": "chem.functional_groups",
+    "known_scaffolds.json": "chem.known_scaffolds",
+    "protecting_groups.json": "chem.protecting_groups",
+    "reaction_role_requirements.json": "chem.reaction_roles",
+    "reactions.json": "chem.reactions",
+    "reactive_sites.json": "chem.reactive_sites",
+    "selectivity_conflicts.json": "chem.selectivity_conflicts",
+    "selectivity_reactivity.json": "chem.selectivity_reactivity",
+    "structural_alerts.json": "chem.structural_alerts",
+}
 
 
 def _strip_comments(obj):
@@ -180,16 +205,24 @@ def _strip_comments(obj):
     return obj
 
 
-def load_template(filename: str) -> dict:
+def load_template(filename: str, knowledge_profile=None) -> dict:
     """Load a JSON template from the ``templates/`` directory.
 
     Uses ``pathlib`` to locate the file relative to *this* module.
     All keys named ``"__comment"`` (at any nesting level) are stripped from
     the returned dictionary.
     """
-    path = _TEMPLATES_DIR / filename
-    with open(path, "r", encoding="utf-8") as fh:
-        data = json.load(fh)
+    resource = _TEMPLATE_RESOURCES.get(filename)
+    if resource is not None:
+        if knowledge_profile is None:
+            from Rachel.knowledge import get_base_profile
+
+            knowledge_profile = get_base_profile()
+        data = knowledge_profile.get(resource)
+    else:
+        path = _TEMPLATES_DIR / filename
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
     return _strip_comments(data)
 
 

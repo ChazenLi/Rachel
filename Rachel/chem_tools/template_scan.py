@@ -10,6 +10,8 @@ from typing import Any, Dict, FrozenSet, List, Optional, Set, Tuple
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+from Rachel.knowledge import get_base_profile
+
 from ._rdkit_utils import canonical, load_template, parse_mol, smarts_match
 
 logger = logging.getLogger(__name__)
@@ -34,6 +36,7 @@ class TemplateMatch:
     broken_bonds: List[Tuple[int, int]] = field(default_factory=list)
     incompatible_groups: List[str] = field(default_factory=list)
     conditions: Optional[str] = None
+    knowledge_ref: Optional[Dict[str, str]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +46,7 @@ class TemplateMatch:
 def scan_applicable_reactions(
     smiles: str,
     mode: str = "retro",
+    knowledge_profile=None,
 ) -> Dict[str, Any]:
     """Scan reactions.json templates and return matches for *smiles*.
 
@@ -66,10 +70,11 @@ def scan_applicable_reactions(
 
     can = canonical(smiles)
     n_heavy = mol.GetNumHeavyAtoms()
+    profile = knowledge_profile or get_base_profile()
 
     # Load all reaction templates
     try:
-        templates = load_template("reactions.json")
+        templates = load_template("reactions.json", knowledge_profile=profile)
     except Exception as exc:
         return {"ok": False, "error": f"failed to load reactions.json: {exc}", "input": smiles}
 
@@ -120,6 +125,7 @@ def scan_applicable_reactions(
             broken_bonds=[],          # populated by extract_broken_bonds (task 7.2)
             incompatible_groups=list(incompat) if isinstance(incompat, list) else [],
             conditions=conditions,
+            knowledge_ref=profile.source("chem.reactions", tpl_id),
         )
         matches.append(tm)
 
@@ -138,6 +144,10 @@ def scan_applicable_reactions(
         "smiles": can,
         "matches": matches,
         "by_category": by_category,
+        "knowledge_profile_hash": profile.digest,
+        "knowledge_refs": [
+            match.knowledge_ref for match in matches if match.knowledge_ref is not None
+        ],
         "summary": {
             "total": len(matches),
             "categories": categories,
@@ -419,7 +429,7 @@ def _find_strategic_bonds_no_template(
 # find_disconnectable_bonds — public API
 # ---------------------------------------------------------------------------
 
-def find_disconnectable_bonds(smiles: str) -> Dict[str, Any]:
+def find_disconnectable_bonds(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Identify disconnectable bonds with associated retro-synthetic templates.
 
     Workflow:
@@ -448,7 +458,11 @@ def find_disconnectable_bonds(smiles: str) -> Dict[str, Any]:
     n_atoms = mol.GetNumAtoms()
 
     # Step 1: scan retro templates
-    scan_result = scan_applicable_reactions(smiles, mode="retro")
+    scan_result = scan_applicable_reactions(
+        smiles,
+        mode="retro",
+        knowledge_profile=knowledge_profile,
+    )
     if not scan_result.get("ok"):
         return scan_result
 
@@ -470,6 +484,7 @@ def find_disconnectable_bonds(smiles: str) -> Dict[str, Any]:
                 "confidence": tm.confidence,
                 "rxn_smarts": tm.rxn_smarts,
                 "conditions": tm.conditions,
+                "knowledge_ref": tm.knowledge_ref,
             }
             bond_templates.setdefault(bond_key, []).append(entry)
 

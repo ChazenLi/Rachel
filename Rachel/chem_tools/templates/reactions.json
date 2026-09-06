@@ -18,7 +18,7 @@
     "type": "forward"
   },
   "A01_ketone_reduction_NaBH4_retro": {
-    "brief": "Substrates: SMARTS([C:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C:1](=[O:2])([#6:3])[#6:4]).",
+    "brief": "Substrates: SMARTS([C:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C;H0;X3:1](=[O:2])([#6:3])[#6:4]).",
     "category": "oxidation_reduction",
     "co_reactant_examples": [
       "NaBH4/MeOH",
@@ -30,7 +30,7 @@
     "name": "Ketone Reduction NaBH4 (Retro, oxidation reduction)",
     "note": "Retrosynthetic: secondary alcohol disconnects to ketone via hydride reduction. NaBH4/MeOH (mild, selective) is preferred. NaBH4 is chemoselective: aldehydes > ketones >> esters. Produces racemic secondary alcohol from prochiral ketone. Thioethers are generally compatible; free amines do not interfere.",
     "prereq": "[C:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[C:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[C:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "racemic",
     "type": "retro"
   },
@@ -240,7 +240,7 @@
     "name": "Oppenauer Oxidation (Forward, oxidation reduction)",
     "note": "Oppenauer oxidation uses Al(OiPr)3 catalyst with excess ketone as hydrogen acceptor. Mild, selective for secondary alcohols. Does not affect alkenes, ethers, or amines. Equilibrium-driven by excess sacrificial ketone.",
     "prereq": "[CH1:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "not_applicable",
     "type": "forward"
   },
@@ -4550,7 +4550,7 @@
     ],
     "name": "Macrolactonization (Retro, ring reaction)",
     "note": "Macrolactonization requires high-dilution to avoid oligomerization. Yamaguchi, Corey-Nicolaou, Mukaiyama, Shiina. Retention at chiral centers. Prereq requires ester bond in ring of size ≥8 (macrolactone).",
-    "prereq": "[C:1](=[O:2])[O:3;r;!r3;!r4;!r5;!r6;!r7][C:4]",
+    "prereq": "[#6;R:1](=[O:2])([#6])[O;R;!r3;!r4;!r5;!r6;!r7:3][#6;R:4]",
     "rxn": "[C:1](=[O:2])[O:3][C:4]>>[C:1](=[O:2])[OH].[C:4][OH:3]",
     "stereo_policy": "retention",
     "type": "retro"
@@ -5624,8 +5624,8 @@
     ],
     "name": "Fischer Esterification (Retro, ester amide)",
     "note": "Fischer esterification: equilibrium reaction, driven by Le Chatelier (excess alcohol or water removal via Dean-Stark). Acid conditions: epoxides and acetals incompatible. Alternative: DCC/DMAP coupling (mild, neutral conditions).",
-    "prereq": "[C:1](=[O:2])[O:3][#6:4]",
-    "rxn": "[C:1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
+    "prereq": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]",
+    "rxn": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
     "stereo_policy": "not_applicable",
     "type": "retro"
   },
@@ -5714,8 +5714,8 @@
     ],
     "name": "Yamaguchi Ester (Retro, ester amide)",
     "note": "Yamaguchi esterification: RCOOH + 2,4,6-Cl3C6H2COCl/Et3N → mixed anhydride, then DMAP-catalyzed acyl transfer to alcohol. Excellent for macrolactonization (high dilution). Mild conditions, good chemoselectivity. Free amines may interfere.",
-    "prereq": "[C:1](=[O:2])[O:3][#6:4]",
-    "rxn": "[C:1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
+    "prereq": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]",
+    "rxn": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
     "stereo_policy": "not_applicable",
     "type": "retro"
   },
@@ -5731,8 +5731,8 @@
     ],
     "name": "Steglich Ester (Retro, ester amide)",
     "note": "Steglich esterification: RCOOH + R'OH + DCC → ester. DMAP (catalytic) dramatically accelerates via acyl pyridinium intermediate. Mild conditions (rt, neutral pH). DCU byproduct can be hard to remove (EDC gives water-soluble urea). Free amines may compete.",
-    "prereq": "[C:1](=[O:2])[O:3][#6:4]",
-    "rxn": "[C:1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
+    "prereq": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]",
+    "rxn": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[#6:4][OH:3]",
     "stereo_policy": "not_applicable",
     "type": "retro"
   },
@@ -5914,8 +5914,8 @@
     ],
     "name": "Steglich Esterification (Retro, ester amide)",
     "note": "Retrosynthetic Steglich: ester traced to RCOOH + R'OH. Forward uses DCC/DMAP/DCM or EDC/DMAP/DCM. Mild conditions, good for sensitive substrates.",
-    "prereq": "[C:1](=[O:2])[O:3][#6:4]",
-    "rxn": "[C:1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[OH:3][#6:4]",
+    "prereq": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]",
+    "rxn": "[C;!$(C(=O)N):1](=[O:2])[O:3][#6:4]>>[C:1](=[O:2])[OH].[OH:3][#6:4]",
     "stereo_policy": "not_applicable",
     "type": "retro"
   },
@@ -7145,8 +7145,8 @@
     ],
     "name": "NBS Allylic Bromination (Forward, special)",
     "note": "NBS allylic bromination (Wohl-Ziegler type): NBS maintains low [Br2] via NBS + HBr -> succinimide + Br2. Radical chain: Br. abstracts allylic H, then Br2 gives allylic bromide + Br.. Allylic radical is resonance-stabilized. Racemic at new C-Br. CCl4 or DCM as solvent.",
-    "prereq": "[C:1]=[C:2][CH:3]",
-    "rxn": "[C:1]=[C:2][CH:3]>>[C:1]=[C:2][C:3]Br",
+    "prereq": "[C:1]=[C:2][C;H1,H2,H3:3]",
+    "rxn": "[C:1]=[C:2][C;H1,H2,H3:3]>>[C:1]=[C:2][C:3]Br",
     "stereo_policy": "racemic",
     "type": "forward"
   },
@@ -7164,7 +7164,7 @@
     "name": "NBS Allylic Bromination (Retro, special)",
     "note": "Retrosynthetic: allylic C-Br traced to allylic C-H. Forward uses NBS/AIBN/CCl4. Radical mechanism, racemic.",
     "prereq": "[C:1]=[C:2][C:3]Br",
-    "rxn": "[C:1]=[C:2][C:3]Br>>[C:1]=[C:2][CH:3]",
+    "rxn": "[C:1]=[C:2][C:3]Br>>[C:1]=[C:2][C:3]",
     "stereo_policy": "racemic",
     "type": "retro"
   },
@@ -9752,7 +9752,7 @@
     "name": "Organolithium addition to ketone (retro; carbonyl -> tertiary alcohol in forward)",
     "note": "Retrosynthetic disconnection: tertiary alcohol -> ketone + RLi. RLi is a strong nucleophile and strong base. Strictly anhydrous/aprotic conditions required; any protic group (-OH, -NH) will be deprotonated first, consuming the reagent. Incompatible with all esters (not just methyl esters), nitriles (nucleophilic addition), acid chlorides (rapid acylation), epoxides (ring-opening), and nitro groups (electron transfer). The prereq matches all tertiary alcohols; which C-C bond to disconnect is ambiguous when multiple carbon substituents are present. Chemoselective for the most electrophilic carbonyl when multiple electrophiles are present.",
     "prereq": "[C:1]([OH:2])([#6:3])([#6:4])[#6:5]",
-    "rxn": "[C:1]([OH:2])([#6:3])([#6:4])[#6:5]>>[C:1](=[O:2])([#6:3])[#6:4].[#6:5][Li]",
+    "rxn": "[C:1]([OH:2])([#6:3])([#6:4])[#6:5]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4].[#6:5][Li]",
     "stereo_policy": "racemic",
     "type": "retro"
   },
@@ -10018,7 +10018,7 @@
     "name": "CBS reduction (Corey–Bakshi–Shibata) (retro; ketone -> chiral alcohol in forward)",
     "note": "Retrosynthetic: chiral secondary alcohol -> prochiral ketone via CBS reduction. Chiral oxazaborolidine catalyst activates BH3 and delivers hydride enantioselectively. Best results for aryl-alkyl ketones where the two substituents differ significantly in size (large vs small). BH3·THF is the stoichiometric reductant; it can slowly reduce esters and nitriles (competing reactions). Acid chlorides react rapidly with BH3. Nitro groups may undergo competing reduction. prereq restricted to secondary alcohols (CH1) to exclude tertiary alcohols.",
     "prereq": "[CH1:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "enantioselective",
     "type": "retro"
   },
@@ -10039,7 +10039,7 @@
     "name": "Noyori asymmetric hydrogenation (Ru–BINAP/diamine) (retro; ketone -> chiral alcohol in forward)",
     "note": "Retrosynthetic: chiral secondary alcohol -> prochiral ketone via Noyori Ru-BINAP/diamine asymmetric hydrogenation. Outer-sphere bifunctional mechanism: Ru-H and ligand N-H deliver H2 simultaneously to C=O. Best substrates: aryl-alkyl ketones, β-keto esters, α-amino ketones. Thioethers may poison Ru catalyst. Alkenes may undergo competing hydrogenation (Ru-BINAP also hydrogenates C=C). Acid chlorides incompatible with H2/base conditions. prereq restricted to secondary alcohols (CH1).",
     "prereq": "[CH1:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "enantioselective",
     "type": "retro"
   },
@@ -10317,7 +10317,7 @@
     "type": "forward"
   },
   "M07_TEMPO_oxidation_secondary_alcohol_to_ketone_forward": {
-    "brief": "Substrates: SMARTS([CH1:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C:1](=[O:2])([#6:3])[#6:4]).",
+    "brief": "Substrates: SMARTS([CH1:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C;H0;X3:1](=[O:2])([#6:3])[#6:4]).",
     "category": "oxidation_reduction",
     "co_reactant_examples": [
       "TEMPO (catalytic)",
@@ -10329,9 +10329,9 @@
       "[CX4]([OX2][#6])([OX2][#6])"
     ],
     "name": "TEMPO oxidation (secondary alcohol -> ketone) (forward)",
-    "note": "Substrates: SMARTS([CH1:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C:1](=[O:2])([#6:3])[#6:4]). TEMPO (catalytic) with co-oxidant (NaOCl or BAIB). prereq requires CH1 to ensure secondary alcohol (one H on carbinol carbon). Secondary alcohol oxidation is high-yielding and chemoselective; over-oxidation is not an issue. Thioethers may be oxidized to sulfoxides by NaOCl co-oxidant. Acetals may be hydrolyzed under acidic conditions. [Retro: see A05_sec_alcohol_to_ketone_retro]",
+    "note": "Substrates: SMARTS([CH1:1]([OH:2])([#6:3])[#6:4]) -> Products: SMARTS([C;H0;X3:1](=[O:2])([#6:3])[#6:4]). TEMPO (catalytic) with co-oxidant (NaOCl or BAIB). prereq requires CH1 to ensure secondary alcohol (one H on carbinol carbon). Secondary alcohol oxidation is high-yielding and chemoselective; over-oxidation is not an issue. Thioethers may be oxidized to sulfoxides by NaOCl co-oxidant. Acetals may be hydrolyzed under acidic conditions. [Retro: see A05_sec_alcohol_to_ketone_retro]",
     "prereq": "[CH1:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "not_applicable",
     "type": "forward"
   },
@@ -11841,7 +11841,7 @@
     ],
     "name": "Cascade cyclization (multi-ring formation) (retro; schematic placeholder)",
     "note": "SCHEMATIC PLACEHOLDER — disabled for automated matching. Cascade (cation-olefin, radical, or anionic) cyclizations form polycyclic frameworks from polyene precursors in a single operation. Stork-Eschenmoser hypothesis predicts trans-anti-trans ring junctions from chair-like TS. Real applications require substrate-specific SMARTS capturing ring size, substitution pattern, and ring-junction stereochemistry. This template exists only as a conceptual retrosynthetic reminder; do NOT use for automated route scoring. Incompatible groups expanded: nitro (radical quencher), thioethers (Lewis acid coordination/poisoning), free amines (Lewis acid sequestration), acyl chlorides (hydrolysis under protic conditions).",
-    "prereq": "DISABLED_PLACEHOLDER",
+    "prereq": "[#6]1~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~[#6]2~[#6]1",
     "rxn": "C1CCC2CCCCC2C1>>C=CC=CC=CC=C",
     "stereo_policy": "substrate_dependent",
     "type": "retro"
@@ -11864,7 +11864,7 @@
     ],
     "name": "Polyene cyclization (terpene/steroid-type) (retro; schematic placeholder)",
     "note": "SCHEMATIC PLACEHOLDER — disabled for automated matching. Biomimetic polyene cyclizations convert acyclic isoprenoid polyenes into polycyclic terpenoid/steroid skeletons. Stereochemistry is governed by Stork-Eschenmoser hypothesis: chair-like TS conformations dictate trans-anti-trans ring junctions. Initiation typically via protonation of terminal alkene or epoxide opening. Requires precise (E)-alkene geometry in precursor for correct ring fusion. This template exists only as a conceptual retrosynthetic reminder; do NOT use for automated route scoring. Substrate-specific SMARTS needed for real applications. Incompatible groups: nitro (radical quencher), thioethers (Lewis acid coordination), free amines (Lewis acid sequestration), acyl chlorides (hydrolysis), epoxides (competing acid-catalyzed opening).",
-    "prereq": "DISABLED_PLACEHOLDER",
+    "prereq": "[#6]1~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~[#6]2~[#6]1",
     "rxn": "CC1CCC2CCCCC2C1C>>C=C(C)CCC=C(C)CCC=C(C)C",
     "stereo_policy": "substrate_dependent",
     "type": "retro"
@@ -11902,7 +11902,7 @@
     "name": "Meerwein-Ponndorf-Verley Reduction (Retro, oxidation reduction)",
     "note": "Retrosynthetic: secondary alcohol disconnects to ketone via MPV reduction. Al(OiPr)3 catalyzes hydride transfer from iPrOH to ketone via six-membered TS. Very mild, chemoselective for ketones/aldehydes. Does not reduce esters, amides, alkenes. Produces racemic alcohol. prereq now requires [CH1] to ensure only secondary alcohols match (tertiary alcohols cannot arise from ketone reduction and must be excluded).",
     "prereq": "[CH1:1]([OH:2])([#6:3])[#6:4]",
-    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C:1](=[O:2])([#6:3])[#6:4]",
+    "rxn": "[CH1:1]([OH:2])([#6:3])[#6:4]>>[C;H0;X3:1](=[O:2])([#6:3])[#6:4]",
     "stereo_policy": "racemic",
     "type": "retro"
   },
@@ -11975,8 +11975,8 @@
     ],
     "name": "Ley Oxidation (Retro, special)",
     "note": "Retrosynthetic: aldehyde/ketone disconnects to alcohol via TPAP/NMO (Ley) oxidation. TPAP (tetrapropylammonium perruthenate) catalytic with NMO as stoichiometric oxidant. Mild, selective. Primary alcohols give aldehydes without over-oxidation. prereq uses recursive SMARTS to exclude esters [CX3](=O)[OX2], amides [CX3](=O)[NX3], and carboxylic acids [CX3](=O)[OH] — only true aldehyde/ketone C=O should match. Functionally equivalent to A09 Swern retro but different reagent system. Thioethers may be oxidized by TPAP; free amines may coordinate Ru and inhibit catalysis.",
-    "prereq": "[CX3:1;!$([CX3](=[OX1])[OX2]);!$([CX3](=[OX1])[NX3]);!$([CX3](=[OX1])[OH])](=[O:2])",
-    "rxn": "[CX3:1;!$([CX3](=[OX1])[OX2]);!$([CX3](=[OX1])[NX3]);!$([CX3](=[OX1])[OH])](=[O:2])>>[C:1]([H])[OH:2]",
+    "prereq": "[CX3:1](=[OX1:2])([#6])([#6,H])",
+    "rxn": "[CX3:1](=[OX1:2])([#6])([#6,H])>>[C:1]([H])[OH:2]",
     "stereo_policy": "not_applicable",
     "type": "retro"
   },

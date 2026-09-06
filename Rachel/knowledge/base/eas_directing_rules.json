@@ -1,0 +1,25 @@
+{
+  "schema": "rachel.eas-directing-rules.v1",
+  "entries": [
+    {
+      "id": "rachel.base.eas.director.alkyl",
+      "name": "aryl alkyl",
+      "smarts": "[c:1]-[CX4;H0,H1,H2,H3;+0:2]",
+      "ring_atom_map": 1,
+      "directing_positions": ["ortho", "para"],
+      "electronic_effect": "activating",
+      "priority": 100,
+      "locked": true
+    },
+    {
+      "id": "rachel.base.eas.director.carboxylic_acid",
+      "name": "aryl carboxylic acid",
+      "smarts": "[c:1]-[CX3:2](=[OX1:3])[OX2H1:4]",
+      "ring_atom_map": 1,
+      "directing_positions": ["meta"],
+      "electronic_effect": "deactivating",
+      "priority": 100,
+      "locked": true
+    }
+  ]
+}

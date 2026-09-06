@@ -15,6 +15,7 @@ LLM 即使上下文截断也能看到关键状态。
 
 from __future__ import annotations
 
+import copy
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -27,6 +28,7 @@ class DecisionRecord:
     action: str = ""            # decide / propose / accept-terminal / skip
     reaction_name: str = ""
     reasoning_summary: str = ""
+    reasoning_detail: str = ""
     outcome: str = ""           # committed / gate_failed / skipped / terminal
     confidence: str = "medium"
 
@@ -52,6 +54,29 @@ class FailedAttempt:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FailedAttempt:
+        return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
+
+
+@dataclass
+class ExperimentalOutcome:
+    """Observed laboratory outcome, separate from route-tree commit status."""
+
+    outcome_id: str = ""
+    step_id: str = ""
+    action_id: str = ""
+    outcome: str = ""
+    conditions: Dict[str, Any] = field(default_factory=dict)
+    yield_percent: Optional[float] = None
+    conversion_percent: Optional[float] = None
+    observations: str = ""
+    evidence: List[Dict[str, Any]] = field(default_factory=list)
+    recorded_at: str = ""
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentalOutcome:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
@@ -93,6 +118,18 @@ class SynthesisAuditState:
     # 失败记录
     failed_attempts: List[FailedAttempt] = field(default_factory=list)
 
+    # Laboratory observations; never inferred from decision/commit records.
+    experimental_outcomes: List[ExperimentalOutcome] = field(default_factory=list)
+
+    # Inactive knowledge proposals. Publication is handled by the pack CLI.
+    knowledge_drafts: List[Dict[str, Any]] = field(default_factory=list)
+
+    # Candidate sandbox comparisons archived before clearing transient sandbox state.
+    candidate_audit_trail: List[Dict[str, Any]] = field(default_factory=list)
+
+    # Completed current-node scouting rounds. Prepared packets are never persisted.
+    node_scouting_rounds: List[Dict[str, Any]] = field(default_factory=list)
+
     # 线性步数监控
     linear_step_count: int = 0
     max_linear_target: int = 8
@@ -121,6 +158,7 @@ class SynthesisAuditState:
         action: str,
         reaction_name: str = "",
         reasoning_summary: str = "",
+        reasoning_detail: str = "",
         outcome: str = "committed",
         confidence: str = "medium",
     ) -> None:
@@ -130,6 +168,7 @@ class SynthesisAuditState:
             action=action,
             reaction_name=reaction_name,
             reasoning_summary=reasoning_summary[:120],
+            reasoning_detail=reasoning_detail[:1000],
             outcome=outcome,
             confidence=confidence,
         ))
@@ -146,6 +185,51 @@ class SynthesisAuditState:
             attempted_reaction=attempted_reaction,
             failure_reason=failure_reason[:200],
         ))
+
+    def _compact_candidate_attempt(self, attempt: Dict[str, Any]) -> Dict[str, Any]:
+        compact = {
+            "attempt_idx": attempt.get("attempt_idx"),
+            "candidate_id": attempt.get("candidate_id", ""),
+            "source": attempt.get("source", ""),
+            "success": bool(attempt.get("success", False)),
+            "precursors": list(attempt.get("precursors", []) or []),
+            "reagents": list(attempt.get("reagents", []) or []),
+            "reaction_type": attempt.get("reaction_type", ""),
+            "template_id": attempt.get("template_id", ""),
+            "template_name": attempt.get("template_name", ""),
+            "forward_validation": attempt.get("forward_validation", {}),
+            "validation_micro": attempt.get("validation_micro", {}),
+            "candidate_summary": attempt.get("candidate_summary", {}),
+            "error": attempt.get("error", ""),
+        }
+        if attempt.get("strategy_id"):
+            compact["strategy_id"] = attempt.get("strategy_id", "")
+        if attempt.get("scouting_source"):
+            compact["scouting_source"] = copy.deepcopy(attempt["scouting_source"])
+        return compact
+
+    def record_candidate_audit(
+        self,
+        *,
+        event: str,
+        molecule: str,
+        attempts: List[Dict[str, Any]],
+        selected_idx: Optional[int] = None,
+    ) -> None:
+        if not attempts:
+            return
+        compact_attempts = [self._compact_candidate_attempt(a) for a in attempts]
+        selected_candidate_id = ""
+        if selected_idx is not None and 0 <= selected_idx < len(compact_attempts):
+            selected_candidate_id = compact_attempts[selected_idx].get("candidate_id", "")
+        self.candidate_audit_trail.append({
+            "event": event,
+            "molecule": molecule,
+            "selected_idx": selected_idx,
+            "selected_candidate_id": selected_candidate_id,
+            "n_attempts": len(compact_attempts),
+            "attempts": compact_attempts,
+        })
 
     def get_failures_for_molecule(self, smiles: str) -> List[Dict[str, Any]]:
         return [f.to_dict() for f in self.failed_attempts if f.molecule == smiles]
@@ -191,12 +275,36 @@ class SynthesisAuditState:
             if len(self.failed_attempts) > max_failures:
                 summary["total_failures"] = len(self.failed_attempts)
 
+        if self.experimental_outcomes:
+            summary["recent_experimental_outcomes"] = [
+                item.to_dict() for item in self.experimental_outcomes[-3:]
+            ]
+            summary["total_experimental_outcomes"] = len(
+                self.experimental_outcomes
+            )
+
+        if self.knowledge_drafts:
+            summary["knowledge_draft_count"] = len(self.knowledge_drafts)
+
+        if self.candidate_audit_trail:
+            recent_candidate_audit = self.candidate_audit_trail[-3:]
+            summary["recent_candidate_audit"] = [
+                {
+                    "event": item.get("event", ""),
+                    "molecule": item.get("molecule", ""),
+                    "selected_candidate_id": item.get("selected_candidate_id", ""),
+                    "n_attempts": item.get("n_attempts", 0),
+                }
+                for item in recent_candidate_audit
+            ]
+
         summary["linear_steps"] = self.linear_step_count
         summary["linear_target"] = self.max_linear_target
         if self.linear_step_count >= self.max_linear_target:
             summary["linear_warning"] = (
-                f"线性步数 {self.linear_step_count} 已达建议上限 "
-                f"{self.max_linear_target}，建议审查收敛替代方案"
+                f"The linear step count {self.linear_step_count} has reached the "
+                f"recommended limit of {self.max_linear_target}; review convergent "
+                "alternatives."
             )
 
         return summary
@@ -209,6 +317,12 @@ class SynthesisAuditState:
             "protections": [p.to_dict() for p in self.protections],
             "decision_history": [d.to_dict() for d in self.decision_history],
             "failed_attempts": [f.to_dict() for f in self.failed_attempts],
+            "experimental_outcomes": [
+                item.to_dict() for item in self.experimental_outcomes
+            ],
+            "knowledge_drafts": copy.deepcopy(self.knowledge_drafts),
+            "candidate_audit_trail": self.candidate_audit_trail,
+            "node_scouting_rounds": copy.deepcopy(self.node_scouting_rounds),
             "linear_step_count": self.linear_step_count,
             "max_linear_target": self.max_linear_target,
             "target_cs_score": self.target_cs_score,
@@ -227,6 +341,13 @@ class SynthesisAuditState:
         state.failed_attempts = [
             FailedAttempt.from_dict(f) for f in d.get("failed_attempts", [])
         ]
+        state.experimental_outcomes = [
+            ExperimentalOutcome.from_dict(item)
+            for item in d.get("experimental_outcomes", [])
+        ]
+        state.knowledge_drafts = copy.deepcopy(d.get("knowledge_drafts", []))
+        state.candidate_audit_trail = d.get("candidate_audit_trail", [])
+        state.node_scouting_rounds = copy.deepcopy(d.get("node_scouting_rounds", []))
         state.linear_step_count = d.get("linear_step_count", 0)
         state.max_linear_target = d.get("max_linear_target", 8)
         state.target_cs_score = d.get("target_cs_score", 0.0)

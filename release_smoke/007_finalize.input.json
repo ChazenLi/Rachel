@@ -1,0 +1,6 @@
+{
+  "command": "finalize",
+  "args": {
+    "summary": "Offline post-route audit smoke."
+  }
+}

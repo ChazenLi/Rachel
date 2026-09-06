@@ -1,0 +1,804 @@
+{
+  "schema": "rachel.reaction-families.v1",
+  "entries": [
+    {
+      "id": "rachel.base.family.small_ring_formation",
+      "priority": 2000,
+      "match": {
+        "any_terms": [
+          "epoxidation",
+          "aziridination",
+          "cyclopropanation"
+        ]
+      },
+      "family_key": "small_ring_formation",
+      "family_class": "small_ring_formation",
+      "allowed_deltas": [
+        "fg_count_change",
+        "fragment_merge",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "new_strained_small_ring",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [
+        "new_bridged_system",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_medium_ring",
+        "new_spiro_center"
+      ],
+      "required_evidence": [
+        "alkene or equivalent small-ring precursor motif",
+        "atom-source proof for both new small-ring bonds"
+      ],
+      "evidence_keys": [
+        "precursor_motif",
+        "atom_source"
+      ],
+      "risk_level": "medium"
+    },
+    {
+      "id": "rachel.base.family.ring_opening",
+      "priority": 1999,
+      "match": {
+        "all_term_groups": [
+          [
+            "opening",
+            "hydrolysis"
+          ],
+          [
+            "epoxide",
+            "lactone",
+            "lactam",
+            "ring"
+          ]
+        ]
+      },
+      "family_key": "ring_opening",
+      "family_class": "ring_opening",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_cleavage",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_decrease"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "strained or activated ring-opening motif",
+        "nucleophile/hydrolysis or cleavage-site rationale"
+      ],
+      "evidence_keys": [
+        "activated_ring",
+        "cleavage_site_rationale"
+      ],
+      "risk_level": "medium"
+    },
+    {
+      "id": "rachel.base.family.intramolecular_ring_closure",
+      "priority": 1998,
+      "match": {
+        "any_terms": [
+          "lactonization",
+          "lactamization",
+          "intramolecular_sn2",
+          "heterocycle_formation"
+        ]
+      },
+      "family_key": "intramolecular_ring_closure",
+      "family_class": "intramolecular_ring_closure",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_medium_ring",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "same-precursor tether proof",
+        "new ring-bond atom-source proof",
+        "leaving-group or activation rationale"
+      ],
+      "evidence_keys": [
+        "same_precursor_tether",
+        "new_ring_bond_atom_source",
+        "leaving_group_or_activation_rationale"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.intramolecular_nucleophilic_addition_cyclization",
+      "priority": 1997,
+      "match": {
+        "all_term_groups": [
+          [
+            "intramolecular"
+          ],
+          [
+            "aryl_lithium",
+            "aryllithium",
+            "organolithium",
+            "organometallic",
+            "nucleophilic_addition",
+            "carbonyl_addition",
+            "aldehyde_addition",
+            "addition_to_aldehyde",
+            "addition_to_carbonyl"
+          ]
+        ]
+      },
+      "family_key": "intramolecular_nucleophilic_addition_cyclization",
+      "family_class": "intramolecular_ring_closure",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_bridged_system",
+        "new_fused_ring_system",
+        "new_junction_atoms",
+        "new_macrocycle",
+        "new_medium_ring",
+        "new_spiro_center",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "same-precursor tether proof",
+        "organometallic or nucleophile generation site",
+        "carbonyl electrophile identity",
+        "atom-source proof for the new C-C ring bond",
+        "retained handle and substituent position proof"
+      ],
+      "evidence_keys": [
+        "same_precursor_tether",
+        "organometallic_site",
+        "carbonyl_electrophile",
+        "new_ring_bond_atom_source",
+        "preserved_anchor_positions"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.intramolecular_michael_cyclization",
+      "priority": 1996,
+      "match": {
+        "all_terms": [
+          "intramolecular",
+          "michael"
+        ]
+      },
+      "family_key": "intramolecular_michael_cyclization",
+      "family_class": "intramolecular_ring_closure",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "same-precursor Michael donor/acceptor tether proof",
+        "regioselectivity and enolate/source rationale"
+      ],
+      "evidence_keys": [
+        "michael_donor",
+        "michael_acceptor",
+        "same_precursor_tether",
+        "regioselectivity_rationale"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.robinson_annulation",
+      "priority": 1995,
+      "match": {
+        "any_terms": [
+          "robinson"
+        ]
+      },
+      "family_key": "robinson_annulation",
+      "family_class": "annulation",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "Michael donor/acceptor role assignment",
+        "aldol closure regioselectivity",
+        "atom-source proof for the new cyclohexenone ring bond"
+      ],
+      "evidence_keys": [
+        "michael_donor",
+        "michael_acceptor",
+        "aldol_closure_regioselectivity",
+        "new_ring_bond_atom_source"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.one_three_dipolar_cycloaddition",
+      "priority": 1994,
+      "match": {
+        "any_terms": [
+          "1,3_dipolar",
+          "1_3_dipolar",
+          "one_three_dipolar",
+          "nitrile_oxide",
+          "dipolar_cycloaddition",
+          "3+2",
+          "[3+2]"
+        ],
+        "any_evidence_keys": [
+          "dipole",
+          "dipolarophile"
+        ]
+      },
+      "family_key": "one_three_dipolar_cycloaddition",
+      "family_class": "cycloaddition",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "1,3-dipole/dipolarophile role assignment",
+        "two formed-bond atom-source map",
+        "cycloaddition regioselectivity and, when applicable, stereochemistry rationale"
+      ],
+      "evidence_keys": [
+        "dipole",
+        "dipolarophile",
+        "new_ring_bond_atom_source",
+        "regiochemistry_rationale"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.diels_alder_cycloaddition",
+      "priority": 1993,
+      "match": {
+        "any_terms": [
+          "diels_alder"
+        ]
+      },
+      "family_key": "diels_alder_cycloaddition",
+      "family_class": "cycloaddition",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "diene/dienophile role assignment",
+        "cycloaddition regiochemistry and stereochemistry rationale"
+      ],
+      "evidence_keys": [
+        "diene",
+        "dienophile",
+        "regiochemistry_rationale",
+        "stereochemistry_rationale"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.generic_cycloaddition",
+      "priority": 1992,
+      "match": {
+        "any_terms": [
+          "cycloaddition"
+        ]
+      },
+      "family_key": "generic_cycloaddition",
+      "family_class": "cycloaddition",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "cycloaddition component-role assignment",
+        "formed-bond atom-source map",
+        "regiochemistry and stereochemistry rationale"
+      ],
+      "evidence_keys": [
+        "component_roles",
+        "new_ring_bond_atom_source",
+        "regiochemistry_rationale",
+        "stereochemistry_rationale"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.electrocyclization",
+      "priority": 1991,
+      "match": {
+        "any_terms": [
+          "electrocyclization"
+        ]
+      },
+      "family_key": "electrocyclization",
+      "family_class": "pericyclic",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "conjugated polyene electron-count rationale",
+        "allowed thermal/photochemical mode rationale"
+      ],
+      "evidence_keys": [
+        "conjugated_polyene",
+        "electron_count",
+        "thermal_or_photochemical_mode"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.beckmann_rearrangement",
+      "priority": 1990,
+      "match": {
+        "any_terms": [
+          "beckmann"
+        ]
+      },
+      "family_key": "beckmann_rearrangement",
+      "family_class": "ring_expansion",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_cleavage",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_medium_ring",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_decrease",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "oxime or activated imine precursor motif",
+        "migration center and migrating-bond proof"
+      ],
+      "evidence_keys": [
+        "oxime_or_activated_imine",
+        "migration_center",
+        "migrating_bond"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.baeyer_villiger_oxidation",
+      "priority": 1989,
+      "match": {
+        "any_terms": [
+          "baeyer_villiger",
+          "baeyer",
+          "villiger"
+        ]
+      },
+      "family_key": "baeyer_villiger_oxidation",
+      "family_class": "ring_expansion",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_cleavage",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_medium_ring",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_decrease",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "ketone/peracid or oxygen-insertion motif",
+        "migratory aptitude and insertion-site proof"
+      ],
+      "evidence_keys": [
+        "ketone_or_peracid_motif",
+        "oxygen_insertion_site",
+        "migratory_aptitude"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.ring_closing_metathesis",
+      "priority": 1988,
+      "match": {
+        "any_terms": [
+          "rcm",
+          "ring_closing_metathesis",
+          "metathesis"
+        ]
+      },
+      "family_key": "ring_closing_metathesis",
+      "family_class": "metathesis",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_medium_ring",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "single tethered diene precursor",
+        "mapped alkene termini in the same precursor"
+      ],
+      "evidence_keys": [
+        "single_tethered_diene",
+        "alkene_termini"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.olefination",
+      "priority": 1987,
+      "match": {
+        "any_terms": [
+          "hwe",
+          "horner",
+          "wadsworth",
+          "emmons",
+          "wittig",
+          "julia",
+          "peterson"
+        ]
+      },
+      "family_key": "olefination",
+      "family_class": "olefination",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed"
+      ],
+      "forbidden_deltas": [
+        "new_bridged_system",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_medium_ring",
+        "new_spiro_center",
+        "ring_system_merge"
+      ],
+      "required_evidence": [
+        "carbonyl/ylide or phosphonate partner role assignment",
+        "alkene-formation atom-source proof"
+      ],
+      "evidence_keys": [
+        "carbonyl_partner",
+        "olefination_reagent",
+        "alkene_atom_source"
+      ],
+      "risk_level": "medium"
+    },
+    {
+      "id": "rachel.base.family.rearrangement",
+      "priority": 1986,
+      "match": {
+        "any_terms": [
+          "claisen",
+          "cope",
+          "wagner",
+          "pinacol",
+          "curtius",
+          "rearrangement"
+        ]
+      },
+      "family_key": "rearrangement",
+      "family_class": "rearrangement",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_cleavage",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "migrating bond or sigma-bond shift proof",
+        "family-specific rearrangement motif"
+      ],
+      "evidence_keys": [
+        "migration_center",
+        "migrating_bond",
+        "rearrangement_motif"
+      ],
+      "risk_level": "high"
+    },
+    {
+      "id": "rachel.base.family.protection_deprotection",
+      "priority": 1985,
+      "match": {
+        "any_action_tokens": [
+          "protect",
+          "protection",
+          "deprotect",
+          "deprotection"
+        ]
+      },
+      "family_key": "protection_deprotection",
+      "family_class": "functional_group_edit",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "fragment_merge",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "protected/unprotected functional-group identity",
+        "orthogonality or condition rationale"
+      ],
+      "evidence_keys": [
+        "protecting_group",
+        "deprotected_functional_group",
+        "condition_rationale"
+      ],
+      "risk_level": "low"
+    },
+    {
+      "id": "rachel.base.family.functional_group_interconversion",
+      "priority": 1984,
+      "match": {
+        "any_terms": [
+          "oxidation",
+          "reduction",
+          "hydrogenation",
+          "halogenation",
+          "dehalogenation",
+          "fgi"
+        ]
+      },
+      "family_key": "functional_group_interconversion",
+      "family_class": "functional_group_edit",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "functional-group before/after identity",
+        "chemoselectivity rationale for retained handles"
+      ],
+      "evidence_keys": [
+        "before_functional_group",
+        "after_functional_group",
+        "chemoselectivity_rationale"
+      ],
+      "risk_level": "low"
+    },
+    {
+      "id": "rachel.base.family.high_risk_topology",
+      "priority": 1983,
+      "match": {
+        "declared_high_risk_topology": true
+      },
+      "family_key": "high_risk_topology",
+      "family_class": "high_risk_topology",
+      "allowed_deltas": [
+        "alcohol_to_carbonyl",
+        "alcohol_to_halide",
+        "carbonyl_to_alcohol",
+        "fg_count_change",
+        "halide_to_alcohol",
+        "halogen_added",
+        "halogen_removed",
+        "mapped_bond_order_change",
+        "mapped_heavy_bond_formation",
+        "mapped_topological_distance_change",
+        "new_bridged_system",
+        "new_fused_ring_system",
+        "new_macrocycle",
+        "new_medium_ring",
+        "new_spiro_center",
+        "nitro_to_amine",
+        "protecting_group_added",
+        "protecting_group_removed",
+        "ring_bond_edit",
+        "ring_count_increase",
+        "ring_system_merge"
+      ],
+      "forbidden_deltas": [],
+      "required_evidence": [
+        "atom-mapped junction or bridgehead source proof",
+        "mechanistic high-risk topology proof"
+      ],
+      "evidence_keys": [],
+      "risk_level": "critical"
+    }
+  ]
+}

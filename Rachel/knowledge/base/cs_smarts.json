@@ -1,0 +1,30 @@
+{
+  "schema": "rachel.cs-smarts.v1",
+  "entries": [
+    {"id": "rachel.base.cs.pg.silyl", "kind": "protecting_group", "smarts": "[Si](C)(C)C"},
+    {"id": "rachel.base.cs.pg.boc", "kind": "protecting_group", "smarts": "C(=O)OC(C)(C)C"},
+    {"id": "rachel.base.cs.pg.cbz", "kind": "protecting_group", "smarts": "C(=O)OCc1ccccc1"},
+    {"id": "rachel.base.cs.pg.acetyl", "kind": "protecting_group", "smarts": "C(=O)C"},
+    {"id": "rachel.base.cs.pg.benzyl", "kind": "protecting_group", "smarts": "[CH2]c1ccccc1"},
+    {"id": "rachel.base.cs.pg.tosyl", "kind": "protecting_group", "smarts": "S(=O)(=O)c1ccc(C)cc1"},
+    {"id": "rachel.base.cs.pg.methyl_ester", "kind": "protecting_group", "smarts": "C(=O)OC"},
+    {"id": "rachel.base.cs.pg.acetal", "kind": "protecting_group", "smarts": "C(OC)(OC)"},
+    {"id": "rachel.base.cs.complexity.amide", "kind": "complexity_group", "smarts": "[NX3][CX3](=[OX1])[#6]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.sulfonamide", "kind": "complexity_group", "smarts": "[#6]S(=O)(=O)[NX3]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.carbamate", "kind": "complexity_group", "smarts": "[OX2][CX3](=[OX1])[NX3]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.urea", "kind": "complexity_group", "smarts": "[NX3][CX3](=[OX1])[NX3]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.ester", "kind": "complexity_group", "smarts": "[#6][CX3](=[OX1])[OX2][#6]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.urethane", "kind": "complexity_group", "smarts": "[NX3][CX3](=[OX1])[OX2]", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.acid_chloride", "kind": "complexity_group", "smarts": "[#6]C(=O)Cl", "weight": 0.25},
+    {"id": "rachel.base.cs.complexity.boronic_acid", "kind": "complexity_group", "smarts": "[#6]B([OH])[OH]", "weight": 0.25},
+    {"id": "rachel.base.cs.fg.alcohol_to_ester", "kind": "fg_conversion", "source_smarts": "[OH]", "target_smarts": "[OX2]C=O", "description": "alcohol to ester", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.amine_to_amide", "kind": "fg_conversion", "source_smarts": "[NH2]", "target_smarts": "[NX3]C=O", "description": "amine to amide", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.alkene_to_alkane", "kind": "fg_conversion", "source_smarts": "C=C", "target_smarts": "C-C", "description": "alkene to alkane", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.aldehyde_to_acid", "kind": "fg_conversion", "source_smarts": "[CH]=O", "target_smarts": "C(=O)[OH]", "description": "aldehyde to carboxylic acid", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.aldehyde_to_alcohol", "kind": "fg_conversion", "source_smarts": "[CH]=O", "target_smarts": "C([OH])", "description": "aldehyde to alcohol", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.nitrile_to_acid", "kind": "fg_conversion", "source_smarts": "C#N", "target_smarts": "C(=O)[OH]", "description": "nitrile to carboxylic acid", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.acyl_chloride_to_acid", "kind": "fg_conversion", "source_smarts": "C(=O)Cl", "target_smarts": "C(=O)[OH]", "description": "acyl chloride to carboxylic acid", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.bromide_to_alcohol", "kind": "fg_conversion", "source_smarts": "[Br]", "target_smarts": "[OH]", "description": "bromide to alcohol", "bonus": 0.02},
+    {"id": "rachel.base.cs.fg.chloride_to_alcohol", "kind": "fg_conversion", "source_smarts": "[Cl]", "target_smarts": "[OH]", "description": "chloride to alcohol", "bonus": 0.02}
+  ]
+}

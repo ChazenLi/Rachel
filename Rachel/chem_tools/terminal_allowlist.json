@@ -1,0 +1,894 @@
+{
+  "schema": "rachel-v2-terminal-allowlist-002",
+  "description": "Evidence-backed terminal audit allowlist for common reagents, ions, and reactive reagent leaves. Entries map abstract route leaves to real-world representative forms or in-situ source reagents with PubChem CID/vendor evidence resolved by pubchem_terminal_audit.py.",
+  "entries": [
+    {
+      "id": "reagent_ammonia",
+      "smiles": "N",
+      "label": "ammonia",
+      "allowlist_class": "common_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common bulk reagent; not an organic building-block terminal.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "ammonia",
+          "smiles": "N",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_bromine",
+      "smiles": "BrBr",
+      "label": "bromine",
+      "allowlist_class": "halogen_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common halogenation reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "bromine",
+          "smiles": "BrBr",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_fluorine_atom_placeholder",
+      "smiles": "F",
+      "label": "fluorine placeholder",
+      "allowlist_class": "halogen_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Represents simple fluorinating/fluoride reagent space in route audit, not molecular F2 procurement proof.",
+      "evidence_policy": "representative_fluoride_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "potassium fluoride",
+          "smiles": "[F-].[K+]",
+          "role": "fluoride source"
+        },
+        {
+          "name": "cesium fluoride",
+          "smiles": "[F-].[Cs+]",
+          "role": "fluoride source"
+        }
+      ]
+    },
+    {
+      "id": "ion_fluoride",
+      "smiles": "[F-]",
+      "label": "fluoride ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common fluoride salts are purchasable; exact counterion/form is outside route-tree closure.",
+      "evidence_policy": "representative_fluoride_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "potassium fluoride",
+          "smiles": "[F-].[K+]",
+          "role": "fluoride source"
+        },
+        {
+          "name": "cesium fluoride",
+          "smiles": "[F-].[Cs+]",
+          "role": "fluoride source"
+        }
+      ]
+    },
+    {
+      "id": "ion_sodium",
+      "smiles": "[Na+]",
+      "label": "sodium ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Counterion placeholder; accepted as reagent/counterion leaf, not organic terminal.",
+      "evidence_policy": "representative_sodium_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "sodium chloride",
+          "smiles": "[Na+].[Cl-]",
+          "role": "common sodium salt"
+        },
+        {
+          "name": "sodium hydroxide",
+          "smiles": "[Na+].[OH-]",
+          "role": "common sodium base"
+        }
+      ]
+    },
+    {
+      "id": "ion_potassium",
+      "smiles": "[K+]",
+      "label": "potassium ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Counterion placeholder; accepted as reagent/counterion leaf, not organic terminal.",
+      "evidence_policy": "representative_potassium_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "potassium chloride",
+          "smiles": "[K+].[Cl-]",
+          "role": "common potassium salt"
+        },
+        {
+          "name": "potassium hydroxide",
+          "smiles": "[K+].[OH-]",
+          "role": "common potassium base"
+        }
+      ]
+    },
+    {
+      "id": "ion_hydrosulfide",
+      "smiles": "[SH-]",
+      "label": "hydrosulfide ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Represents common sulfide/hydrosulfide salt reagent space.",
+      "evidence_policy": "representative_hydrosulfide_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "sodium hydrosulfide",
+          "role": "hydrosulfide source"
+        },
+        {
+          "name": "potassium hydrosulfide",
+          "role": "hydrosulfide source"
+        }
+      ]
+    },
+    {
+      "id": "metal_zinc",
+      "smiles": "[Zn]",
+      "label": "zinc metal",
+      "allowlist_class": "metal_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Bulk metal reagent, not an organic building block.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "bulk metal reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_nitroxyl_placeholder",
+      "smiles": "NO",
+      "label": "nitroxyl/nitric oxide placeholder",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Simple nitrogen oxide reagent placeholder used by current routes.",
+      "evidence_policy": "in_situ_source_reagents_vendor",
+      "source_reagents": [
+        {
+          "name": "sodium nitrite",
+          "role": "nitrosating precursor"
+        },
+        {
+          "name": "hydrochloric acid",
+          "role": "acid activator"
+        }
+      ]
+    },
+    {
+      "id": "reagent_nitrous_acid",
+      "smiles": "O=NO",
+      "label": "nitrous acid",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common diazotization/nitrosation reagent equivalent.",
+      "evidence_policy": "in_situ_source_reagents_vendor",
+      "source_reagents": [
+        {
+          "name": "sodium nitrite",
+          "role": "nitrous acid precursor"
+        },
+        {
+          "name": "hydrochloric acid",
+          "role": "acid source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_nitric_acid",
+      "smiles": "O=[N+]([O-])O",
+      "label": "nitric acid",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common nitration/oxidation reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "nitric acid",
+          "smiles": "O=[N+]([O-])O",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_sulfuryl_chloride",
+      "smiles": "O=S(Cl)Cl",
+      "label": "sulfuryl chloride",
+      "allowlist_class": "chlorinating_sulfur_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common chlorinating reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "sulfuryl chloride",
+          "smiles": "O=S(Cl)Cl",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_chlorosulfonic_acid",
+      "smiles": "O=S(=O)(O)Cl",
+      "label": "chlorosulfonic acid",
+      "allowlist_class": "chlorinating_sulfur_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common sulfonation/chlorosulfonation reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "chlorosulfonic acid",
+          "smiles": "O=S(=O)(O)Cl",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_phosphoryl_chloride",
+      "smiles": "O=P(Cl)(Cl)Cl",
+      "label": "phosphoryl chloride",
+      "allowlist_class": "chlorinating_phosphorus_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common dehydrating/chlorinating reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "phosphoryl chloride",
+          "smiles": "O=P(Cl)(Cl)Cl",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_methylzinc_chloride",
+      "smiles": "[CH3][Zn][Cl]",
+      "label": "methylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Commercial organozinc reagent class; accepted only as reagent leaf.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "methylzinc chloride",
+          "role": "commercial organozinc solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "methylmagnesium chloride",
+          "role": "transmetalation precursor"
+        },
+        {
+          "name": "zinc chloride",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_propylzinc_chloride",
+      "smiles": "CC[CH2][Zn][Cl]",
+      "label": "propylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "In-situ Negishi reagent leaf from evidence-backed 1-bromopropane and zinc sources.",
+      "evidence_policy": "in_situ_source_reagents_vendor",
+      "source_reagents": [
+        {
+          "name": "1-bromopropane",
+          "smiles": "CCCBr",
+          "cid": 7840,
+          "role": "alkyl bromide precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "cid": 23994,
+          "role": "metal source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_cyclopropylzinc_chloride",
+      "smiles": "[Cl][Zn][CH]1CC1",
+      "label": "cyclopropylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent leaf; exact commercial form/concentration is not audited here.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "cyclopropylzinc chloride",
+          "role": "commercial organozinc solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "cyclopropylmagnesium bromide",
+          "role": "transmetalation precursor"
+        },
+        {
+          "name": "zinc chloride",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_pyridylmethylzinc_chloride",
+      "smiles": "[Cl][Zn][CH2]c1cccnc1",
+      "label": "pyridylmethylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent leaf; accepted as reagent evidence mapping, not organic terminal.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "pyridylmethylzinc chloride",
+          "role": "commercial organozinc solution or generated reagent"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "bromomethylpyridine",
+          "role": "alkyl halide precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_chloromethylzinc_chloride",
+      "smiles": "Cl[CH2][Zn][Cl]",
+      "label": "chloromethylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent placeholder; requires form/concentration review outside this audit.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "chloromethylzinc chloride",
+          "role": "organozinc reagent"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "chloroiodomethane",
+          "role": "halomethyl precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_difluoromethylzinc_chloride",
+      "smiles": "F[CH](F)[Zn][Cl]",
+      "label": "difluoromethylzinc chloride",
+      "allowlist_class": "organometallic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent placeholder; accepted as reagent leaf only.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "difluoromethylzinc chloride",
+          "role": "organozinc reagent"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "difluoroiodomethane",
+          "role": "difluoromethyl precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_cyclopropylmagnesium_bromide",
+      "smiles": "[Br][Mg][CH]1CC1",
+      "label": "cyclopropylmagnesium bromide",
+      "allowlist_class": "grignard_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Commercial Grignard reagent leaf with saved PubChem CID and Chemical Vendors evidence.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "cyclopropylmagnesium bromide",
+          "cid": 11116189,
+          "role": "commercial Grignard solution"
+        }
+      ]
+    },
+    {
+      "id": "reagent_cyclobutylmagnesium_bromide",
+      "smiles": "[Br][Mg][CH]1CCC1",
+      "label": "cyclobutylmagnesium bromide",
+      "allowlist_class": "grignard_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Grignard reagent leaf; exact solution form is outside route-tree closure.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "cyclobutylmagnesium bromide",
+          "role": "commercial Grignard solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "bromocyclobutane",
+          "role": "alkyl bromide precursor"
+        },
+        {
+          "name": "magnesium",
+          "smiles": "[Mg]",
+          "role": "metal source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_3_pyridylmagnesium_bromide",
+      "smiles": "[Br][Mg][c]1cccnc1",
+      "label": "pyridylmagnesium bromide",
+      "allowlist_class": "grignard_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Grignard reagent leaf; exact isomer/form should be manually checked if route-critical.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "3-pyridylmagnesium bromide",
+          "role": "commercial Grignard solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "3-bromopyridine",
+          "role": "aryl bromide precursor"
+        },
+        {
+          "name": "magnesium",
+          "smiles": "[Mg]",
+          "role": "metal source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_copper_cyanide_placeholder",
+      "smiles": "N#[C][Cu]",
+      "label": "copper cyanide placeholder",
+      "allowlist_class": "metal_cyanide_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Copper cyanide/reagent equivalent; accepted as reagent leaf, not organic terminal.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "copper(I) cyanide",
+          "role": "cyanide transfer reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_methylmagnesium_bromide",
+      "smiles": "[CH3][Mg][Br]",
+      "label": "methylmagnesium bromide",
+      "allowlist_class": "grignard_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Grignard reagent leaf; exact solution form is outside route-tree closure.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "methylmagnesium bromide",
+          "role": "commercial Grignard solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "methyl bromide",
+          "role": "alkyl bromide precursor"
+        },
+        {
+          "name": "magnesium",
+          "smiles": "[Mg]",
+          "role": "metal source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_elemental_sulfur",
+      "smiles": "S",
+      "label": "elemental sulfur",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common elemental sulfur reagent; not an organic building-block terminal.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "sulfur",
+          "smiles": "S",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_water_or_oxygen_placeholder",
+      "smiles": "O",
+      "label": "water / oxygen-source placeholder",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Represents water or a simple oxygen-source reagent leaf in route audit.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "water",
+          "smiles": "O",
+          "role": "direct commercial reagent or solvent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_hydrazine",
+      "smiles": "NN",
+      "label": "hydrazine",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common hydrazine reagent; exact hydrate/solution form is outside route-tree closure.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "hydrazine",
+          "smiles": "NN",
+          "role": "direct commercial reagent"
+        },
+        {
+          "name": "hydrazine hydrate",
+          "role": "commercial hydrazine source"
+        }
+      ]
+    },
+    {
+      "id": "ion_azide",
+      "smiles": "[N-]=[N+]=N",
+      "label": "azide ion placeholder",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Represents common azide reagent space; sodium azide is the real-world source reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "sodium azide",
+          "role": "azide source"
+        }
+      ]
+    },
+    {
+      "id": "ion_chloride",
+      "smiles": "[Cl-]",
+      "label": "chloride ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Counterion placeholder; common chloride salts are purchasable.",
+      "evidence_policy": "representative_chloride_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "sodium chloride",
+          "smiles": "[Na+].[Cl-]",
+          "role": "common chloride salt"
+        },
+        {
+          "name": "lithium chloride",
+          "smiles": "[Li+].[Cl-]",
+          "role": "common chloride salt"
+        }
+      ]
+    },
+    {
+      "id": "ion_lithium",
+      "smiles": "[Li+]",
+      "label": "lithium ion",
+      "allowlist_class": "counterion_or_simple_ion",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Counterion placeholder; accepted through common purchasable lithium salts.",
+      "evidence_policy": "representative_lithium_salt_vendor",
+      "representative_forms": [
+        {
+          "name": "lithium chloride",
+          "smiles": "[Li+].[Cl-]",
+          "role": "common lithium salt"
+        },
+        {
+          "name": "lithium hydroxide",
+          "smiles": "[Li+].[OH-]",
+          "role": "common lithium base"
+        }
+      ]
+    },
+    {
+      "id": "reagent_sulfuric_acid",
+      "smiles": "O=S(=O)(O)O",
+      "label": "sulfuric acid",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common acid/dehydrating reagent.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "sulfuric acid",
+          "smiles": "O=S(=O)(O)O",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_sulfur_trioxide",
+      "smiles": "O=S(=O)=O",
+      "label": "sulfur trioxide",
+      "allowlist_class": "simple_inorganic_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Sulfonation reagent leaf; exact SO3 complex or oleum form is outside route-tree closure.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "sulfur trioxide",
+          "smiles": "O=S(=O)=O",
+          "role": "direct commercial reagent"
+        },
+        {
+          "name": "oleum",
+          "role": "commercial sulfur trioxide source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_zinc_chloride",
+      "smiles": "[Cl][Zn][Cl]",
+      "label": "zinc chloride",
+      "allowlist_class": "metal_salt_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common Lewis acid and organozinc reagent source.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "zinc chloride",
+          "smiles": "[Cl-].[Cl-].[Zn+2]",
+          "role": "direct commercial reagent"
+        }
+      ]
+    },
+    {
+      "id": "reagent_ethynylmagnesium_bromide",
+      "smiles": "C#[C][Mg][Br]",
+      "label": "ethynylmagnesium bromide",
+      "allowlist_class": "grignard_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Grignard reagent leaf; exact solution concentration is outside route-tree closure.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "ethynylmagnesium bromide",
+          "role": "commercial Grignard solution"
+        }
+      ]
+    },
+    {
+      "id": "reagent_cyanomethyl_copper_placeholder",
+      "smiles": "N#C[CH2][Cu]",
+      "label": "cyanomethyl copper placeholder",
+      "allowlist_class": "organocopper_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organocopper reagent placeholder; accepted as an in-situ reagent leaf when source reagents are vendor closed.",
+      "evidence_policy": "in_situ_source_reagents_vendor",
+      "source_reagents": [
+        {
+          "name": "bromoacetonitrile",
+          "role": "cyanomethyl halide precursor"
+        },
+        {
+          "name": "copper(I) iodide",
+          "role": "copper source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_fluorophenylzinc_chloride_placeholder",
+      "smiles": "Fc1cc[c]([Zn][Cl])cc1",
+      "label": "fluorophenylzinc chloride placeholder",
+      "allowlist_class": "organozinc_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Arylzinc reagent leaf; exact regioisomer/form should be manually checked if route-critical.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "fluorophenylzinc chloride",
+          "role": "commercial arylzinc solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "bromofluorobenzene",
+          "role": "aryl bromide precursor"
+        },
+        {
+          "name": "zinc chloride",
+          "smiles": "[Cl-].[Cl-].[Zn+2]",
+          "role": "zinc source"
+        },
+        {
+          "name": "lithium chloride",
+          "smiles": "[Li+].[Cl-]",
+          "role": "salt additive"
+        }
+      ]
+    },
+    {
+      "id": "reagent_benzylzinc_chloride",
+      "smiles": "[Cl][Zn][CH2]c1ccccc1",
+      "label": "benzylzinc chloride",
+      "allowlist_class": "organozinc_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent leaf; accepted through commercial or in-situ source evidence.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "benzylzinc chloride",
+          "role": "commercial organozinc solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "benzyl chloride",
+          "role": "benzyl halide precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_3_cyanopropylzinc_chloride",
+      "smiles": "N#CCC[CH2][Zn][Cl]",
+      "label": "3-cyanopropylzinc chloride",
+      "allowlist_class": "organozinc_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent leaf; accepted through commercial or in-situ source evidence.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "3-cyanopropylzinc chloride",
+          "role": "commercial organozinc solution"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "4-bromobutyronitrile",
+          "role": "alkyl bromide precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_allylzinc_chloride",
+      "smiles": "C=C[CH2][Zn][Cl]",
+      "label": "allylzinc chloride",
+      "allowlist_class": "organozinc_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Organozinc reagent leaf; chemically reasonable as a commercial allylzinc reagent or in-situ reagent generated from allyl halide/Grignard and zinc sources.",
+      "evidence_policy": "representative_or_in_situ_vendor",
+      "representative_forms": [
+        {
+          "name": "allylzinc chloride",
+          "role": "commercial organozinc solution"
+        },
+        {
+          "name": "allylzinc bromide",
+          "role": "commercial allylzinc reagent analogue"
+        }
+      ],
+      "source_reagents": [
+        {
+          "name": "allyl bromide",
+          "role": "allyl halide precursor"
+        },
+        {
+          "name": "allyl chloride",
+          "role": "allyl halide precursor"
+        },
+        {
+          "name": "zinc",
+          "smiles": "[Zn]",
+          "role": "zinc source"
+        },
+        {
+          "name": "zinc chloride",
+          "smiles": "[Cl-].[Cl-].[Zn+2]",
+          "role": "zinc chloride source"
+        }
+      ]
+    },
+    {
+      "id": "reagent_phosphorus_tribromide",
+      "smiles": "BrP(Br)Br",
+      "label": "phosphorus tribromide",
+      "allowlist_class": "brominating_phosphorus_reagent",
+      "counts_as_terminal_closure": true,
+      "counts_as_organic_starting_material": false,
+      "note": "Common directly purchased brominating reagent. PubChem CID 24614 has Chemical Vendors evidence.",
+      "evidence_policy": "representative_form_vendor",
+      "representative_forms": [
+        {
+          "name": "phosphorus tribromide",
+          "smiles": "BrP(Br)Br",
+          "cid": 24614,
+          "role": "direct commercial reagent"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "status": {
+    "target": "CNC(C)=O",
+    "status": "complete",
+    "steps_executed": 0,
+    "pending_count": 0,
+    "total_molecules": 1,
+    "total_steps": 0,
+    "max_depth": 0,
+    "elapsed_sec": 0.1,
+    "tree_complete": true
+  },
+  "tree": {
+    "target": "CNC(C)=O",
+    "target_name": "release_smoke_acetamide",
+    "tree_id": "809d15ff",
+    "created_at": "2026-09-06T07:39:00.292195+00:00",
+    "status": "complete",
+    "llm_summary": "Offline post-route audit smoke.",
+    "total_steps": 0,
+    "max_depth": 0,
+    "id_counters": {
+      "molecule": 1,
+      "reaction": 0
+    },
+    "molecule_nodes": {
+      "mol_0": {
+        "smiles": "CNC(C)=O",
+        "node_id": "mol_0",
+        "role": "terminal",
+        "depth": 0,
+        "complexity": {
+          "cs_score": 1.69,
+          "classification": "trivial",
+          "is_terminal": true
+        }
+      }
+    },
+    "reaction_nodes": []
+  },
+  "audit_state": {
+    "strategic_plan": {
+      "route_plan": {
+        "id": "plan:51af693a",
+        "revision": 0,
+        "route_thesis": "Use a direct amide disconnection smoke strategy.",
+        "route_mode": "late_fgi",
+        "key_disconnections": [
+          "amide C-N"
+        ],
+        "mode_evidence": [
+          "small amide smoke target"
+        ],
+        "strategic_risks": [
+          "smoke test only"
+        ],
+        "revision_triggers": [
+          "unexpected missing action-space"
+        ],
+        "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+        "last_revision_reason": "release smoke"
+      },
+      "history_count": 1
+    },
+    "protections": [],
+    "decision_history": [
+      {
+        "step_id": "",
+        "molecule": "CNC(C)=O",
+        "action": "accept-terminal",
+        "reaction_name": "",
+        "reasoning_summary": "Small stable material used only for release audit smoke.",
+        "reasoning_detail": "Small stable material used only for release audit smoke.",
+        "outcome": "terminal",
+        "confidence": "medium"
+      }
+    ],
+    "failed_attempts": [],
+    "experimental_outcomes": [],
+    "knowledge_drafts": [],
+    "candidate_audit_trail": [],
+    "node_scouting_rounds": [],
+    "linear_step_count": 0,
+    "max_linear_target": 4,
+    "target_cs_score": 1.69
+  }
+}

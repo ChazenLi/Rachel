@@ -1,0 +1,17 @@
+Forward Synthesis Planning Report: release_smoke_acetamide
+======================================================
+Target: CNC(C)=O
+Route scale: 0 steps; 0 planned starting materials
+Route thesis: Use a direct amide disconnection smoke strategy.
+Route mode: late_fgi
+Route review context:
+  - Terminal reopened for further planning: CNC(C)=O. Reason: Reopen only to verify route-digest staleness.
+Experimental outcomes: none; planning commits do not imply experimental success
+Post-route audit summary: No post-finalize audit has been run for the current route
+
+Planned starting materials (0):
+
+Forward synthesis steps (0):
+------------------------------------------------------
+
+Complete planning and audit records: session.json / tree.json.

@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "session_id": "51af693a",
+  "session_file": "C:\\Users\\Windows11\\AppData\\Local\\Temp\\Rachel-beta-remote-codex\\release_smoke\\session.json",
+  "target": "CC(=O)NC",
+  "name": "release_smoke_acetamide",
+  "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+  "hint": "Call next to load the first molecule context."
+}

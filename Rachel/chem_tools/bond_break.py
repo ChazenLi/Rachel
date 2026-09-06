@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, FrozenSet, List, Optional, Set, Tuple
 
-from rdkit import Chem
+from rdkit import Chem, rdBase
 from rdkit.Chem import AllChem, RWMol
 
 from ._rdkit_utils import FRAGMENT_TEMPLATES, canonical, load_template, parse_mol
@@ -102,6 +102,7 @@ def _find_templates_for_reaction(
     smiles: str,
     reaction_type: str,
     bond: Tuple[int, int],
+    knowledge_profile=None,
 ) -> List[Dict[str, Any]]:
     """Find retro templates matching *reaction_type* that break *bond*.
 
@@ -117,7 +118,11 @@ def _find_templates_for_reaction(
       3. Token overlap — split both strings into word tokens and check
          if ≥50% of the shorter token set appears in the longer one.
     """
-    scan = scan_applicable_reactions(smiles, mode="retro")
+    scan = scan_applicable_reactions(
+        smiles,
+        mode="retro",
+        knowledge_profile=knowledge_profile,
+    )
     if not scan.get("ok"):
         return []
 
@@ -411,6 +416,7 @@ def execute_disconnection(
     bond: Tuple[int, int],
     reaction_type: str,
     custom_fragments: Optional[List[Tuple[str, str]]] = None,
+    knowledge_profile=None,
 ) -> BreakResult:
     """Execute a single bond disconnection on *smiles* at *bond*.
 
@@ -511,7 +517,12 @@ def execute_disconnection(
     # Priority 2: rxn SMARTS template execution
     # ===================================================================
     op_log.append("Priority 2: trying rxn SMARTS templates")
-    templates = _find_templates_for_reaction(smiles, reaction_type, (i, j))
+    templates = _find_templates_for_reaction(
+        smiles,
+        reaction_type,
+        (i, j),
+        knowledge_profile=knowledge_profile,
+    )
 
     if templates:
         op_log.append(f"Found {len(templates)} candidate templates for '{reaction_type}'")
@@ -531,6 +542,7 @@ def execute_disconnection(
 def preview_disconnections(
     smiles: str,
     bond: Tuple[int, int],
+    knowledge_profile=None,
 ) -> Dict[str, Any]:
     """Preview all template-based disconnection alternatives for a single bond.
 
@@ -578,7 +590,11 @@ def preview_disconnections(
         return {"ok": False, "error": f"no bond between atoms {i} and {j}"}
 
     # Scan all retro templates matching this molecule
-    scan = scan_applicable_reactions(smiles, mode="retro")
+    scan = scan_applicable_reactions(
+        smiles,
+        mode="retro",
+        knowledge_profile=knowledge_profile,
+    )
     if not scan.get("ok"):
         return {"ok": False, "error": "template scan failed"}
 
@@ -588,7 +604,7 @@ def preview_disconnections(
     alternatives: List[Dict[str, Any]] = []
     seen_precursor_sets: set = set()
 
-    templates_data = _get_reactions()
+    templates_data = _get_reactions(knowledge_profile)
 
     for tm in scan.get("matches", []):
         # Check if this template breaks our target bond
@@ -597,7 +613,13 @@ def preview_disconnections(
             continue
 
         # Try executing
-        result = try_retro_template(mol, (i, j), tm.template_id)
+        with rdBase.BlockLogs():
+            result = try_retro_template(
+                mol,
+                (i, j),
+                tm.template_id,
+                knowledge_profile=knowledge_profile,
+            )
         if result is None or not result.success or not result.precursors:
             continue
 
@@ -618,6 +640,7 @@ def preview_disconnections(
             "precursors": result.precursors,
             "note": tpl_data.get("note", ""),
             "incompatible_groups": tpl_data.get("incompatible_groups", []),
+            "knowledge_ref": tm.knowledge_ref,
         })
 
     # Sort by confidence descending
@@ -637,29 +660,40 @@ def preview_disconnections(
 # Module-level caches for resolve_template_ids
 # ---------------------------------------------------------------------------
 
-_REACTIONS_CACHE: Optional[Dict[str, Any]] = None
-_NAME_INDEX_CACHE: Optional[Dict[str, List[str]]] = None
+_REACTIONS_CACHE: Dict[str, Dict[str, Any]] = {}
+_NAME_INDEX_CACHE: Dict[str, Dict[str, List[str]]] = {}
 
 
-def _get_reactions() -> Dict[str, Any]:
+def _get_reactions(knowledge_profile=None) -> Dict[str, Any]:
     """Lazy-load reactions.json."""
-    global _REACTIONS_CACHE
-    if _REACTIONS_CACHE is not None:
-        return _REACTIONS_CACHE
+    if knowledge_profile is None:
+        from Rachel.knowledge import get_base_profile
+
+        knowledge_profile = get_base_profile()
+    digest = knowledge_profile.digest
+    if digest in _REACTIONS_CACHE:
+        return _REACTIONS_CACHE[digest]
     try:
-        _REACTIONS_CACHE = load_template("reactions.json")
+        _REACTIONS_CACHE[digest] = load_template(
+            "reactions.json",
+            knowledge_profile=knowledge_profile,
+        )
     except Exception:
-        _REACTIONS_CACHE = {}
-    return _REACTIONS_CACHE
+        _REACTIONS_CACHE[digest] = {}
+    return _REACTIONS_CACHE[digest]
 
 
-def _build_name_index() -> Dict[str, List[str]]:
+def _build_name_index(knowledge_profile=None) -> Dict[str, List[str]]:
     """Build a keyword → template_id list index from reactions.json."""
-    global _NAME_INDEX_CACHE
-    if _NAME_INDEX_CACHE is not None:
-        return _NAME_INDEX_CACHE
+    if knowledge_profile is None:
+        from Rachel.knowledge import get_base_profile
 
-    templates = _get_reactions()
+        knowledge_profile = get_base_profile()
+    digest = knowledge_profile.digest
+    if digest in _NAME_INDEX_CACHE:
+        return _NAME_INDEX_CACHE[digest]
+
+    templates = _get_reactions(knowledge_profile)
     index: Dict[str, List[str]] = {}
 
     for tid, info in templates.items():
@@ -682,15 +716,15 @@ def _build_name_index() -> Dict[str, List[str]]:
             if first_word and first_word != key:
                 index.setdefault(first_word, []).append(tid)
 
-    _NAME_INDEX_CACHE = index
-    return _NAME_INDEX_CACHE
+    _NAME_INDEX_CACHE[digest] = index
+    return _NAME_INDEX_CACHE[digest]
 
 
 # ---------------------------------------------------------------------------
 # Public API: resolve_template_ids
 # ---------------------------------------------------------------------------
 
-def resolve_template_ids(reaction_name: str) -> List[str]:
+def resolve_template_ids(reaction_name: str, knowledge_profile=None) -> List[str]:
     """Resolve a reaction name to a list of matching retro template IDs.
 
     Normalizes *reaction_name* (lowercase, strip spaces, replace hyphens
@@ -712,7 +746,7 @@ def resolve_template_ids(reaction_name: str) -> List[str]:
     List[str]
         Matching template IDs. Empty list if nothing matches.
     """
-    templates = _get_reactions()
+    templates = _get_reactions(knowledge_profile)
 
     # 1. Exact template_id
     if reaction_name in templates:
@@ -721,7 +755,7 @@ def resolve_template_ids(reaction_name: str) -> List[str]:
             return [reaction_name]
 
     # 2. Keyword index lookup
-    index = _build_name_index()
+    index = _build_name_index(knowledge_profile)
     key = reaction_name.lower().strip().replace("-", "_").replace(" ", "_")
     # Strip trailing _retro for compat
     key = re.sub(r"_retro$", "", key)
@@ -749,6 +783,7 @@ def try_retro_template(
     mol: Chem.Mol,
     bond: Tuple[int, int],
     template_id: str,
+    knowledge_profile=None,
 ) -> Optional[BreakResult]:
     """Execute a specific retro template on *mol* at *bond*.
 
@@ -772,7 +807,7 @@ def try_retro_template(
         ``BreakResult`` on success, ``None`` if the template does not
         match or fails to produce valid products for the specified bond.
     """
-    templates = _get_reactions()
+    templates = _get_reactions(knowledge_profile)
     tpl = templates.get(template_id)
     if tpl is None or not isinstance(tpl, dict) or tpl.get("type") != "retro":
         return None
@@ -894,6 +929,7 @@ def try_retro_template(
 def execute_fgi(
     smiles: str,
     template_id: str,
+    knowledge_profile=None,
 ) -> BreakResult:
     """Execute a Functional Group Interconversion (FGI) retro template.
 
@@ -936,12 +972,15 @@ def execute_fgi(
     op_log.append(f"Target: {can}")
 
     # --- Resolve template_id (support fuzzy names) ---
-    templates = _get_reactions()
+    templates = _get_reactions(knowledge_profile)
     tpl = templates.get(template_id)
 
     if tpl is None or not isinstance(tpl, dict) or tpl.get("type") != "retro":
         # Try fuzzy resolution
-        resolved = resolve_template_ids(template_id)
+        resolved = resolve_template_ids(
+            template_id,
+            knowledge_profile=knowledge_profile,
+        )
         if not resolved:
             return BreakResult(
                 success=False, operation_log=op_log,

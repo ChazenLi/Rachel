@@ -11,6 +11,7 @@ from .fg_detect import (
     detect_protecting_groups,
     get_fg_reaction_mapping,
 )
+from .fg_delta_audit import audit_fg_delta
 
 # M3: 模板扫描（2个）
 from .template_scan import scan_applicable_reactions, find_disconnectable_bonds
@@ -27,6 +28,12 @@ from .bond_break import (
 
 # M5: 正向验证（2个）
 from .forward_validate import validate_forward, check_atom_balance
+from .atom_mapping_audit import audit_atom_mapping
+from .graph_delta_audit import audit_graph_delta
+from .reaction_family_validate import validate_reaction_family
+from .ring_topology_audit import audit_ring_topology
+from .validation_evidence_packet import build_validation_evidence_packet
+from .validation_findings import make_finding
 
 # M6: CS 评分（4个）
 from .cs_score import (
@@ -56,6 +63,7 @@ __all__ = [
     "detect_reactive_sites",
     "detect_protecting_groups",
     "get_fg_reaction_mapping",
+    "audit_fg_delta",
     # M3
     "scan_applicable_reactions",
     "find_disconnectable_bonds",
@@ -69,6 +77,12 @@ __all__ = [
     # M5
     "validate_forward",
     "check_atom_balance",
+    "audit_atom_mapping",
+    "audit_graph_delta",
+    "validate_reaction_family",
+    "audit_ring_topology",
+    "build_validation_evidence_packet",
+    "make_finding",
     # M6
     "compute_cs_score",
     "classify_complexity",

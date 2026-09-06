@@ -98,6 +98,38 @@ def _largest_ring_core(mol: Optional[Chem.Mol]) -> Tuple[str, Optional[Chem.Mol]
     return core_smiles, core_query
 
 
+def _scaffold_query_candidates(
+    *,
+    product_ring_core: str,
+    product_ring_core_mol: Optional[Chem.Mol],
+    product_mol: Chem.Mol,
+    same_ring_core: bool,
+) -> List[Chem.Mol]:
+    """Return scaffold queries from strict to tolerant for site comparison."""
+    candidates: List[Chem.Mol] = []
+
+    def add_query(query: Optional[Chem.Mol]) -> None:
+        if query is not None and query.GetNumAtoms() > 0:
+            candidates.append(query)
+
+    if same_ring_core:
+        add_query(product_ring_core_mol)
+        parsed_core = parse_mol(product_ring_core)
+        add_query(parsed_core)
+        if parsed_core is not None:
+            try:
+                add_query(Chem.MolFromSmarts(Chem.MolToSmarts(parsed_core)))
+            except Exception:
+                pass
+
+    try:
+        add_query(MurckoScaffold.GetScaffoldForMol(product_mol))
+    except Exception:
+        pass
+
+    return candidates
+
+
 def _mcs_coverage(product_mol: Chem.Mol, precursor_mol: Chem.Mol) -> float:
     try:
         mcs = rdFMCS.FindMCS(
@@ -200,6 +232,8 @@ def _compare_site_maps(
         site_row = {
             "site_label": site_label,
             "scaffold_idx": int(scaffold_idx),
+            "product_atom_idx": product_entry.get("mol_atom_idx", -1),
+            "precursor_atom_idx": precursor_entry.get("mol_atom_idx", -1),
             "product_substituents": product_subs,
             "precursor_substituents": precursor_subs,
         }
@@ -341,11 +375,23 @@ def audit_site_retention(product_smiles: str, precursors: Sequence[str]) -> Dict
             "summary": "No same-core Murcko-preserving major precursor was detected, so site-retention gate does not apply.",
         }
 
-    # Historical core choice kept as a comment instead of deleting it.
-    # Reason: pure Murcko was too strict for same-indole-core / wrong-site swaps,
-    # because moving a large appended aryl-ethynyl group can change the Murcko string.
-    # scaffold_mol = MurckoScaffold.GetScaffoldForMol(product_mol)
-    scaffold_mol = product_ring_core_mol if same_ring_core and product_ring_core_mol is not None else MurckoScaffold.GetScaffoldForMol(product_mol)
+    scaffold_mol = None
+    product_matches: List[Tuple[int, ...]] = []
+    precursor_matches: List[Tuple[int, ...]] = []
+    for query in _scaffold_query_candidates(
+        product_ring_core=product_ring_core,
+        product_ring_core_mol=product_ring_core_mol,
+        product_mol=product_mol,
+        same_ring_core=same_ring_core,
+    ):
+        p_matches = list(product_mol.GetSubstructMatches(query, uniquify=False))[:6]
+        r_matches = list(major_precursor_mol.GetSubstructMatches(query, uniquify=False))[:6]
+        if p_matches and r_matches:
+            scaffold_mol = query
+            product_matches = p_matches
+            precursor_matches = r_matches
+            break
+
     if scaffold_mol is None or scaffold_mol.GetNumAtoms() == 0:
         return {
             "ok": True,
@@ -360,8 +406,6 @@ def audit_site_retention(product_smiles: str, precursors: Sequence[str]) -> Dict
             "summary": "Same-core precursor detected but Murcko scaffold expansion failed, so explicit site audit is missing.",
         }
 
-    product_matches = list(product_mol.GetSubstructMatches(scaffold_mol, uniquify=False))[:6]
-    precursor_matches = list(major_precursor_mol.GetSubstructMatches(scaffold_mol, uniquify=False))[:6]
     if not product_matches or not precursor_matches:
         return {
             "ok": True,

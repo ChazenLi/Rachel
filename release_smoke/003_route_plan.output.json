@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "route_plan": {
+    "id": "plan:51af693a",
+    "revision": 0,
+    "route_thesis": "Use a direct amide disconnection smoke strategy.",
+    "route_mode": "late_fgi",
+    "key_disconnections": [
+      "amide C-N"
+    ],
+    "mode_evidence": [
+      "small amide smoke target"
+    ],
+    "strategic_risks": [
+      "smoke test only"
+    ],
+    "revision_triggers": [
+      "unexpected missing action-space"
+    ],
+    "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+    "last_revision_reason": "release smoke"
+  },
+  "route_plan_history_count": 1,
+  "prompt_brief": {
+    "stage": "route_plan",
+    "events": [
+      "stage.route_plan",
+      "strategy.route_plan_active",
+      "strategy.route_mode_triage",
+      "strategy.route_plan_revised"
+    ],
+    "next_actions": [
+      "reaction_sites()",
+      "explore_site(site_id) if the next site is already known"
+    ],
+    "language_guidance": "Use English for all user-facing planning prose and explanations unless the user explicitly requests another language. Preserve SMILES, schema identifiers, enum values, and exact source quotations unchanged.",
+    "quality_guardrails": [
+      "Rachel supplies structured chemical facts, candidate scaffolds, risks, and challenges; the LLM owns provisional route hypotheses, reaction design, comparison, and final chemistry judgment.",
+      "Chemical plausibility and route quality outrank template score, validation convenience, and route depth.",
+      "Keep route_plan within these limits: route_thesis 360 chars; route_mode 100; key_disconnections 5 items x 160 chars; preferred_precursor_logic 4 x 180; protect_or_preserve 4 x 160; mode_evidence, strategic_risks, and revision_triggers 5 x 180 each; terminal_rescue_policy 220; revision_reason 160. Rachel rejects an over-limit update and never truncates it.",
+      "At route-plan initialization, record the likely route paradigm, evidence, strategic risks, and revision triggers.",
+      "Treat local action-space as evidence, not the full retrosynthesis boundary; when it captures only local FGI while core construction remains unresolved, consider revising route_plan or using route_sketch.",
+      "Prefer installing reactive temporary handles late when compatible with the route; protection/deprotection must remain explicit tree steps.",
+      "Prefer preserving established scaffold topology when routes are comparably credible; any ring construction, opening, or scaffold change still requires explicit mechanistic and atom-source justification."
+    ],
+    "active_experience_card_ids": [
+      "exp_route_mode_triage_before_first_plan",
+      "exp_global_route_plan_persistence",
+      "exp_route_plan_revision",
+      "exp_carbon_atom_accounting"
+    ],
+    "experience_prompts": [
+      {
+        "id": "exp_route_mode_triage_before_first_plan",
+        "one_line": "Before the first complex-target plan, classify the route hypothesis instead of jumping directly to a local disconnection.",
+        "action_prompt": "Compare late FGI/editing, scaffold assembly, electronic-state strategy, and hybrid routes; write the current choice plus evidence, risks, and revision triggers into route_plan.",
+        "avoid": "Do not treat the listed local action-space as the complete retrosynthesis space, and do not let a route-mode decision remain only in hidden reasoning."
+      },
+      {
+        "id": "exp_global_route_plan_persistence",
+        "one_line": "An active route_plan is the current synthesis thesis; local evidence should support, falsify, enrich, or materially revise it.",
+        "action_prompt": "Read route_plan_brief while comparing this site or action. State how the local choice preserves or changes the planned disconnection, precursor logic, sequence, handle timing, scaffold policy, or selectivity strategy.",
+        "avoid": "Do not let local template convenience silently replace the recorded route thesis."
+      },
+      {
+        "id": "exp_route_plan_revision",
+        "one_line": "When a better route emerges or evidence conflicts with the existing plan, make a concise route_plan revision instead of drifting silently.",
+        "action_prompt": "Use route_plan(...) to record revision_reason and update the thesis, key disconnections, and structures to preserve before resuming the standard action/sandbox loop.",
+        "avoid": "Do not mix the old plan and the new choice in reasoning without updating state."
+      },
+      {
+        "id": "exp_carbon_atom_accounting",
+        "one_line": "Key atom sources matter more than template names; every new C/N/S/halogen/protecting-group atom needs a source.",
+        "action_prompt": "Before commit, state where key C/N/S/halogen/protecting-group atoms come from. For fused-ring rescue, explicitly identify the source of any new C-C bond and whether it comes from tethered atoms, a small molecule, or a named fragment.",
+        "avoid": "Do not submit a route where the product gains carbon or a ring bond without a precursor or reagent source."
+      }
+    ],
+    "route_plan_brief": {
+      "id": "plan:51af693a",
+      "revision": 0,
+      "route_thesis": "Use a direct amide disconnection smoke strategy.",
+      "route_mode": "late_fgi",
+      "key_disconnections": [
+        "amide C-N"
+      ],
+      "mode_evidence": [
+        "small amide smoke target"
+      ],
+      "strategic_risks": [
+        "smoke test only"
+      ],
+      "revision_triggers": [
+        "unexpected missing action-space"
+      ],
+      "terminal_rescue_policy": "Before accepting advanced terminal, attempt a short mechanistic rollback to simpler credible precursors.",
+      "last_revision_reason": "release smoke"
+    },
+    "self_prompt": [
+      "Use route_plan in two paths: revision 0 may be a short LLM-owned provisional thesis seed grounded in the target and molecule-level Rachel facts and must use revision_reason=\"initial\"; if that seed was recorded, relevant reaction_sites/explore_site Rachel molecule/site facts should produce an evidence-enriched complete revision 1 plan, while an evidence-first initial call with no prior seed records the complete revision-0 plan directly.",
+      "On every later revision, restate the complete current plan because route_plan replaces rather than merges omitted fields; include route_mode, mode evidence, key disconnections, precursor logic, preserve/build decisions, strategic risks, revision triggers, terminal policy, and revision reason.",
+      "Revise when evidence changes a recorded substantive claim, including precursor family, sequence, handle timing, preserve/build choice, or selectivity strategy; do not revise for catalyst, reagent, solvent, or template-only changes within the same planned event.",
+      "Rachel listed actions and LLM-designed actions are peer executable evidence, not the global plan; use them to support, falsify, enrich, or revise the thesis rather than copying the local action menu."
+    ],
+    "knowledge_profile_hash": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+    "knowledge_refs": [
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_route_mode_triage_before_first_plan"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_global_route_plan_persistence"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_route_plan_revision"
+      },
+      {
+        "pack_id": "rachel.base",
+        "pack_version": "1.0.0",
+        "pack_kind": "base",
+        "resource": "prompt.experience_cards",
+        "entry_id": "exp_carbon_atom_accounting"
+      }
+    ]
+  },
+  "next_step": "reaction_sites()",
+  "hint": "Route plan recorded only. Continue the normal site/action/sandbox loop."
+}

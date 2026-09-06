@@ -37,7 +37,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from rdkit import RDLogger
+from rdkit import RDLogger, rdBase
 RDLogger.DisableLog("rdApp.*")
 
 from Rachel.chem_tools._rdkit_utils import canonical, load_template, parse_mol, tanimoto
@@ -72,10 +72,16 @@ FILE_MAP = {
 
 def _classify_atom_role(atom_env: Dict[str, Any]) -> str:
     """Compress atom-level environment into a tiny role tag for compact audit use."""
+    if atom_env.get("is_carbamate_c"):
+        return "carbamate_carbonyl_c"
+    if atom_env.get("is_carbamate_o"):
+        return "carbamate_o"
     if atom_env.get("is_carbonyl_c"):
         return "carbonyl_c"
     if atom_env.get("is_amide_n"):
         return "amide_n"
+    if atom_env.get("is_carboxylic_acid_o"):
+        return "carboxylic_acid_o"
     if atom_env.get("is_ester_o"):
         return "ester_o"
 
@@ -461,6 +467,7 @@ def _iter_fg_instances(groups_data: Dict[str, Any]) -> List[Dict[str, Any]]:
                 "name": fg_name,
                 "atoms": atom_list,
                 "atom_set": atom_set,
+                "knowledge_ref": fg_info.get("knowledge_ref"),
             })
     return instances
 
@@ -493,6 +500,7 @@ def _compress_fg_instances(groups_data: Dict[str, Any]) -> List[Dict[str, Any]]:
             "display_name": _fg_display_name(inst["name"]),
             "atoms": list(inst["atoms"]),
             "atom_set": inst["atom_set"],
+            "knowledge_ref": inst.get("knowledge_ref"),
         })
     return kept
 
@@ -515,6 +523,9 @@ def _summarize_functional_groups(groups_data: Dict[str, Any]) -> List[Dict[str, 
                 "name": _fg_display_name(fg_name),
                 "count": count,
                 "atoms": [],
+                "knowledge_refs": [fg_info["knowledge_ref"]]
+                if fg_info.get("knowledge_ref")
+                else [],
             })
         return summary
 
@@ -530,13 +541,17 @@ def _summarize_functional_groups(groups_data: Dict[str, Any]) -> List[Dict[str, 
                 # Intentionally empty in compact context: the full SMARTS hit map stays
                 # in the tool layer and is recovered on demand for local audit.
                 "atoms": [],
+                "knowledge_refs": [],
             }
             summary_index[display_name] = entry
             summary_list.append(entry)
         entry["count"] += 1
+        knowledge_ref = inst.get("knowledge_ref")
+        if knowledge_ref and knowledge_ref not in entry["knowledge_refs"]:
+            entry["knowledge_refs"].append(knowledge_ref)
     return summary_list
 
-def build_decision_context(smiles: str) -> Dict[str, Any]:
+def build_decision_context(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """为一个目标分子生成完整的 LLM 逆合成决策上下文。
 
     Returns dict with keys:
@@ -565,7 +580,10 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
     }
 
     # ── 2. 官能团 ──
-    fg = detect_functional_groups(smiles)
+    fg = detect_functional_groups(
+        smiles,
+        knowledge_profile=knowledge_profile,
+    )
     fg_list = []
     groups_data = fg.get("groups", {})
     # Historical direct pass-through kept here as a comment instead of being deleted.
@@ -587,17 +605,22 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
     ctx["functional_groups"] = fg_list
 
     # ── 3. 复杂度 ──
-    cs = compute_cs_score(smiles)
-    cls = classify_complexity(smiles)
+    cs = compute_cs_score(smiles, knowledge_profile=knowledge_profile)
+    cls = classify_complexity(smiles, knowledge_profile=knowledge_profile)
     ctx["complexity"] = {
         "cs_score": cs.get("cs_score", 0),
         "classification": cls.get("classification", ""),
         "is_terminal": cls.get("classification", "") == "trivial",
         "dimensions": cs.get("dimensions", {}),
+        "knowledge_profile_hash": cs.get("knowledge_profile_hash", ""),
+        "knowledge_refs": cs.get("knowledge_refs", []),
     }
 
     # ── 4. 可断键位 + 等价方案预览 ──
-    scan = find_disconnectable_bonds(smiles)
+    scan = find_disconnectable_bonds(
+        smiles,
+        knowledge_profile=knowledge_profile,
+    )
     bonds_ctx = []
     mol = parse_mol(smiles)
     if scan.get("ok") and scan.get("bonds"):
@@ -632,7 +655,11 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
             }
 
             # 预览所有等价断法
-            preview = preview_disconnections(smiles, atoms)
+            preview = preview_disconnections(
+                smiles,
+                atoms,
+                knowledge_profile=knowledge_profile,
+            )
             if preview.get("ok"):
                 alts = []
                 for alt in preview.get("alternatives", []):
@@ -641,6 +668,7 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
                         "template_id": alt["template_id"],
                         "precursors": alt["precursors"],
                         "incompatible_with": alt.get("incompatible_groups", []),
+                        "knowledge_ref": alt.get("knowledge_ref"),
                     })
                 bond_entry["alternatives"] = alts
             else:
@@ -648,7 +676,12 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
 
             # Smart capping 推理（模板无关的规则推断）
             try:
-                cap_result = suggest_capping(smiles, tuple(atoms))
+                with rdBase.BlockLogs():
+                    cap_result = suggest_capping(
+                        smiles,
+                        tuple(atoms),
+                        knowledge_profile=knowledge_profile,
+                    )
                 if cap_result.get("ok") and cap_result.get("proposals"):
                     bond_entry["smart_capping"] = cap_result["proposals"][:3]
             except Exception:
@@ -662,7 +695,11 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
     # ── 5. FGI 选项 ──
     fgi_ctx = []
     try:
-        fgi_scan = scan_applicable_reactions(smiles, mode="retro")
+        fgi_scan = scan_applicable_reactions(
+            smiles,
+            mode="retro",
+            knowledge_profile=knowledge_profile,
+        )
         if fgi_scan.get("ok"):
             for tm in fgi_scan.get("matches", []):
                 rxn = tm.rxn_smarts
@@ -672,12 +709,18 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
                 if "." in prod_side:
                     continue  # 断键模板，跳过
                 try:
-                    fgi_r = execute_fgi(smiles, tm.template_id)
+                    with rdBase.BlockLogs():
+                        fgi_r = execute_fgi(
+                            smiles,
+                            tm.template_id,
+                            knowledge_profile=knowledge_profile,
+                        )
                     if fgi_r.success and fgi_r.precursors:
                         fgi_ctx.append({
                             "template": tm.name,
                             "template_id": tm.template_id,
                             "precursors": fgi_r.precursors,
+                            "knowledge_ref": tm.knowledge_ref,
                         })
                 except Exception:
                     pass
@@ -686,7 +729,10 @@ def build_decision_context(smiles: str) -> Dict[str, Any]:
     ctx["fgi_options"] = fgi_ctx
 
     # ── 6. 官能团警告 ──
-    warnings = check_fg_conflicts(smiles)
+    warnings = check_fg_conflicts(
+        smiles,
+        knowledge_profile=knowledge_profile,
+    )
     ctx["warnings"] = warnings.get("conflicts", []) if isinstance(warnings, dict) else []
 
     return ctx
@@ -888,8 +934,6 @@ def main():
 
     elif args.file:
         # ── 批量验证模式 ──
-        from Rachel.tests.data_driven.loader import load_csv
-
         file_key = args.file.upper()
         if file_key not in FILE_MAP:
             print(f"未知文件: {args.file}，可选: {', '.join(FILE_MAP.keys())}")
@@ -899,6 +943,8 @@ def main():
         if not path.exists():
             print(f"文件不存在: {path}")
             sys.exit(1)
+
+        from Rachel.tests.data_driven.loader import load_csv
 
         records = load_csv(str(path), sample_size=args.size, random_seed=args.seed)
         print(f"加载 {file_key}: {len(records)} 条\n")

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
+from Rachel.knowledge import get_base_profile
+
 from ._rdkit_utils import canonical, load_template, parse_mol, smarts_match
 
 
@@ -11,7 +13,7 @@ from ._rdkit_utils import canonical, load_template, parse_mol, smarts_match
 # detect_functional_groups
 # ---------------------------------------------------------------------------
 
-def detect_functional_groups(smiles: str) -> Dict[str, Any]:
+def detect_functional_groups(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Identify all functional groups present in a molecule.
 
     Loads ``templates/functional_groups.json`` and runs each SMARTS pattern
@@ -31,7 +33,11 @@ def detect_functional_groups(smiles: str) -> Dict[str, Any]:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
     can = canonical(smiles)
-    fg_template = load_template("functional_groups.json")
+    profile = knowledge_profile or get_base_profile()
+    fg_template = load_template(
+        "functional_groups.json",
+        knowledge_profile=profile,
+    )
 
     groups: Dict[str, Any] = {}
     for name, sma in fg_template.items():
@@ -56,16 +62,25 @@ def detect_functional_groups(smiles: str) -> Dict[str, Any]:
         groups[name] = {
             "count": len(matches),
             "atoms": [list(m) for m in matches],
+            "knowledge_ref": profile.source("chem.functional_groups", name),
         }
 
-    return {"ok": True, "smiles": can, "groups": groups}
+    return {
+        "ok": True,
+        "smiles": can,
+        "groups": groups,
+        "knowledge_profile_hash": profile.digest,
+        "knowledge_refs": [
+            info["knowledge_ref"] for info in groups.values()
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------
 # detect_reactive_sites
 # ---------------------------------------------------------------------------
 
-def detect_reactive_sites(smiles: str) -> Dict[str, Any]:
+def detect_reactive_sites(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Identify reactive sites and group them by category prefix.
 
     Loads ``templates/reactive_sites.json``, matches each SMARTS, then groups
@@ -82,7 +97,10 @@ def detect_reactive_sites(smiles: str) -> Dict[str, Any]:
     if mol is None:
         return {"ok": False, "error": "invalid SMILES", "input": smiles}
 
-    rs_template = load_template("reactive_sites.json")
+    rs_template = load_template(
+        "reactive_sites.json",
+        knowledge_profile=knowledge_profile,
+    )
 
     sites: Dict[str, Dict[str, Any]] = {}
     for name, sma in rs_template.items():
@@ -194,7 +212,7 @@ def _check_orthogonality(detected: list, orthogonal_map: dict) -> list:
     return notes
 
 
-def detect_protecting_groups(smiles: str) -> Dict[str, Any]:
+def detect_protecting_groups(smiles: str, knowledge_profile=None) -> Dict[str, Any]:
     """Detect existing protecting groups in a molecule.
 
     Loads ``templates/protecting_groups.json``, precompiles SMARTS patterns,
@@ -221,7 +239,10 @@ def detect_protecting_groups(smiles: str) -> Dict[str, Any]:
     if mol is None:
         return {"status": "invalid_smiles", "error": "invalid SMILES", "input": smiles}
 
-    pg_data = load_template("protecting_groups.json")
+    pg_data = load_template(
+        "protecting_groups.json",
+        knowledge_profile=knowledge_profile,
+    )
     pg_defs = pg_data.get("definitions", {})
     orthogonal_map = pg_data.get("orthogonal_map", {})
 

@@ -1,0 +1,12 @@
+{
+  "schema": "rachel.knowledge-profile.v1",
+  "digest": "a09cc3c8b0bd8abc8cc4b65511724e4b621664b2a210bec5bb7821f33024f2a1",
+  "packs": [
+    {
+      "id": "rachel.base",
+      "version": "1.0.0",
+      "kind": "base",
+      "manifest_sha256": "79a20b17ffa1ff0f373aba21e3d9e1deb152c8da24b1a914055d80909f24fca3"
+    }
+  ]
+}

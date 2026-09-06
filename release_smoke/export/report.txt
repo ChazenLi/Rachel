@@ -1,0 +1,19 @@
+Forward Synthesis Planning Report: release_smoke_acetamide
+======================================================
+Target: CNC(C)=O
+Route scale: 0 steps; 1 planned starting materials
+Route thesis: Use a direct amide disconnection smoke strategy.
+Route mode: late_fgi
+Route summary: Offline post-route audit smoke.
+Experimental outcomes: none; planning commits do not imply experimental success
+Post-route audit summary: status=incomplete; buyability B0/B1/B2=1/0/0; safety S1 substances=0; process-ready/incomplete steps=0/0; incomplete because: substance_safety_lookup_incomplete, offline_mode
+Full audit: post_route_audit.md / post_route_audit.json
+
+Planned starting materials (1):
+  - CNC(C)=O
+    Terminal basis: Accepted as a planned starting material. Reason: Small stable material used only for release audit smoke.
+
+Forward synthesis steps (0):
+------------------------------------------------------
+
+Complete planning and audit records: session.json / tree.json.
