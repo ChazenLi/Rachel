@@ -4,7 +4,7 @@
 
 **LLM-directed multistep retrosynthesis, from chemical decisions to complete routes.**
 
-[How It Works](#how-it-works) · [Route Example](#route-example) · [Research](#research) · [Route Atlas](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
+[How It Works](#how-it-works) · [Route Example](#route-example) · [Research](#research) · [Research Data](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
 
 Every retrosynthetic choice changes the molecules that must be made next.
 A plausible disconnection can leave precursors that are harder to prepare, demand
@@ -115,38 +115,23 @@ The published route records retain the versions used in the study. Features
 added to the runtime later should not be assumed to have been active in every run.
 
 <a id="route-atlas"></a>
-## Explore the Complete Route Atlas
+## Research Data
 
-The Atlas connects the cohort results to individual molecular routes. It includes
-all targets and method positions, retaining partial routes and unavailable
-outputs, together with the PaRoutes reference routes.
+Explore the complete recorded routes by target and method, including the
+PaRoutes reference routes.
 
-| Dataset | Comparisons | Offline viewer | JSON records |
-| --- | --- | --- | --- |
-| PaRoutes120 | 120 targets × 8 methods, plus 120 Reference routes | [PaRoutes120.html](data/route-atlas/PaRoutes120.html) | [PaRoutes120.json](data/route-atlas/data/PaRoutes120.json) |
-| RF25 | 25 targets × 4 methods | [RF25.html](data/route-atlas/RF25.html) | [RF25.json](data/route-atlas/data/RF25.json) |
+| Route Atlas | Offline viewer |
+| --- | --- |
+| PaRoutes120 | [Open dataset](data/route-atlas/PaRoutes120.html) |
+| RF25 | [Open dataset](data/route-atlas/RF25.html) |
 
-Download this repository using **Code > Download ZIP** and extract it, or clone
-it. Open either HTML file locally in a browser. The viewers are self-contained;
-they need no server, network connection, API key or Python environment. GitHub's
-file page offers the file for download and does not run the viewer.
+Download and extract the repository, then open either HTML file in a browser.
+No installation or API key is needed; GitHub does not run the interactive viewer.
 
-Choose a target, select up to four methods and inspect their routes side by side.
-Structures and reaction steps link to recorded rationales, terminal-source audits
-and matched computational evaluations where available. The interface supports
-English and Chinese, route zooming and JSON export. PaRoutes120 initially pairs
-Rachel with Reference; RF25 pairs Rachel with Direct LLM.
+**Source Data:** [Download ZIP](https://github.com/ChazenLi/Rachel/releases/download/manuscript-data-20260907/Rachel-Source-Data-20260907.zip).
+Figure data and supporting documentation are included in the package.
 
-The package contains **1,180 comparison positions**: 1,060 method positions and
-120 separate Reference entries. Reference is a dataset comparator and is excluded
-from the method closure counts. PaRoutes120 includes Rachel, Direct LLM, AOT*,
-SyntheLite, PaRoutesModel + Retro*, RootAligned + Retro*, RootAligned + MCTS and
-LocalRetro + Retro*. RF25 includes the first four methods.
-
-[Data guide](data/route-atlas/README.md) ·
-[Route index](data/route-atlas/ROUTE_INDEX.csv) ·
-[Field definitions](data/route-atlas/DATA_DICTIONARY.md) ·
-[Source catalogue](data/route-atlas/SOURCE_CATALOG.csv)
+[Version and license](data/README.md)
 
 <a id="get-started"></a>
 ## Get Started

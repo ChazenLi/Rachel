@@ -4,7 +4,7 @@
 
 **由 LLM 主导的多步逆合成：从连续化学决策到完整路线。**
 
-[工作原理](#how-it-works) · [路线实例](#route-example) · [研究结果](#research) · [完整路线图谱](#route-atlas) · [开始使用](#get-started) · [日常使用](#working-with-routes) · [许可证](#license)
+[工作原理](#how-it-works) · [路线实例](#route-example) · [研究结果](#research) · [研究数据](#route-atlas) · [开始使用](#get-started) · [日常使用](#working-with-routes) · [许可证](#license)
 
 每一次逆合成选择，都会改变接下来需要制备的分子。一次局部合理的断开，可能留下更难合成的前体，
 引入新的选择性要求，甚至需要重新考虑整条路线的策略。要完成多步规划，化学判断就必须随着问题的变化持续进行。
@@ -86,33 +86,22 @@ GPT-5.5 在 Rachel 中从目标结构出发开展规划，不接收参考路线�
 公开路线记录保留了研究实际采用的版本，不能假定后续加入运行时的功能在所有记录中都已启用。
 
 <a id="route-atlas"></a>
-## 浏览完整路线图谱
+## 研究数据
 
-Route Atlas 将队列结果对应到每一条具体分子路线。所有目标和方法位置均予以保留，
-包括部分完成的路线、未取得输出的结果，以及 PaRoutes 的参考路线。
+按目标与方法查看完整记录路线，并对照 PaRoutes 参考路线。
 
-| 数据集 | 对比范围 | 离线页面 | JSON 记录 |
-| --- | --- | --- | --- |
-| PaRoutes120 | 120 个目标 × 8 种方法，另含 120 条 Reference 路线 | [PaRoutes120.html](data/route-atlas/PaRoutes120.html) | [PaRoutes120.json](data/route-atlas/data/PaRoutes120.json) |
-| RF25 | 25 个目标 × 4 种方法 | [RF25.html](data/route-atlas/RF25.html) | [RF25.json](data/route-atlas/data/RF25.json) |
+| 路线图谱 | 离线页面 |
+| --- | --- |
+| PaRoutes120 | [查看数据集](data/route-atlas/PaRoutes120.html) |
+| RF25 | [查看数据集](data/route-atlas/RF25.html) |
 
-使用 **Code > Download ZIP** 下载并解压仓库，或通过 Git 克隆，
-然后在浏览器中打开任一 HTML 文件。页面所需内容均已内置，
-不需要服务器、网络连接、API key 或 Python 环境。GitHub 文件页提供下载，不直接运行交互页面。
+下载并解压仓库后，在浏览器中打开 HTML 文件即可，无需安装或 API key。
+GitHub 文件页不直接运行交互页面。
 
-选择一个目标后，可同时对照最多四种方法。分子结构和反应步骤关联已有的决策理由、
-末端来源审计及匹配的计算评价。页面支持中英文界面、路线缩放和 JSON 导出。
-PaRoutes120 默认并排展示 Rachel 与 Reference，RF25 默认展示 Rachel 与 Direct LLM。
+**Source Data：**[下载 ZIP](https://github.com/ChazenLi/Rachel/releases/download/manuscript-data-20260907/Rachel-Source-Data-20260907.zip)。
+逐图数据及配套说明包含在下载包中。
 
-数据包包含 **1,180 个对比位置**：1,060 个方法位置，以及单独列出的 120 个 Reference。
-Reference 是数据集对照，不计入方法闭合数量。PaRoutes120 包含 Rachel、Direct LLM、
-AOT*、SyntheLite、PaRoutesModel + Retro*、RootAligned + Retro*、
-RootAligned + MCTS 和 LocalRetro + Retro*；RF25 包含前四种方法。
-
-[数据说明](data/route-atlas/README.md) ·
-[路线索引](data/route-atlas/ROUTE_INDEX.csv) ·
-[字段定义](data/route-atlas/DATA_DICTIONARY.md) ·
-[来源目录](data/route-atlas/SOURCE_CATALOG.csv)
+[版本与许可](data/README.md)
 
 <a id="get-started"></a>
 ## 开始使用

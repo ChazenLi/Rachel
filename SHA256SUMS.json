@@ -19,8 +19,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 488,
-      "sha256": "56665419159fd1d585fe65435abf39b0e863ac02485b6ed759374d0db6eff39a"
+      "bytes": 14679,
+      "sha256": "b3bcda9f502da490dbd4616a772ff2b1646dadd0b01cee05289f17c0116717f4"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -411,6 +411,16 @@
       "path": "environment.yml",
       "bytes": 168,
       "sha256": "fa97bb0d6a62f31478b27d8650335299a162d2352ea56023ac60f0d947f02e8f"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 13175,
+      "sha256": "fb6e4c761846a737bf6a8eb757ab2dacf0bed74e8c02dfa5075b5d99e9ceec56"
+    },
+    {
+      "path": "data/README.md",
+      "bytes": 659,
+      "sha256": "9ac8436efda9001c6043071b4fb5407b6314eb67781757a0198e74ab045d8f1f"
     }
   ]
 }
