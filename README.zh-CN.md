@@ -12,7 +12,7 @@
 
 **以化学信息为基础、由 LLM 主导的多步逆合成框架**
 
-本仓库包含论文实验所使用的 `Rachel-beta` 运行时。项目采用 **CC BY-NC 4.0**
+本仓库包含 `Rachel-beta` 运行时，以及论文采用的 PaRoutes120 与 RF25 完整路线结果。项目采用 **CC BY-NC 4.0**
 许可证，商业用途不在许可范围内。许可说明见 [`LICENSE`](./LICENSE)。
 
 <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
@@ -26,7 +26,7 @@
   <a href="#trace-demo-zh">流程追踪演示</a> |
   <a href="#why-rachel-zh">为什么是 Rachel</a> |
   <a href="#system-view-zh">系统视图</a> |
-  <a href="#selected-molecules-zh">代表性分子</a> |
+  <a href="#complete-route-results-zh">完整路线结果</a> |
   <a href="#minimal-quickstart-zh">快速开始</a>
 </p>
 
@@ -50,7 +50,7 @@ cmd.execute("init", {
 })
 ```
 
-manifest、证据门槛、冲突检查以及 `validate/diff/conflicts/import-drafts/approve/reject/publish` 命令见 [knowledge/README.md](knowledge/README.md)。当 LLM 或专家需要具体新增、完善、替换或停用 prompt、经验、reaction、SMARTS、CAP、family 或风险规则时，必须先完整读取 [knowledge/AUTHORING_GUIDE.md](knowledge/AUTHORING_GUIDE.md)；其中给出了资源选择树、staging/publish schema、证据门槛、可复制示例和失败处理。
+已发布的[知识包目录](Rachel/knowledge)包含资源文件、profile 实现和[命令行工具](Rachel/knowledge/cli.py)。
 
 多步逆合成的难点，不只是为目标分子提出一个局部上看似合理的拆分，还在于要跨步骤维持骨架一致性、官能团兼容性、路线收敛性与前体可执行性。Rachel 的出发点正是这一更严格的问题设定。
 
@@ -78,13 +78,32 @@ Rachel 不把逆合成视为一次性文本生成任务，而是将路线构建�
 - 被拒绝的尝试不会消失，而会保留为可追踪的规划痕迹
 - 这张图适合帮助读者理解 Rachel 在输入目标与导出路线之间究竟做了什么
 
-## 端到端示例
+<a id="complete-route-results-zh"></a>
+## 完整路线结果
 
-下图展示了 PaRoutes 参考路线与 Rachel 在案例 `n1_366` 上生成结果的全路线级对比。
+论文采用的 PaRoutes120 与 RF25 完整路线对比已放入
+[data/route-atlas](data/route-atlas/README.md)，包括 Rachel 的 GPT-5.5
+结果、各对比方法，以及 PaRoutes 的参考路线。
 
-<img width="2500" height="4459" alt="n1_366_groundtruth_vs_rachel_annotated_case_en" src="https://github.com/user-attachments/assets/38952d7e-8dc4-4f92-b13c-eee61175b0ec" />
+| 数据集 | 覆盖范围 | 离线路线页面 | 结构化记录 |
+| --- | --- | --- | --- |
+| PaRoutes120 | 全部 120 个目标、8 种方法及 120 条 Reference 路线 | [PaRoutes120.html](data/route-atlas/PaRoutes120.html) | [PaRoutes120.json](data/route-atlas/data/PaRoutes120.json) |
+| RF25 | 全部 25 个目标、4 种方法 | [RF25.html](data/route-atlas/RF25.html) | [RF25.json](data/route-atlas/data/RF25.json) |
 
-这个示例的意义不只是单步反应是否看起来合理，而是整条路线在骨架组织、前体解释性和整体结构连贯性上是否仍然成立。该图是当前知识 profile 与 validation v2 更新之前生成的历史规划材料；它不能证明当时已启用当前机制，也不能作为实验成功或当前化学质量提升的证据。
+通过 **Code > Download ZIP** 下载并解压仓库，或使用 Git 克隆，然后在浏览器中
+打开任一 HTML 文件。GitHub 文件页本身不运行交互页面；本地浏览不需要服务器、
+API key 或 Python 环境。
+
+选择目标编号后即可并排比较不同方法的路线，查看分子结构、反应步骤、路线结果，
+以及已有的匹配评价和末端来源记录。未完成或未取得路线的结果也保留在页面中。
+PaRoutes120 默认对照 Rachel 与 Reference，RF25 默认对照 Rachel 与 Direct LLM。
+
+[路线索引](data/route-atlas/ROUTE_INDEX.csv)包含全部 1,180 个对比位置：
+1,060 个方法结果和单独列出的 120 条 Reference。
+[字段说明](data/route-atlas/DATA_DICTIONARY.md)解释 JSON 数据结构；
+[数据说明](data/route-atlas/README.md)记录路线版本及来源差异。
+这里收录的是论文采用的计算结果，没有重新生成路线。严格闭合表示规划完成且末端
+均通过独立来源解析，不代表实验室合成完成。
 
 <a id="why-rachel-zh"></a>
 ## 为什么是 Rachel
@@ -229,83 +248,6 @@ flowchart LR
 
 这是 Rachel 的最紧凑描述。它和普通路线文本生成的区别在于：通过验证的动作会变成持久化的路线对象，而被拒绝的动作依然保留为有信息价值的规划痕迹。
 
-<a id="selected-molecules-zh"></a>
-## 代表性分子
-
-Rachel 当前展示了三个定性示例，用于覆盖互补的能力侧面。这些案例是历史定性材料，不是当前知识包、EAS 或 validation v2 行为的受控 benchmark；表中的路线深度和说明只描述此处展示的归档运行，不能被解释为当前实验成功声明。
-
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/61f7e78b-053c-4ac4-a349-b22c9e5b1ae3" alt="QNTR" width="220"><br>
-      <strong>QNTR</strong>
-    </td>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/e27005c7-9ba1-470b-a038-41d2190e3c72" alt="Losartan" width="220"><br>
-      <strong>Losartan</strong>
-    </td>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/ff2abe54-20c4-427a-8363-b9b6b8634a23" alt="Rivaroxaban" width="220"><br>
-      <strong>Rivaroxaban</strong>
-    </td>
-  </tr>
-</table>
-
-| 分子 | 角色 | 路线深度 | 体现的特点 |
-| --- | --- | ---: | --- |
-| `QNTR` | 具有实验基础的示例 | 6 步 | 一条与真实合成过程相联系的路线，适合对比实验化学与系统规划行为 |
-| `Losartan` | 经典药物化学目标 | 4 步 | 体现具有辨识度的药化断裂逻辑与汇聚式路线设计 |
-| `Rivaroxaban` | 更深层的类药分子示例 | 5 步 | 展示更长程规划能力与更丰富的转化类型 |
-
-### QNTR
-
-QNTR 是当前 README 中最具实验背景的案例。它并非单纯的 benchmark 分子，而是与一条真实完成过的合成路线相联系，因此特别适合用来判断 Rachel 是否只是在局部命中模板，还是已经开始在路线层面恢复接近实验化学的策略。
-
-在这一案例中，真实合成路线与 Rachel 当前版本都收敛到了相近的三段式拆分思路，并共享若干相近的 terminal building blocks、中间体结构和反应逻辑。更早期的 Rachel 在 FGI 处理和环开合转换上明显更弱，这也正是推动系统向“更具化学可行性”方向演化的重要动因之一。
-
-#### 实验路线
-
-<img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />
-
-#### 早期 Rachel 路线
-
-<img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
-
-#### 当前 Rachel 路线
-
-<img width="2580" height="2150" alt="synthesis_tree" src="https://github.com/user-attachments/assets/1761ab3e-baa9-411e-a787-51b454e021b6" />
-
-- 6 步路线，起始于 4 个原料
-- 适合作为实验化学与模型规划之间的路线级对照
-- 有价值之处在于当前路线体现的是拆分策略，而不只是局部模板满足
-- 这组图也保留了 Rachel 早期不足与当前工作流要解决的问题
-
-### Losartan
-
-一个经典的药物化学目标，具有辨识度很高的汇聚式路线。
-
-- 4 步路线，起始于 4 个原料
-- 突出展示 tetrazole formation、N-alkylation 与 Suzuki coupling 等逻辑
-- 适合作为许多读者都能快速理解的 benchmark 风格示例
-
-### Rivaroxaban
-
-一个更深层的类药分子示例，具有更丰富的转化组合。
-
-- 5 步路线，起始于 4 个原料
-- 突出展示 Buchwald-Hartwig amination、FGI、环化以及酰胺形成
-- 有助于说明 Rachel 并不局限于短路线或玩具级案例
-
-### 双药物案例对比
-
-下图将 Losartan 与 Rivaroxaban 放在同一张带注释的对比图中。
-
-<img width="3000" height="3755" alt="rivaroxaban_losartan_dual_annotated_en" src="https://github.com/user-attachments/assets/8cb6c479-3f63-41fc-921f-62a565909dd1" />
-
-- `Losartan` 强调经典的汇聚式药物化学逻辑
-- `Rivaroxaban` 强调更深的路线深度与更丰富的操作器多样性
-- 二者组合有助于读者比较路线风格，而不仅是孤立结果
-
 <a id="minimal-quickstart-zh"></a>
 ## 最小快速开始
 
@@ -402,8 +344,8 @@ target 或已展开 intermediate 仅在 variant 中移除旧的下游展开。�
 本地文件路径可控不等于实际部署所调用的外部模型服务对这些指令提供保密保证。
 
 这是一个协议层面的最小示例，而不是完整 benchmark 工作流。可执行的 LLM 契约见
-[SKILL.md](SKILL.md)，设计依据见 [workflow.md](workflow.md)，精确命令字段和返回结构见
-[refs.md](refs.md)。
+[skill.md](Rachel/skill.md)，命令实现见
+[retro_cmd.py](Rachel/main/retro_cmd.py)。
 
 ## 典型输出
 
@@ -435,25 +377,19 @@ flowchart LR
 <details>
 <summary><strong>仓库结构</strong></summary>
 
-- [main](main): 编排逻辑、会话逻辑、路线树、报告与命令接口
-- [chem_tools](chem_tools): 具备化学约束的操作器与验证工具
-- [tools](tools): 运行、分析、可视化及相关研究流程的辅助脚本
-- [knowledge](knowledge): 固定的 base/team/project profile、来源追踪、staging、冲突 gate 与不可变发布
-- [knowledge/AUTHORING_GUIDE.md](knowledge/AUTHORING_GUIDE.md): LLM/专家新增或完善 prompt、经验、reaction、SMARTS、CAP、family 与风险知识的操作手册
-- [SKILL.md](SKILL.md): LLM 面向的硬规则与命令契约
-- [workflow.md](workflow.md): 当前 v2 路线构建协议
-- [experience_cards.md](experience_cards.md): 按阶段/tag 挂载的短经验卡
-- [refs.md](refs.md): 命令、数据结构和验证器技术参考
-- `../validation`: 从 runtime 包外移的当前核心验证测试
-- `../archive`: 迁出的文档、实验、大型支撑材料和旧规划文件
-- `../walkthrough_runs`: 路线诊断缓存和 payload probe
+- [main](Rachel/main): 编排逻辑、会话逻辑、路线树、报告与命令接口
+- [chem_tools](Rachel/chem_tools): 具备化学约束的操作器与验证工具
+- [tools](Rachel/tools): 运行、分析、可视化及相关研究流程的辅助脚本
+- [knowledge](Rachel/knowledge): 固定的 base/team/project profile、来源追踪、staging、冲突 gate 与不可变发布
+- [skill.md](Rachel/skill.md): LLM 面向的硬规则与命令契约
+- [experience_cards.json](Rachel/experience_cards.json): 结构化经验提示
+- [data/route-atlas](data/route-atlas/README.md)：论文完整路线对比、JSON 记录与来源索引
 
 </details>
 
 ## 项目状态
 
-- 活跃研究代码库
-- 正在为面向 arXiv 的展示进行整理
-- 核心工作流已经在使用中
-- 文档在持续完善，但仓库仍是一个实时演化的研究工作区
-- 尚未达到完全打磨后的开源发布状态
+- 已公开的 Rachel-beta 研究运行时，采用 CC BY-NC 4.0。
+- 论文采用的 PaRoutes120 与 RF25 完整路线对比收录于 `data/route-atlas`。
+- 论文与投稿材料另行准备。
+- 结果保留各实验实际使用的版本信息，不能假定后续加入的运行时功能在所有历史运行中均已启用。

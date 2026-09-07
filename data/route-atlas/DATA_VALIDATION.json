@@ -1,0 +1,44 @@
+{
+  "datasets": {
+    "PaRoutes120": {
+      "targets": 120,
+      "method_slots": 1080,
+      "closed_by_method": {
+        "pure_llm": 95,
+        "aotstar": 95,
+        "synthelite": 83,
+        "rachel": 111,
+        "paroutes_retrostar": 63,
+        "rootaligned_retrostar": 73,
+        "rootaligned_mcts": 63,
+        "localretro_retrostar": 50
+      },
+      "display_statuses": {
+        "closed": 633,
+        "reference": 120,
+        "no_route": 132,
+        "open": 194,
+        "excluded": 1
+      },
+      "reaction_occurrences_including_variants": 3905
+    },
+    "RF25": {
+      "targets": 25,
+      "method_slots": 100,
+      "closed_by_method": {
+        "rachel": 24,
+        "pure_llm": 15,
+        "aotstar": 14,
+        "synthelite": 6
+      },
+      "display_statuses": {
+        "open": 18,
+        "no_route": 23,
+        "closed": 59
+      },
+      "reaction_occurrences_including_variants": 646
+    }
+  },
+  "graph_observations": [],
+  "depictions_checked": 4205
+}

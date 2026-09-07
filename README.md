@@ -12,8 +12,8 @@
 
 **Information-grounded, LLM-directed multi-step retrosynthesis**
 
-This repository contains the `Rachel-beta` runtime used as the manuscript's
-experimental harness. It is distributed under **CC BY-NC 4.0**; commercial use
+This repository contains the `Rachel-beta` runtime and the manuscript's complete
+PaRoutes120 and RF25 route results. It is distributed under **CC BY-NC 4.0**; commercial use
 is not permitted under that license. See [`LICENSE`](./LICENSE).
 
 <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
@@ -28,7 +28,7 @@ is not permitted under that license. See [`LICENSE`](./LICENSE).
   <a href="#why-rachel">Why Rachel</a> |
   <a href="#system-view">System View</a> |
   <a href="#pluggable-knowledge">Knowledge Packs</a> |
-  <a href="#selected-molecules">Selected Molecules</a> |
+  <a href="#complete-route-results">Complete Route Results</a> |
   <a href="#minimal-quickstart">Quickstart</a>
 </p>
 
@@ -87,11 +87,10 @@ cmd.execute("init", {
 })
 ```
 
-See [knowledge/README.md](knowledge/README.md) for architecture and CLI usage.
-When adding or refining a prompt, experience, reaction, SMARTS, CAP, family, or
-risk entry, read [knowledge/AUTHORING_GUIDE.md](knowledge/AUTHORING_GUIDE.md)
-completely before authoring or publishing it.
+The published [knowledge package](Rachel/knowledge) contains the resource files,
+profile implementation and [pack CLI](Rachel/knowledge/cli.py).
 
+<a id="trace-demo"></a>
 ## Trace Demo
 
 The trace above is the fastest visual entry point into Rachel. It shows how the system moves from structured context to sandboxed actions, validation evidence, LLM/chemist selection, and committed route growth.
@@ -102,13 +101,35 @@ The trace above is the fastest visual entry point into Rachel. It shows how the 
 - Rejected attempts remain part of the story instead of disappearing into free-form text
 - The figure is useful for understanding what Rachel is doing between target input and final route export
 
-## End-to-End Example
+<a id="complete-route-results"></a>
+## Complete Route Results
 
-The figure below compares a PaRoutes ground-truth plan with Rachel's generated result on case `n1_366`.
+The manuscript's complete PaRoutes120 and RF25 route comparisons are available
+in [data/route-atlas](data/route-atlas/README.md), including Rachel's GPT-5.5
+results, comparator methods and the PaRoutes reference routes.
 
-<img width="2500" height="4459" alt="n1_366_groundtruth_vs_rachel_annotated_case_en" src="https://github.com/user-attachments/assets/38952d7e-8dc4-4f92-b13c-eee61175b0ec" />
+| Dataset | Coverage | Offline route viewer | Structured records |
+| --- | --- | --- | --- |
+| PaRoutes120 | All 120 targets, 8 methods and 120 Reference routes | [PaRoutes120.html](data/route-atlas/PaRoutes120.html) | [PaRoutes120.json](data/route-atlas/data/PaRoutes120.json) |
+| RF25 | All 25 targets, 4 methods | [RF25.html](data/route-atlas/RF25.html) | [RF25.json](data/route-atlas/data/RF25.json) |
 
-This is included as a route-level qualitative reference, not merely a single-step plausibility check. The relevant question is whether the route remains interpretable and structurally coherent as a whole. The figure is a historical planning artifact produced before the current knowledge-profile and validation-v2 updates; it is not evidence that those current mechanisms were active in that run, nor proof of experimental success or current chemical-quality improvement.
+Download the repository using **Code > Download ZIP**, or clone it. Open either
+HTML file locally in a browser; GitHub's file page does not run the viewer.
+No server, API key or Python installation is needed to browse the routes.
+
+Select a target and compare methods side by side. Each viewer includes molecular
+structures, reaction steps, recorded route outcomes and matched evaluation or
+terminal-source evidence where available. Incomplete and unavailable outcomes
+remain visible. PaRoutes120 opens with Rachel and Reference; RF25 opens with
+Rachel and Direct LLM.
+
+The [route index](data/route-atlas/ROUTE_INDEX.csv) covers all 1,180 comparison
+positions: 1,060 method outputs and 120 separate Reference entries. The
+[data dictionary](data/route-atlas/DATA_DICTIONARY.md) describes the JSON fields;
+the [data notes](data/route-atlas/README.md) document route versions and sources.
+These are the manuscript's adopted computational results, not newly generated
+runs. Strict closure denotes completed planning with independently source-resolved
+terminals; it does not denote laboratory synthesis.
 
 <a id="why-rachel"></a>
 ## Why Rachel
@@ -283,82 +304,7 @@ flowchart LR
 
 This is the compact view of the Rachel loop. The key difference from route-text generation is that validated actions become durable route objects, while rejected actions remain informative planning artifacts.
 
-## Selected Molecules
-
-Rachel is currently showcased with three qualitative examples chosen to cover complementary strengths. These cases are historical qualitative artifacts, not controlled benchmarks of the current knowledge-pack, EAS, or validation-v2 behavior. Their route depths and annotations describe the archived runs shown here; they must not be read as current experimental success claims.
-
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/61f7e78b-053c-4ac4-a349-b22c9e5b1ae3" alt="QNTR" width="220"><br>
-      <strong>QNTR</strong>
-    </td>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/e27005c7-9ba1-470b-a038-41d2190e3c72" alt="Losartan" width="220"><br>
-      <strong>Losartan</strong>
-    </td>
-    <td align="center" width="33%">
-      <img src="https://github.com/user-attachments/assets/ff2abe54-20c4-427a-8363-b9b6b8634a23" alt="Rivaroxaban" width="220"><br>
-      <strong>Rivaroxaban</strong>
-    </td>
-  </tr>
-</table>
-
-| Molecule | Role | Route depth | What it highlights |
-| --- | --- | ---: | --- |
-| `QNTR` | Experimentally grounded example | 6 steps | A route tied to real synthesis experience, useful for comparing planning behavior against laboratory practice |
-| `Losartan` | Canonical medicinal chemistry target | 4 steps | Convergent route logic with recognizable medicinal chemistry disconnections |
-| `Rivaroxaban` | Deeper drug-like example | 5 steps | Longer-horizon planning with a broader transformation mix |
-
-### QNTR
-
-QNTR is the most experimentally grounded case in the current README. It is connected to a completed synthesis campaign rather than being only a benchmark-style target, which makes it a useful reference for judging whether Rachel is recovering route strategy rather than merely satisfying local templates.
-
-In this case, the real synthesis and Rachel's current route converge on a similar three-part decomposition with overlapping terminal building blocks, related intermediates, and closely aligned reaction logic. Earlier Rachel versions were notably weaker on FGI handling and on ring opening or closure behavior. That gap was one of the main reasons for pushing the system toward a more chemistry-feasible planning framework.
-
-#### Experimental Route
-
-<img width="954" height="538" alt="1878e5777ea5c79edce765660331f35d" src="https://github.com/user-attachments/assets/1bc9ec91-4137-4fa8-9a42-df25d2af2c0f" />
-
-#### Early Rachel Route
-
-<img width="2260" height="2150" alt="synthesis_tree - 副本" src="https://github.com/user-attachments/assets/b03cfe51-d94e-4271-8000-ed0b1712810c" />
-
-#### Current Rachel Route
-
-<img width="2580" height="2150" alt="synthesis_tree" src="https://github.com/user-attachments/assets/1761ab3e-baa9-411e-a787-51b454e021b6" />
-
-- 6-step route from 4 starting materials
-- Useful as a route-level comparison between experimental chemistry and model-guided planning
-- Valuable because the accepted route reflects decomposition strategy, not only local template satisfaction
-- Also useful historically, because it shows what Rachel used to get wrong and what the current workflow is designed to correct
-
-### Losartan
-
-A canonical medicinal chemistry target with a recognizable convergent route.
-
-- 4-step route from 4 starting materials
-- Highlights tetrazole formation, N-alkylation, and Suzuki coupling logic
-- Useful as a benchmark-like example that many readers can immediately interpret
-
-### Rivaroxaban
-
-A deeper drug-like example with a richer transformation mix.
-
-- 5-step route from 4 starting materials
-- Highlights Buchwald-Hartwig amination, FGI, cyclization, and amide formation
-- Useful for showing that Rachel is not limited to short or purely toy routes
-
-### Dual Drug-Case Comparison
-
-The figure below places the Losartan and Rivaroxaban examples into one annotated comparison view.
-
-<img width="3000" height="3755" alt="rivaroxaban_losartan_dual_annotated_en" src="https://github.com/user-attachments/assets/8cb6c479-3f63-41fc-921f-62a565909dd1" />
-
-- `Losartan` emphasizes classical convergent medicinal chemistry logic
-- `Rivaroxaban` emphasizes deeper route depth and operator diversity
-- The pair helps readers compare route style, not just isolated outcomes
-
+<a id="minimal-quickstart"></a>
 ## Minimal Quickstart
 
 Current local runs assume a Python environment with the main research dependencies already available, including Python 3.10+, RDKit, `numpy`, and `Pillow`.
@@ -473,15 +419,12 @@ cmd.execute("init", {
 After a finalized route, record experimental facts separately, review the
 route, and create an inactive draft. Expert approval still does not activate
 the draft; only the standalone pack CLI can publish a new immutable version.
-See [knowledge/README.md](knowledge/README.md) for the manifest, evidence,
-conflict, and CLI contract. For concrete LLM authoring decisions and copyable
-entry schemas, use
-[knowledge/AUTHORING_GUIDE.md](knowledge/AUTHORING_GUIDE.md).
+The published implementation is in [knowledge/pack.py](Rachel/knowledge/pack.py)
+and [knowledge/cli.py](Rachel/knowledge/cli.py).
 
 This is a protocol-level example, not a full benchmark workflow. Use
-[SKILL.md](SKILL.md) for the executable LLM contract, [workflow.md](workflow.md)
-for design rationale, and [refs.md](refs.md) for exact command fields and return
-structures.
+[skill.md](Rachel/skill.md) for the LLM contract and
+[retro_cmd.py](Rachel/main/retro_cmd.py) for the command implementation.
 
 ## Typical Outputs
 
@@ -513,25 +456,20 @@ Typical outputs include:
 <details>
 <summary><strong>Repository Map</strong></summary>
 
-- [main](main): orchestration, session logic, route tree, reports, and command interface
-- [chem_tools](chem_tools): chemistry-grounded operators and validation utilities
-- [tools](tools): helper scripts for runs, analysis, visualization, and related research workflows
-- [knowledge](knowledge): pinned base/team/project profiles, provenance, staging, conflict gates, and immutable pack publication
-- [knowledge/AUTHORING_GUIDE.md](knowledge/AUTHORING_GUIDE.md): LLM and expert playbook for adding or refining prompts, experience, reactions, SMARTS, CAP, family, and risk knowledge
-- [SKILL.md](SKILL.md): LLM-facing hard rules and command contract
-- [workflow.md](workflow.md): current v2 route-building protocol
-- [experience_cards.md](experience_cards.md): short stage/tag-selected experience prompts
-- [refs.md](refs.md): technical reference for commands, data structures, and validators
-- `../validation`: current focused tests outside the runtime package
-- `../archive`: migrated docs, experiments, data-heavy support material, and legacy planning files
-- `../walkthrough_runs`: cached route diagnostics and payload probes
+- [main](Rachel/main): orchestration, session logic, route tree, reports, and command interface
+- [chem_tools](Rachel/chem_tools): chemistry-grounded operators and validation utilities
+- [tools](Rachel/tools): helper scripts for runs, analysis, visualization, and related research workflows
+- [knowledge](Rachel/knowledge): pinned base/team/project profiles, provenance, staging, conflict gates, and immutable pack publication
+- [skill.md](Rachel/skill.md): LLM-facing hard rules and command contract
+- [experience_cards.json](Rachel/experience_cards.json): structured experience prompts
+- [data/route-atlas](data/route-atlas/README.md): complete manuscript route comparisons, JSON records and source indices
 
 </details>
 
 ## Project Status
 
-- Active research codebase
-- Currently being cleaned up for arXiv-facing presentation
-- Core workflow is already in use
-- Documentation is improving, but the repository remains a live research workspace
-- Not yet a fully hardened OSS release
+- Public Rachel-beta research runtime under CC BY-NC 4.0.
+- Complete adopted PaRoutes120 and RF25 route comparisons included in `data/route-atlas`.
+- Manuscript and submission materials are being prepared separately.
+- Recorded results retain their experiment-specific versions; later runtime features
+  should not be assumed to have been active in every recorded run.

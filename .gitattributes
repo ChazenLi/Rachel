@@ -1,0 +1,2 @@
+# Preserve the frozen route data and embedded offline viewers byte for byte.
+data/route-atlas/** -text

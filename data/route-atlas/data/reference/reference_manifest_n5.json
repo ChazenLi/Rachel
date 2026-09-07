@@ -1,0 +1,347 @@
+[
+  {
+    "dataset": "n5",
+    "route_id": 9501,
+    "target_smiles": "CNC(=O)c1ccc(-c2ccc(C3CCC(C(=O)N[C@@H]4CC[C@H](O)CC4)CC3)c(C)c2)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5313,
+    "target_smiles": "Cc1[nH]cc(C(=O)NCc2ccc(S(C)(=O)=O)cn2)c(=O)c1-c1cccc(C(F)(F)F)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 8918,
+    "target_smiles": "Cc1c(Cc2ccc(NC(=O)c3ccc(Cl)cc3)cc2)c2ccccc2n1CC(=O)O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 8189,
+    "target_smiles": "CC(COc1ccnc(Cl)c1C(F)(F)F)c1c(F)cccc1Cl"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 633,
+    "target_smiles": "COCCCCn1c(C(=O)N(CC(C)C)[C@H]2C[C@@H](C(=O)N3CCCC3)CN(C(=O)OC(C)(C)C)C2)nc2ccccc21"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2879,
+    "target_smiles": "CC(C)(C)OC(=O)NC1CCOCC1COc1ccc(-c2ccc(Cl)cn2)cc1F"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 8613,
+    "target_smiles": "CN1C(=O)N(c2cccc(C(F)(F)F)c2)C2=C(C(=O)NCC2)C1c1ccc(C#N)cc1C(=O)O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2847,
+    "target_smiles": "Cc1cc(C(=O)Nc2cccc(C(=O)c3ccc4c(c3)NC(=O)C4=CNc3ccc(NC(C)CN(C)C)cc3)c2)n(C)n1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5654,
+    "target_smiles": "CCCC[C@]1(CC)CS(=O)(=O)c2cc(CCCC#N)c(OC)cc2[C@@H](c2ccccc2)N1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1391,
+    "target_smiles": "NCc1ccccc1CC(=O)NC1C(=O)N2C(C(=O)O)=C(C(CC(=O)O)Sc3nnn[nH]3)CS[C@H]12"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 3622,
+    "target_smiles": "CNC(=O)c1c(C2=CCCC2)oc2cc(N(C)S(C)(=O)=O)c(-c3ccc4c(n3)-c3cc5ccccc5n3CO4)cc12"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5455,
+    "target_smiles": "CC(C)(C)OC(=O)NCC(C)(C)c1ccc(N)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6445,
+    "target_smiles": "COc1cc(OC)c(C(=O)CCCCN2CCC3(CC2)NC(=O)NC3=O)cc1NS(=O)(=O)c1ccc(C(F)(F)F)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2120,
+    "target_smiles": "CS(=O)(=O)Nc1ccccc1C(=O)N1CCCC(C(=O)Cl)C1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9869,
+    "target_smiles": "CCOC(=O)C(C)(C)COS(=O)(=O)CCCNC(C)=O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9293,
+    "target_smiles": "CCN(CC)C(=O)CN(c1ccc(C)cc1)S(=O)(=O)c1ccc(C)cc1OC"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7287,
+    "target_smiles": "CN(C(=O)OC(C)(C)C)C1=N[C@H]2[C@H](O[C@H](CO[Si](C)(C)C(C)(C)C)[C@@H](O)[C@@H]2O)S1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2817,
+    "target_smiles": "O=c1ccc2c([C@@H](O)CNCC3(O)CCN(CCCOCCc4ccccc4)CC3)ccc(O)c2[nH]1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1480,
+    "target_smiles": "COc1ccc(Nc2ccc(CNC(=O)[C@]3(NC(=O)c4cncc(N)c4)CCOC3)c(F)c2)c(C(F)(F)F)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 4003,
+    "target_smiles": "Cc1cnn(Cc2ccc(C(=O)c3cncc(C(=O)NCc4ccc5c(N)nccc5c4)c3)cc2)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 129,
+    "target_smiles": "COc1nn2cc(-c3cc4c(OCc5csc(C6(F)CCOCC6)n5)cc(Cl)cc4o3)nc2s1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7899,
+    "target_smiles": "COc1ccc2c(O)cc(-n3ccc(NC(C)C)n3)nc2c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 3850,
+    "target_smiles": "CN1c2ccc(C(F)(F)F)cc2C(C)(C)CC1c1cccc(NC(C)(C)C(=O)O)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5628,
+    "target_smiles": "NC(=O)c1ccc(Cc2ccccc2)cn1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7967,
+    "target_smiles": "O=C(c1cnc2c(Br)cc(C(F)(F)F)cn12)N1C2CCC1COC2"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5531,
+    "target_smiles": "c1ccc(-c2cccn3cnnc23)nc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6004,
+    "target_smiles": "CC(C)(Cc1c[nH]c2c(Oc3ncccc3C#N)cccc12)NC(=O)OC(C)(C)C"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7805,
+    "target_smiles": "CCC(=O)C1CC1c1nc2c(C)ncc(C)n2n1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7796,
+    "target_smiles": "Nc1ccc2[nH]c3ccc(N)cc3c(=O)c2c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7685,
+    "target_smiles": "COc1cc2c(-c3cc4c(CN5CCC(O)CC5)ccnc4[nH]3)cn(C)c2cc1OC"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2106,
+    "target_smiles": "CCN(CC)C(=O)COc1ccc(CCC(=O)NS(=O)(=O)CCC(C)C)c(Oc2ncc(C(F)(F)F)cc2Cl)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5256,
+    "target_smiles": "CN1CCN(C/C=C/c2ccc3c(Nc4ccc(Sc5nccn5C)c(Cl)c4)c(C#N)cnc3c2)CC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1811,
+    "target_smiles": "CC(C)(C)c1ccc(-c2cccc(C3Nc4c(cc(Cl)cc4C(=O)NS(=O)(=O)C4CC4)CC3(C)C)c2)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 8672,
+    "target_smiles": "Cc1cc(-c2nn(C)c(C#N)c2C)ccc1OCc1c(C)cccc1-n1nnn(C)c1=O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6568,
+    "target_smiles": "O=C(NCC12CC3CC(CC(C3)C1)C2)c1cc(OCCCS(=O)(=O)CCCO)ccc1Cl"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 431,
+    "target_smiles": "CC1(CNC(=O)CC2CN=C(c3cc4cc(Oc5ccc(S(C)(=O)=O)nc5)cc(OC5CCOCC5)c4[nH]3)S2)COC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 4017,
+    "target_smiles": "CC(C)(C)OC(=O)COc1ccc(Cl)cc1C#Cc1ccc2c(c1)S(=O)(=O)C(C)(C)C2O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6397,
+    "target_smiles": "CS(=O)(=O)NC(=O)C1(c2ccc(Br)cc2)CC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7630,
+    "target_smiles": "CN1CC(=NO)c2c(ccn2CCCCN2CCC(C(=O)c3ccc(F)cc3)CC2)S1(=O)=O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1276,
+    "target_smiles": "O=C(Nc1cc(F)c(F)c(C(=O)c2ccc3ncc(N4CCOCC4)nc3c2)c1F)c1cccc(C(F)(F)F)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 4328,
+    "target_smiles": "Nc1cccc([C@H]2CCCN(C[C@H]3COc4ccccc4O3)C2)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1298,
+    "target_smiles": "Cc1ccc2cc(Cn3cc(C(=O)NCc4c(C)cc(N)nc4C)nn3)ccc2n1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 4400,
+    "target_smiles": "N#Cc1c(N2CCN(C(=O)c3cccs3)CC2)c2ccccc2n(-c2ccccc2)c1=O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 3961,
+    "target_smiles": "CCn1c(C#Cc2ccc(F)cc2)c(C#N)c2ccc(OC)cc21"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 3042,
+    "target_smiles": "C=CC(=O)NCc1cc2c(cn1)CN(c1c(F)c(OC)cc(OC)c1F)C(=O)C21CC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9145,
+    "target_smiles": "CCC1OCC(CC)(c2cc(F)cc(OCc3ccccc3)c2)O1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 880,
+    "target_smiles": "CC(C)(C)OC(=O)NCC1CCN(c2cccc3ccc(-c4nnc5cc(I)ccn45)nc23)CC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6926,
+    "target_smiles": "CC(=O)Nc1cc(-c2cc(F)cc(OCCN3CCOCC3)c2)nc(-n2nc(C)cc2C)n1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9998,
+    "target_smiles": "Cc1ncc(C)n2nc(CCc3ccc(O)c(NC(C)CCO)n3)nc12"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9743,
+    "target_smiles": "c1ccc(-c2ccn3cnnc3c2)nc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7157,
+    "target_smiles": "O=C(c1ccc(OC2CCOCC2)nc1)N1CCCN(C2CCC2)CC1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 7593,
+    "target_smiles": "Cc1ccc(N2C(=O)C(O)=C(C(=O)c3ccc(C(C)C)cc3)C2c2ccc(N3CCN(CCN(C)C)CC3)cc2)nn1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6541,
+    "target_smiles": "CCN[C@H](C(=O)N[C@H](C(=O)N(C)[C@H](/C=C(\\C)C(=O)O)C(C)C)C(C)(C)C)C(C)(C)c1ccccc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9281,
+    "target_smiles": "CCCc1c(OCCCCC(=O)O)ccc(C(=O)c2ccccc2O)c1O"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 234,
+    "target_smiles": "Cc1ccc(Cn2c(-c3cccc(-c4ccc5cc(C(=O)Cl)[nH]c5c4)c3)cc(C(F)(F)F)c(C#N)c2=O)c(C)c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 5306,
+    "target_smiles": "C=C[C@H]1CCC[C@@H]1NC(=O)OC(C)(C)C"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1096,
+    "target_smiles": "CC12CCC(CCN)(CC1)CC2"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2816,
+    "target_smiles": "CN(C)Cc1ccc2ccc(Cl)c(C3=C(c4cn(C)c5ccccc45)C(=O)NC3=O)c2c1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 1115,
+    "target_smiles": "CS(=O)(=O)NCc1cc(CC(=O)O)ccc1Oc1ccc(C(=O)Nc2ccc(Cl)c(Cl)c2)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9115,
+    "target_smiles": "C[C@@H](COC1CCCCO1)n1cc(C(=O)c2cncc(NC(=O)Cn3nc4ccccc4n3)c2)c2cncnc21"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2488,
+    "target_smiles": "Cc1cc2nc(-c3ccc(N(C)C)cc3)cn2cc1CCF"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9093,
+    "target_smiles": "C[C@@H](Oc1nc(-c2ccc(N3CCN(C4COC4)CC3)nc2)cc2ncn(C)c12)[C@H]1CNC(=O)C1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 2779,
+    "target_smiles": "CC1(CN)c2ccccc2Oc2ccccc21"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 6115,
+    "target_smiles": "COC[C@@H](C)NC(=O)c1ccc(CN(C2CCCCC2C)S(=O)(=O)c2ccc(Cl)cc2)cc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 4134,
+    "target_smiles": "C[C@@H](C(=O)Nc1ccc(Br)n(Cc2cncc(C(=O)c3ccc(F)cc3)c2)c1=O)N(C)C(=O)OCc1ccccc1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 8105,
+    "target_smiles": "COc1cc(N2CCN(C(=O)Cn3c(=O)oc4cc(-c5ncon5)ccc43)CC2)ccc1Cl"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 441,
+    "target_smiles": "COc1nc(C)c2cc(C(=O)Nc3cc(C(=O)NC(CNC(=O)OC(C)(C)C)c4ccccc4)ccc3Cl)c(=O)[nH]c2n1"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 659,
+    "target_smiles": "C#CC(=O)c1c(-c2ccc(OC)cc2)nn2ccc(Cl)cc12"
+  },
+  {
+    "dataset": "n5",
+    "route_id": 9628,
+    "target_smiles": "C[C@@H]1OC(=O)[C@@H]1NC(=O)OCCCc1ccccc1"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "report": [
+    {
+      "dataset": "PaRoutes120",
+      "targets": 120,
+      "graphs": 2,
+      "icons": 27,
+      "allRouteRendering": {
+        "slots": 1080,
+        "graphs": 947,
+        "errors": []
+      },
+      "interactions": "target search, all methods, variant, steps, details, zoom, fit, expand, download, language, four-way comparison, mobile target drawer"
+    },
+    {
+      "dataset": "RF25",
+      "targets": 25,
+      "graphs": 2,
+      "icons": 27,
+      "allRouteRendering": {
+        "slots": 100,
+        "graphs": 77,
+        "errors": []
+      },
+      "interactions": "target search, all methods, variant, steps, details, zoom, fit, expand, download, language, four-way comparison, mobile target drawer"
+    }
+  ],
+  "errors": []
+}
