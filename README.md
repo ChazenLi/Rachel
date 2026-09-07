@@ -4,7 +4,7 @@
 
 **LLM-directed multistep retrosynthesis, from chemical decisions to complete routes.**
 
-[How It Works](#how-it-works) · [Research](#research) · [Route Atlas](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
+[How It Works](#how-it-works) · [Route Example](#route-example) · [Research](#research) · [Route Atlas](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
 
 Every retrosynthetic choice changes the molecules that must be made next.
 A plausible disconnection can leave precursors that are harder to prepare, demand
@@ -50,6 +50,32 @@ structural constraints and decisions already made.
 The chemical tools inform decisions; the LLM or chemist remains responsible for
 interpreting them. A passed check records what the validator could establish,
 while missing evidence remains visible in the planning record.
+
+<a id="route-example"></a>
+## A Complete Route and Its Chemical Decisions
+
+Figure 2 from the manuscript follows target `n1_366` through a seven-step route
+to six terminal precursors. Alongside the complete route, three decision summaries
+show how individual reaction choices support the synthesis strategy.
+
+![Manuscript Figure 2: a complete seven-step retrosynthetic route and three chemical decision summaries.](docs/assets/rachel-route-decisions.png)
+
+[View full-size image](docs/assets/rachel-route-decisions.png) ·
+[Open PDF](docs/assets/rachel-route-decisions.pdf)
+
+Read the left panel from the target down towards its precursors. Reaction names
+refer to the forward transformations. The right panel explains three choices:
+
+- **Manage phenol reactivity:** retain a methyl ether during upstream transformations,
+  then unmask the phenol later in the synthesis.
+- **Install the C3 carboxyl group:** use formylation followed by oxidation to provide
+  the handle for subsequent amide coupling.
+- **Construct the indole core:** use Fischer cyclization to establish the scaffold
+  for subsequent functionalization.
+
+Each summary connects the recorded rationale, its implication for the route and
+the alternatives considered. The figure illustrates a planning proposal; the
+[complete Atlas](#route-atlas) provides the broader collection of recorded routes.
 
 <a id="research"></a>
 ## Research
