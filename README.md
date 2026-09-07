@@ -4,7 +4,7 @@
 
 **LLM-directed multistep retrosynthesis, from chemical decisions to complete routes.**
 
-[How It Works](#how-it-works) · [Research](#research) · [Route Atlas](#route-atlas) · [Get Started](#get-started) · [License](#license)
+[How It Works](#how-it-works) · [Research](#research) · [Route Atlas](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
 
 Every retrosynthetic choice changes the molecules that must be made next.
 A plausible disconnection can leave precursors that are harder to prepare, demand
@@ -149,6 +149,38 @@ Give your tool-capable LLM agent access to this checkout and the
 the host agent. The runtime exposes the chemistry and session tools through a
 Python command interface.
 
+### Start your first planning task
+
+1. **Open the repository in your agent's workspace.** The agent needs permission
+   to run local Python commands using the activated `rachel-v2` environment.
+   Ask it to read `Rachel/skill.md` before starting.
+2. **Provide the target structure and your priorities.** Use a SMILES string,
+   including stereochemistry where specified. Add relevant preferences, such as
+   an available starting material, a reaction to avoid or a branch to reconsider.
+   The agent should explain how those preferences affect its chemical choices.
+3. **Ask for a saved route and report.** Keep each target in its own run directory.
+   Request the session path, route overview, reaction steps and starting-material
+   list so you can inspect the work and return to it later.
+
+For example, send your agent this request after replacing the target placeholder:
+
+```text
+Read Rachel/skill.md and use Rachel in the rachel-v2 environment to plan a
+retrosynthetic route for this target: <target SMILES>.
+Create a new run directory, preserve the specified stereochemistry and explain
+the main chemical choices. Save the session as you work. At the end, export the
+route overview, reaction report and starting-material list, and give me their
+paths. Identify any remaining unresolved precursors or evidence gaps.
+```
+
+You can give feedback during planning, for example, "Reconsider the proposed
+coupling using this starting material." The agent translates your request into
+Rachel's planning tools; you do not need to enter each tool command yourself.
+New planning uses your host agent's model access; browsing the published Atlas does not.
+
+<details>
+<summary><strong>Optional: use the Python command interface directly</strong></summary>
+
 The following starts a fresh session and inspects its initial planning context:
 
 ```python
@@ -175,17 +207,36 @@ selection and route updates until finalization. The
 at each decision. `LoggedRetroCmd` records command inputs and outputs alongside
 the persistent session.
 
+</details>
+
 <a id="working-with-routes"></a>
-## Work With Routes and Knowledge
+## Using Rachel Day to Day
 
-**Inspect and revisit a route.** Session state, candidate attempts and committed
-reactions are stored separately. `review_terminal` reopens a terminal for further
-decomposition; `review_node` creates an independent route variant from a finalized
-route. This supports reviewing a particular branch while preserving the original.
+Use ordinary task descriptions with your agent. Include the saved session path
+when returning to an existing route, and identify the molecule or step you want
+to discuss.
 
-**Export the work.** Reports and structured outputs include the session, route
-tree, terminal inventory, molecular visualizations and knowledge-profile records.
-They support both chemical review and downstream analysis.
+| What you want to do | What to ask your agent |
+| --- | --- |
+| Build a new route | "Plan a route for this SMILES, taking these starting materials and chemical preferences into account." |
+| Resume saved work | "Resume this session from its saved state and continue the unfinished branches." |
+| Understand a decision | "Show the route so far and explain the precursors, alternatives and validation findings for this step." |
+| Decompose an advanced terminal | "Continue decomposing this terminal into simpler precursors within the same route." |
+| Compare a different strategy | "Create an independent alternative from this node in the finalized route, keeping the original route intact." |
+| Review terminal sources | "Audit the terminal-source evidence for this finalized route and show which entries remain unresolved." |
+| Share or analyse results | "Export the HTML report, route diagram, reaction steps, terminal list and JSON records to this folder." |
+
+**Keep the run directory.** Save `session.json` and its neighbouring command logs.
+To resume, point the agent to that session rather than asking it to initialize the
+same target again. Reopening a terminal changes the existing route; requesting
+an independent alternative preserves the finalized original.
+
+**Read the exported report.** The HTML report provides a route overview and step
+details. Keep its `images/` folder alongside it when sharing or moving the report.
+`tree.json` and `terminals.json` provide structured route and terminal records.
+Check any unresolved branches and the reported evidence before using a proposal
+to guide laboratory work. Online terminal-source lookup requires network access;
+an offline audit retains unresolved external evidence.
 
 **Extend chemical context.** The runtime supports versioned base, team and project
 knowledge packs for prompts, experience and chemical resources. Each session pins
