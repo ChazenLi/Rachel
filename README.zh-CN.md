@@ -4,7 +4,7 @@
 
 **由 LLM 主导的多步逆合成：从连续化学决策到完整路线。**
 
-[工作原理](#how-it-works) · [路线实例](#route-example) · [研究结果](#research) · [研究数据](#route-atlas) · [开始使用](#get-started) · [日常使用](#working-with-routes) · [许可证](#license)
+[在线服务](https://rachel.evotrek.cn) · [工作原理](#how-it-works) · [路线实例](#route-example) · [研究结果](#research) · [研究数据](#route-atlas) · [开始使用](#get-started) · [日常使用](#working-with-routes) · [许可证](#license)
 
 每一次逆合成选择，都会改变接下来需要制备的分子。一次局部合理的断开，可能留下更难合成的前体，
 引入新的选择性要求，甚至需要重新考虑整条路线的策略。要完成多步规划，化学判断就必须随着问题的变化持续进行。
@@ -105,6 +105,12 @@ GitHub 文件页不直接运行交互页面。
 
 <a id="get-started"></a>
 ## 开始使用
+
+### 在线服务
+
+访问 [Rachel Server](https://rachel.evotrek.cn)，使用 Rachel 的网页入口。
+如需在自己的智能体中使用，推荐将 Rachel 作为**化学规划 harness**，
+让具备工具调用能力的智能体读取并遵循 [Rachel skill](Rachel/skill.md)。本地配置见下文。
 
 ### 浏览已有结果
 

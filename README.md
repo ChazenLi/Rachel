@@ -4,7 +4,7 @@
 
 **LLM-directed multistep retrosynthesis, from chemical decisions to complete routes.**
 
-[How It Works](#how-it-works) · [Route Example](#route-example) · [Research](#research) · [Research Data](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
+[Web Service](https://rachel.evotrek.cn) · [How It Works](#how-it-works) · [Route Example](#route-example) · [Research](#research) · [Research Data](#route-atlas) · [Get Started](#get-started) · [Using Rachel](#working-with-routes) · [License](#license)
 
 Every retrosynthetic choice changes the molecules that must be made next.
 A plausible disconnection can leave precursors that are harder to prepare, demand
@@ -135,6 +135,13 @@ Figure data and supporting documentation are included in the package.
 
 <a id="get-started"></a>
 ## Get Started
+
+### Online service
+
+Open [Rachel Server](https://rachel.evotrek.cn) for the web interface to Rachel.
+For use with your own tool-capable agent, we recommend running Rachel as a
+**chemical-planning harness** and having the agent follow the
+[Rachel skill](Rachel/skill.md). See the local setup below.
 
 ### Browse the results
 
